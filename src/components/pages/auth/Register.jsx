@@ -22,7 +22,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   if (user && user?.email) {
-    navigate("/profile");
+    navigate("/dashboard");
   }
 
   useEffect(() => {

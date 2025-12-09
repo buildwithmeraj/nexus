@@ -5,6 +5,8 @@ import Login from "../components/pages/auth/Login";
 import Register from "../components/pages/auth/Register";
 import UserDashboard from "../components/pages/dashboards/User";
 import PrivateRoute from "./PrivateRoute";
+import AdminRoute from "./AdminRoute";
+import Admin from "../components/pages/dashboards/Admin";
 
 export const Routes = createBrowserRouter([
   {
@@ -18,6 +20,16 @@ export const Routes = createBrowserRouter([
         element: (
           <PrivateRoute>
             <UserDashboard />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/admin",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <Admin />
+            </AdminRoute>
           </PrivateRoute>
         ),
       },

@@ -30,10 +30,10 @@ const Login = () => {
     }
   }, [state?.message, loginMessage]);
 
-  // Redirect to profile if user is logged in
+  // Redirect to dashboard if user is logged in
   useEffect(() => {
     if (user?.email) {
-      navigate("/profile");
+      navigate("/dashboard");
     }
   }, [user, navigate]);
 
