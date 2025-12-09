@@ -1,10 +1,15 @@
 import React from "react";
 import Logo from "../utilities/Logo";
 import ThemeSwitcher from "../utilities/ThemeSwitcher";
+import { FaUser } from "react-icons/fa";
+import { useAuth } from "../../contexts/AuthContext";
+import { Link } from "react-router";
+import Loading from "../utilities/Loading";
 
 const Navbar = () => {
+  const { user, logOut, authLoading } = useAuth();
   return (
-    <div className="navbar bg-base-100 shadow-sm">
+    <div className="navbar bg-base-100 shadow-sm ">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
@@ -46,23 +51,41 @@ const Navbar = () => {
         </a>
       </div>
       <div className="navbar-end">
-        <button className="btn btn-ghost btn-circle">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        <div className="dropdown dropdown-center">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn m-1 btn-ghost btn-circle relative"
           >
-            {" "}
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />{" "}
-          </svg>
-        </button>
+            <FaUser />
+          </div>
+          <ul
+            tabIndex="-1"
+            className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm mt-1 user-menu"
+          >
+            {authLoading ? (
+              <span className="loading loading-spinner text-primary"></span>
+            ) : user ? (
+              <>
+                <li>
+                  <Link to="/dashboard">Profile</Link>
+                </li>
+                <li>
+                  <button onClick={() => logOut()}>Logout</button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/login">Login</Link>
+                </li>
+                <li>
+                  <a>Register</a>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
         <button className="btn btn-ghost btn-circle">
           <div className="indicator">
             <svg

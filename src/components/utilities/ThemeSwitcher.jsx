@@ -13,7 +13,7 @@ const ThemeSwitcher = () => {
   };
 
   return (
-    <label className="swap swap-rotate btn btn-circle btn-active">
+    <label className="swap swap-flip btn btn-circle btn-ghost">
       <input
         type="checkbox"
         onChange={handleToggle}
