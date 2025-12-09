@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
 import { useContext } from "react";
+import axiosInstance from "../hooks/axiosInstance";
 
 const AuthContext = createContext(null);
 
@@ -80,6 +81,18 @@ export const AuthProvider = ({ children }) => {
 
   const logOut = () => {
     signOut(auth);
+    setUser({});
+  };
+
+  const addUserToDB = (userData) => {
+    axiosInstance
+      .post("/users", userData)
+      .then((data) => {
+        console.log("User added to DB:", data);
+      })
+      .catch((err) => {
+        console.error("Error adding user to DB:", err);
+      });
   };
 
   useEffect(() => {
@@ -100,6 +113,7 @@ export const AuthProvider = ({ children }) => {
     registerUsingEmail,
     updateUserProfile,
     logOut,
+    addUserToDB,
     firebaseErrors,
     loading: authLoading,
   };

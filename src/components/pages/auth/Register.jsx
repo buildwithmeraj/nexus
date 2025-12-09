@@ -16,6 +16,7 @@ const Register = () => {
     user,
     firebaseErrors,
     updateUserProfile,
+    addUserToDB,
   } = useAuth();
 
   const location = useLocation();
@@ -61,6 +62,7 @@ const Register = () => {
       setUploading(false);
       return data.data.url;
     } catch (err) {
+      console.error(Error, "Image upload error:", err);
       setUploading(false);
       setError("Failed to upload photo. Please try again.");
       return null;
@@ -111,6 +113,14 @@ const Register = () => {
       .then((userCredential) => {
         setUser(userCredential.user);
         updateUserProfile({ displayName, photoURL });
+        const newUser = {
+          name: displayName,
+          email: email,
+          photoURL: photoURL,
+          createdAt: new Date(),
+          role: "user",
+        };
+        addUserToDB(newUser);
         toast.success("Registration Successful, Redirecting to Homepage...");
         setInterval(() => {
           window.location.href = "/";
@@ -128,6 +138,14 @@ const Register = () => {
     signInUsingGoogle()
       .then((result) => {
         setUser(result.user);
+        const newUser = {
+          name: result.user.displayName,
+          email: result.user.email,
+          photoURL: result.user.photoURL,
+          createdAt: new Date(),
+          role: "user",
+        };
+        addUserToDB(newUser);
         toast.success("Conneccted with Google, Redirecting to Homepage...");
         setInterval(() => {
           window.location.href = "/";

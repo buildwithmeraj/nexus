@@ -8,8 +8,14 @@ import { Eye, EyeOff, UserRoundPlus, LogIn } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
-  const { user, signInUsingEmail, signInUsingGoogle, setUser, firebaseErrors } =
-    useAuth();
+  const {
+    user,
+    signInUsingEmail,
+    signInUsingGoogle,
+    setUser,
+    firebaseErrors,
+    addUserToDB,
+  } = useAuth();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -41,7 +47,7 @@ const Login = () => {
     e.preventDefault();
     setError(null);
 
-    const email = emailRef.current?.value.trim();
+    const email = (emailRef.current?.value || "").trim();
     const password = e.target.password.value.trim();
 
     if (!emailRegex.test(email)) {
@@ -55,7 +61,15 @@ const Login = () => {
 
     signInUsingEmail(email, password)
       .then((userCredential) => {
+        const newUser = {
+          name: userCredential.user.displayName,
+          email: userCredential.user.email,
+          photoURL: userCredential.user.photoURL,
+          createdAt: new Date(),
+          role: "member",
+        };
         setUser(userCredential.user);
+        addUserToDB(newUser);
         toast.success("Login successful!");
         navigate(state?.from || "/", { replace: true });
       })
@@ -69,6 +83,15 @@ const Login = () => {
     signInUsingGoogle()
       .then((result) => {
         setUser(result.user);
+        // ensure google users are added to backend
+        const googleUser = {
+          name: result.user.displayName,
+          email: result.user.email,
+          photoURL: result.user.photoURL,
+          createdAt: new Date(),
+          role: "member",
+        };
+        addUserToDB(googleUser);
         toast.success("Login successful!");
         navigate(state?.from || "/", { replace: true });
       })

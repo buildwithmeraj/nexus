@@ -7,14 +7,10 @@ import { FaRegListAlt, FaHandsHelping, FaPlusCircle } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 const UserDashboard = () => {
-  const { user, logOut, setUser } = useAuth();
+  const { user, logOut } = useAuth();
   const handleLogout = () => {
     toast.success("Logged out successfully");
-    logOut()
-      .then(() => setUser(null))
-      .catch((error) => {
-        toast.error("Logout error: " + error.message);
-      });
+    logOut();
   };
 
   return (
