@@ -84,7 +84,7 @@ const Login = () => {
         <div className="hero-content flex-col">
           <div className="card bg-base-100 w-[320px] md:w-lg lg:w-xl shadow-2xl">
             <div className="card-body">
-              <h1>Login</h1>
+              <h2>Login</h2>
 
               {loginMessage && <Info message={loginMessage} />}
               {error && <ErrorMsg message={error} />}

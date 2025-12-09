@@ -4,6 +4,7 @@ import Root from "../layouts/Root";
 import Login from "../components/pages/auth/Login";
 import Register from "../components/pages/auth/Register";
 import UserDashboard from "../components/pages/dashboards/User";
+import PrivateRoute from "./PrivateRoute";
 
 export const Routes = createBrowserRouter([
   {
@@ -12,7 +13,14 @@ export const Routes = createBrowserRouter([
       { path: "/", Component: Home },
       { path: "/login", Component: Login },
       { path: "/register", Component: Register },
-      { path: "/dashboard", Component: UserDashboard },
+      {
+        path: "/dashboard",
+        element: (
+          <PrivateRoute>
+            <UserDashboard />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 ]);
