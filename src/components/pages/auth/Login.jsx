@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { NavLink, useLocation, useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import ErrorMsg from "../../../components/utilities/Error";
 import Info from "../../../components/utilities/Info";
@@ -21,96 +22,103 @@ const Login = () => {
   const navigate = useNavigate();
   const state = location.state;
 
-  const [error, setError] = useState(null);
   const [showPass, setShowPass] = useState(false);
   const [loginMessage, setLoginMessage] = useState(state?.message || null);
-  const emailRef = useRef();
 
-  const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-  const passRegex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+  // React Hook Form setup
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError: setFormError,
+  } = useForm({
+    mode: "onSubmit",
+  });
 
-  // Set loginMessage from state if not already set
   useEffect(() => {
     if (state?.message && !loginMessage) {
       setLoginMessage(state.message);
     }
   }, [state?.message, loginMessage]);
 
-  // Redirect to dashboard if user is logged in
   useEffect(() => {
     if (user?.email) {
       navigate("/dashboard");
     }
   }, [user, navigate]);
 
-  const handleForm = (e) => {
-    e.preventDefault();
-    setError(null);
+  // Handle email/password login
+  const onSubmit = async (formData) => {
+    const { email, password } = formData;
 
-    const email = (emailRef.current?.value || "").trim();
-    const password = e.target.password.value.trim();
+    try {
+      const userCredential = await signInUsingEmail(email, password);
 
-    if (!emailRegex.test(email)) {
-      return setError("Please enter a valid email address");
-    }
-    if (!passRegex.test(password)) {
-      return setError(
-        "Password must include uppercase, lowercase letters, and be at least 6 characters."
-      );
-    }
+      const newUser = {
+        name: userCredential.user.displayName,
+        email: userCredential.user.email,
+        photoURL: userCredential.user.photoURL,
+        createdAt: new Date(),
+      };
 
-    signInUsingEmail(email, password)
-      .then((userCredential) => {
-        const newUser = {
-          name: userCredential.user.displayName,
-          email: userCredential.user.email,
-          photoURL: userCredential.user.photoURL,
-          createdAt: new Date(),
-          role: "member",
-        };
-        setUser(userCredential.user);
-        addUserToDB(newUser);
-        toast.success("Login successful!");
-        navigate(state?.from || "/", { replace: true });
-      })
-      .catch((error) => {
-        const match = firebaseErrors.find((err) => err.code === error.code);
-        setError(match ? match.message : "Login failed. Please try again.");
+      setUser(userCredential.user);
+      await addUserToDB(newUser);
+
+      toast.success("Login successful!");
+      navigate(state?.from || "/", { replace: true });
+    } catch (error) {
+      const match = firebaseErrors.find((err) => err.code === error.code);
+      const errorMessage = match
+        ? match.message
+        : "Login failed. Please try again.";
+
+      setFormError("root", {
+        type: "manual",
+        message: errorMessage,
       });
+    }
   };
 
-  const handleGoogleSignIn = () => {
-    signInUsingGoogle()
-      .then((result) => {
-        setUser(result.user);
-        // ensure google users are added to backend
-        const googleUser = {
-          name: result.user.displayName,
-          email: result.user.email,
-          photoURL: result.user.photoURL,
-          createdAt: new Date(),
-          role: "member",
-        };
-        addUserToDB(googleUser);
-        toast.success("Login successful!");
-        navigate(state?.from || "/", { replace: true });
-      })
-      .catch((error) => {
-        const match = firebaseErrors.find((err) => err.code === error.code);
-        setError(match ? match.message : "Login failed. Please try again.");
+  // Handle Google sign-in
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInUsingGoogle();
+
+      setUser(result.user);
+
+      const googleUser = {
+        name: result.user.displayName,
+        email: result.user.email,
+        photoURL: result.user.photoURL,
+        createdAt: new Date(),
+      };
+      await addUserToDB(googleUser);
+
+      toast.success("Login successful!");
+      navigate(state?.from || "/", { replace: true });
+    } catch (error) {
+      const match = firebaseErrors.find((err) => err.code === error.code);
+      const errorMessage = match
+        ? match.message
+        : "Login failed. Please try again.";
+
+      setFormError("root", {
+        type: "manual",
+        message: errorMessage,
       });
+    }
   };
 
   return (
     <div className="hero min-h-[84vh]">
-      <form onSubmit={handleForm}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="hero-content flex-col">
           <div className="card bg-base-100 w-[320px] md:w-lg lg:w-xl shadow-2xl">
             <div className="card-body">
-              <h2>Login</h2>
+              <h2 className="text-2xl font-bold text-center">Login</h2>
 
               {loginMessage && <Info message={loginMessage} />}
-              {error && <ErrorMsg message={error} />}
+              {errors.root && <ErrorMsg message={errors.root.message} />}
 
               <fieldset className="fieldset">
                 <label className="label font-medium" htmlFor="email">
@@ -119,12 +127,23 @@ const Login = () => {
                 <input
                   type="email"
                   id="email"
-                  className="input w-full"
+                  className={`input w-full ${
+                    errors.email ? "input-error" : ""
+                  }`}
                   placeholder="Enter your email"
-                  name="email"
-                  ref={emailRef}
-                  required
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
+                      message: "Please enter a valid email address",
+                    },
+                  })}
                 />
+                {errors.email && (
+                  <span className="text-error text-sm mt-1">
+                    {errors.email.message}
+                  </span>
+                )}
 
                 <label className="label font-medium mt-2" htmlFor="password">
                   Password
@@ -133,10 +152,18 @@ const Login = () => {
                   <input
                     type={showPass ? "text" : "password"}
                     id="password"
-                    className="input w-full pr-10"
+                    className={`input w-full pr-10 ${
+                      errors.password ? "input-error" : ""
+                    }`}
                     placeholder="Enter your password"
-                    name="password"
-                    required
+                    {...register("password", {
+                      required: "Password is required",
+                      pattern: {
+                        value: /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+                        message:
+                          "Password must include uppercase, lowercase letters, and be at least 6 characters.",
+                      },
+                    })}
                   />
                   <span
                     className="absolute right-2 top-2 cursor-pointer text-2xl text-gray-600"
@@ -145,6 +172,11 @@ const Login = () => {
                     {showPass ? <Eye /> : <EyeOff />}
                   </span>
                 </div>
+                {errors.password && (
+                  <span className="text-error text-sm mt-1">
+                    {errors.password.message}
+                  </span>
+                )}
 
                 <button className="btn btn-primary mt-4 w-full" type="submit">
                   <LogIn size={16} />

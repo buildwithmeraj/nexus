@@ -1,27 +1,222 @@
 import React, { useEffect, useState } from "react";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import Loading from "../../utilities/Loading";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
 
 const UsersList = () => {
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const axiosSecure = useAxiosSecureInstance();
+  const { data: usersList = [] } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/users");
+      return res.data;
+    },
+  });
+  const { user } = useAuth();
+  const adminEmail = user?.email;
 
-  useEffect(() => {
-    // fetch users
-    axiosSecure.get("/users").then((response) => {
-      setUsers(response.data);
-      setLoading(false);
-    });
-  }, []);
+  // Utility function
+  const capitalizeWords = (str) => {
+    if (str === "clubManager") {
+      str = "club manager";
+    }
+    if (!str) return "";
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
 
-  if (loading) <Loading />;
+  const updateUserRole = async (userId, type) => {
+    try {
+      const res = await axiosSecure.patch(`/users/role/${userId}`, {
+        type: type,
+      });
+      if (res.data.modifiedCount > 0) {
+        // Update the user's role in the local state for instant UI update
+        setUsers((prevUsers) =>
+          prevUsers.map((u) => (u._id === userId ? { ...u, role: type } : u))
+        );
+      }
+    } catch (error) {
+      console.error("Failed to update user role:", error);
+      // Here you could show an error message to the user
+    }
+  };
+
+  // useEffect(() => {
+  //   axiosSecure.get("/users").then((res) => {
+  //     setUsers(res.data);
+  //     setLoading(false);
+  //   });
+  // }, [axiosSecure]);
+
+  // if (loading) return <Loading />;
+
+  // Role color classes
+  const roleClassMap = {
+    admin: "text-green-600",
+    clubManager: "text-amber-600",
+    member: "text-blue-600",
+  };
+
+  // Generate action buttons
+  const renderActionButtons = (user) => {
+    if (user.role === "admin") return null;
+    if (user.role === "clubManager") {
+      return (
+        <>
+          <label
+            htmlFor="promote_modal"
+            className="btn btn-xs btn-success mr-2"
+            onClick={() =>
+              setSelectedUser({
+                id: user._id,
+                name: user.name,
+                role: "Admin",
+              })
+            }
+          >
+            Promote
+          </label>
+
+          <label
+            htmlFor="demote_modal"
+            className="btn btn-xs btn-warning"
+            onClick={() =>
+              setSelectedUser({
+                id: user._id,
+                name: user.name,
+                role: "Member",
+              })
+            }
+          >
+            Demote
+          </label>
+        </>
+      );
+    }
+
+    return (
+      <label
+        htmlFor="promote_modal"
+        className="btn btn-xs btn-success"
+        onClick={() =>
+          setSelectedUser({
+            id: user._id,
+            name: user.name,
+            role: "Club Manager",
+          })
+        }
+      >
+        Promote
+      </label>
+    );
+  };
+
   return (
     <div>
-      <h2>User List {users.length}</h2>
-      {users.map((user) => (
-        <div key={user._id}>{user?.email}</div>
-      ))}
+      <h2>User List ({usersList.length})</h2>
+
+      <div className="overflow-x-auto">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Joined</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {usersList
+              .filter((u) => u.email !== adminEmail)
+              .map((user) => (
+                <tr key={user._id}>
+                  <td>
+                    <div className="font-bold">{user.name}</div>
+                  </td>
+
+                  <td>{user.email}</td>
+
+                  <td className={`font-semibold ${roleClassMap[user.role]}`}>
+                    {capitalizeWords(user.role)}
+                  </td>
+
+                  <td>{user.createdAt}</td>
+
+                  <td>{renderActionButtons(user)}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+
+      <input type="checkbox" id="promote_modal" className="modal-toggle" />
+      <div className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Promotion</h3>
+
+          <p className="py-4">
+            Are you sure you want to promote{" "}
+            <span className="font-semibold">{selectedUser?.name}</span> to{" "}
+            <span className="font-semibold">{selectedUser?.role}</span>?
+          </p>
+
+          <div className="modal-action">
+            <label
+              className="btn btn-success"
+              onClick={async () => {
+                await updateUserRole(user._id, "promote");
+                document.getElementById("promote_modal").checked = false;
+              }}
+            >
+              Confirm
+            </label>
+            <label htmlFor="promote_modal" className="btn">
+              Close
+            </label>
+          </div>
+        </div>
+
+        <label htmlFor="promote_modal" className="modal-backdrop" />
+      </div>
+
+      <input type="checkbox" id="demote_modal" className="modal-toggle" />
+      <div className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Demotion</h3>
+
+          <p className="py-4">
+            Are you sure you want to demote{" "}
+            <span className="font-semibold">{selectedUser?.name}</span> to{" "}
+            <span className="font-semibold">{selectedUser?.role}</span>?
+          </p>
+
+          <div className="modal-action">
+            <label
+              className="btn btn-success"
+              onClick={async () => {
+                updateUserRole(user._id, "demote");
+                document.getElementById("demote_modal").checked = false;
+              }}
+            >
+              Confirm
+            </label>
+            <label htmlFor="demote_modal" className="btn">
+              Close
+            </label>
+          </div>
+        </div>
+
+        <label htmlFor="demote_modal" className="modal-backdrop" />
+      </div>
     </div>
   );
 };
