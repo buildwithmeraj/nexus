@@ -14,7 +14,7 @@ const AdminRoute = ({ children }) => {
   useEffect(() => {
     if (user && user.email) {
       axiosSecure
-        .get(`/users/roles/${user?.email}`)
+        .get(`/users/role/${user?.email}`)
         .then((response) => {
           if (response.data.role === "admin") {
             setIsAdmin(true);

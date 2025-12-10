@@ -5,11 +5,10 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 
 const UsersList = () => {
-  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const axiosSecure = useAxiosSecureInstance();
-  const { data: usersList = [] } = useQuery({
+  const { data: usersList = [], refetch } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
       const res = await axiosSecure.get("/users");
@@ -32,19 +31,16 @@ const UsersList = () => {
   };
 
   const updateUserRole = async (userId, type) => {
+    //console.log(userId, type);
     try {
-      const res = await axiosSecure.patch(`/users/role/${userId}`, {
+      await axiosSecure.patch(`/users/role/${userId}`, {
         type: type,
       });
-      if (res.data.modifiedCount > 0) {
-        // Update the user's role in the local state for instant UI update
-        setUsers((prevUsers) =>
-          prevUsers.map((u) => (u._id === userId ? { ...u, role: type } : u))
-        );
-      }
     } catch (error) {
       console.error("Failed to update user role:", error);
       // Here you could show an error message to the user
+    } finally {
+      refetch();
     }
   };
 
@@ -66,10 +62,24 @@ const UsersList = () => {
 
   // Generate action buttons
   const renderActionButtons = (user) => {
-    if (user.role === "admin") return null;
+    if (user.role === "admin")
+      return (
+        <div className="flex gap-2 items-center">
+          <div className="tooltip" data-tip="You can not change admin role">
+            <button className="btn btn-xs btn-warning " disabled>
+              Promote
+            </button>
+          </div>
+          <div className="tooltip" data-tip="You can not change admin role">
+            <button className="btn btn-xs btn-warning " disabled>
+              Demote
+            </button>
+          </div>
+        </div>
+      );
     if (user.role === "clubManager") {
       return (
-        <>
+        <div className="flex gap-2 items-center">
           <label
             htmlFor="promote_modal"
             className="btn btn-xs btn-success mr-2"
@@ -97,30 +107,37 @@ const UsersList = () => {
           >
             Demote
           </label>
-        </>
+        </div>
       );
     }
 
     return (
-      <label
-        htmlFor="promote_modal"
-        className="btn btn-xs btn-success"
-        onClick={() =>
-          setSelectedUser({
-            id: user._id,
-            name: user.name,
-            role: "Club Manager",
-          })
-        }
-      >
-        Promote
-      </label>
+      <div className="flex gap-2 items-center">
+        <label
+          htmlFor="promote_modal"
+          className="btn btn-xs btn-success"
+          onClick={() =>
+            setSelectedUser({
+              id: user._id,
+              name: user.name,
+              role: "Club Manager",
+            })
+          }
+        >
+          Promote
+        </label>
+        <div className="tooltip" data-tip="You can not demote member role">
+          <button className="btn btn-xs btn-warning " disabled>
+            Demote
+          </button>
+        </div>
+      </div>
     );
   };
 
   return (
     <div>
-      <h2>User List ({usersList.length})</h2>
+      <h2>User List ({usersList.length - 1})</h2>
 
       <div className="overflow-x-auto">
         <table className="table">
@@ -173,7 +190,7 @@ const UsersList = () => {
             <label
               className="btn btn-success"
               onClick={async () => {
-                await updateUserRole(user._id, "promote");
+                await updateUserRole(selectedUser?.id, "promote");
                 document.getElementById("promote_modal").checked = false;
               }}
             >
@@ -203,7 +220,7 @@ const UsersList = () => {
             <label
               className="btn btn-success"
               onClick={async () => {
-                updateUserRole(user._id, "demote");
+                updateUserRole(selectedUser?.id, "demote");
                 document.getElementById("demote_modal").checked = false;
               }}
             >

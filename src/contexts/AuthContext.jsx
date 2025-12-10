@@ -60,6 +60,7 @@ export const AuthProvider = ({ children }) => {
   ];
 
   const [user, setUser] = useState({});
+  const [role, setRole] = useState("");
   const [authLoading, setAuthLoading] = useState(true);
   const googleProvider = new GoogleAuthProvider();
 
@@ -96,13 +97,24 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       setUser(currentUser);
+      if (currentUser?.email) {
+        try {
+          const response = await axiosInstance.get(
+            `users/role/${currentUser.email}`
+          );
+          setRole(response.data.role); // store role in state
+        } catch (error) {
+          console.error("Failed to fetch role:", error);
+          setRole("");
+        }
+      } else {
+        setRole("");
+      }
       setAuthLoading(false);
     });
-    return () => {
-      unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
   const authData = {
@@ -113,6 +125,7 @@ export const AuthProvider = ({ children }) => {
     registerUsingEmail,
     updateUserProfile,
     logOut,
+    role,
     addUserToDB,
     firebaseErrors,
     loading: authLoading,

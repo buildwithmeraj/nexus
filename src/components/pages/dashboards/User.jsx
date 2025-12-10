@@ -3,11 +3,10 @@ import { Link } from "react-router";
 import { useAuth } from "../../../contexts/AuthContext";
 import { LogOut } from "lucide-react";
 import { HiUserCircle } from "react-icons/hi";
-import { FaRegListAlt, FaHandsHelping, FaPlusCircle } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 const UserDashboard = () => {
-  const { user, logOut } = useAuth();
+  const { user, logOut, role } = useAuth();
   const handleLogout = () => {
     toast.success("Logged out successfully");
     logOut();
@@ -43,6 +42,11 @@ const UserDashboard = () => {
           Logout
         </button>
       </div>
+      {role === "member" && (
+        <Link to="/apply-for-club-manager" className="btn btn-primary">
+          Apply for Club Manager
+        </Link>
+      )}
     </div>
   );
 };

@@ -7,6 +7,7 @@ import UserDashboard from "../components/pages/dashboards/User";
 import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
 import Admin from "../components/pages/dashboards/Admin";
+import ApplyForClubManager from "../components/pages/member/ApplyForClubManager";
 
 export const Routes = createBrowserRouter([
   {
@@ -20,6 +21,14 @@ export const Routes = createBrowserRouter([
         element: (
           <PrivateRoute>
             <UserDashboard />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/apply-for-club-manager",
+        element: (
+          <PrivateRoute>
+            <ApplyForClubManager />
           </PrivateRoute>
         ),
       },
