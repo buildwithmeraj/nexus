@@ -6,8 +6,11 @@ import Register from "../components/pages/auth/Register";
 import UserDashboard from "../components/pages/dashboards/User";
 import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
+import ClubManagerRoute from "./ClubManagerRoute";
 import Admin from "../components/pages/dashboards/Admin";
 import ApplyForClubManager from "../components/pages/member/ApplyForClubManager";
+import ClubManager from "../components/pages/dashboards/ClubManager";
+import AddClub from "../components/pages/manager/AddClub";
 
 export const Routes = createBrowserRouter([
   {
@@ -29,6 +32,26 @@ export const Routes = createBrowserRouter([
         element: (
           <PrivateRoute>
             <ApplyForClubManager />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/club-manager",
+        element: (
+          <PrivateRoute>
+            <ClubManagerRoute>
+              <ClubManager />
+            </ClubManagerRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/club-manager/add-club",
+        element: (
+          <PrivateRoute>
+            <ClubManagerRoute>
+              <AddClub />
+            </ClubManagerRoute>
           </PrivateRoute>
         ),
       },

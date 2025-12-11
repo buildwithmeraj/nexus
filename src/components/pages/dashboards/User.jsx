@@ -47,6 +47,18 @@ const UserDashboard = () => {
           Apply for Club Manager
         </Link>
       )}
+
+      {role === "admin" && (
+        <Link to="/dashboard/admin" className="btn btn-primary">
+          Admin Dashboard
+        </Link>
+      )}
+
+      {(role === "clubManager" || role === "admin") && (
+        <Link to="/dashboard/club-manager" className="btn btn-primary">
+          Manage your Club
+        </Link>
+      )}
     </div>
   );
 };

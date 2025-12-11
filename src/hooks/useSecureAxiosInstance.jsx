@@ -9,7 +9,7 @@ const instance = axios.create({
 
 const useAxiosSecureInstance = () => {
   const navigate = useNavigate();
-  const { user, signOutUser } = useAuth();
+  const { user, logOut } = useAuth();
 
   useEffect(() => {
     const requestInterceptor = instance.interceptors.request.use((config) => {
@@ -28,7 +28,7 @@ const useAxiosSecureInstance = () => {
         const status = error.response?.status;
         if (status === 401 || status === 403) {
           console.log("Unauthorized - logging out user");
-          signOutUser().then(() => {
+          logOut().then(() => {
             navigate("/login");
           });
         }
@@ -40,7 +40,7 @@ const useAxiosSecureInstance = () => {
       instance.interceptors.request.eject(requestInterceptor);
       instance.interceptors.response.eject(responseInterceptor);
     };
-  }, [user, signOutUser, navigate]);
+  }, [user, logOut, navigate]);
 
   return instance;
 };

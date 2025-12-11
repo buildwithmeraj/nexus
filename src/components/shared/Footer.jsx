@@ -3,7 +3,7 @@ import Icon from "../utilities/Icon";
 
 const Footer = () => {
   return (
-    <footer className="footer sm:footer-horizontal items-center p-4">
+    <footer className="footer max-w-384 mx-auto sm:footer-horizontal items-center p-4">
       <aside className="grid-flow-col items-center">
         <Icon classes="w-12" />
         <p>

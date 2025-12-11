@@ -6,16 +6,16 @@ import { Toaster } from "react-hot-toast";
 
 const Root = () => {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <header>
         <Navbar />
       </header>
-      <main>
+      <main className="grow container mx-auto px-4">
         <Outlet />
       </main>
       <Toaster position="bottom-center" reverseOrder={false} />
       <Footer />
-    </>
+    </div>
   );
 };
 

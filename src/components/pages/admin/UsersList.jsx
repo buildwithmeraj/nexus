@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import Loading from "../../utilities/Loading";
 import { useAuth } from "../../../contexts/AuthContext";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const UsersList = () => {
+  const queryClient = useQueryClient();
   const [selectedUser, setSelectedUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const axiosSecure = useAxiosSecureInstance();
-  const { data: usersList = [], refetch } = useQuery({
+  const {
+    data: usersList = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
       const res = await axiosSecure.get("/users");
@@ -41,17 +45,10 @@ const UsersList = () => {
       // Here you could show an error message to the user
     } finally {
       refetch();
+      queryClient.invalidateQueries(["club-manager-applications"]);
     }
   };
-
-  // useEffect(() => {
-  //   axiosSecure.get("/users").then((res) => {
-  //     setUsers(res.data);
-  //     setLoading(false);
-  //   });
-  // }, [axiosSecure]);
-
-  // if (loading) return <Loading />;
+  if (isLoading) return <Loading />;
 
   // Role color classes
   const roleClassMap = {
