@@ -1,6 +1,7 @@
 import React from "react";
 import UsersList from "../admin/UsersList";
 import ClubManagerApplications from "../admin/ClubManagerApplications";
+import ClubsList from "../admin/ClubsList";
 
 const Admin = () => {
   return (
@@ -8,6 +9,7 @@ const Admin = () => {
       <h2>Admin</h2>
       <UsersList />
       <ClubManagerApplications />
+      <ClubsList />
     </div>
   );
 };

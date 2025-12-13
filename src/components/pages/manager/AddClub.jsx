@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const AddClub = () => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     clubName: "",
     description: "",
@@ -11,6 +13,7 @@ const AddClub = () => {
     membershipFee: 0,
   });
   const [uploading, setUploading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +23,7 @@ const AddClub = () => {
     }));
   };
 
-  // ImgBB image upload
+  // ImgBB upload
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -60,11 +63,38 @@ const AddClub = () => {
     }
   };
 
+  // Submit to backend
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.bannerImage) {
+      return toast.error("Please upload a banner image");
+    }
+
+    setSubmitting(true);
+
     try {
-      console.log("Sending data to backend:", formData);
+      const token = await user.getIdToken();
+
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/clubs`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message || "Failed to add club");
+        return;
+      }
+
       toast.success("Club submitted successfully!");
+
+      // Reset form
       setFormData({
         clubName: "",
         description: "",
@@ -76,6 +106,8 @@ const AddClub = () => {
     } catch (error) {
       console.error(error);
       toast.error("Failed to submit club.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -122,7 +154,7 @@ const AddClub = () => {
           required
         />
 
-        {/* ImgBB file input */}
+        {/* ImgBB file upload */}
         <div>
           <label className="block mb-1 font-medium">Banner Image</label>
           <input
@@ -157,9 +189,9 @@ const AddClub = () => {
         <button
           type="submit"
           className="btn btn-primary mt-4 w-full"
-          disabled={uploading}
+          disabled={uploading || submitting}
         >
-          Add Club
+          {submitting ? "Submitting..." : "Add Club"}
         </button>
       </form>
     </div>

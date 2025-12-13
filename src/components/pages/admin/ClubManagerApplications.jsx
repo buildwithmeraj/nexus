@@ -61,7 +61,7 @@ const ClubManagerApplications = () => {
 
               <tbody>
                 {clubManagerApplicationsList.map((applications) => (
-                  <tr key={applications._id}>
+                  <tr key={applications._id} className="hover:bg-base-300">
                     <td>
                       <div className="font-bold">{applications.name}</div>
                     </td>
@@ -91,9 +91,11 @@ const ClubManagerApplications = () => {
                           Approve
                         </button>
                       ) : (
-                        <button className="btn btn-xs" disabled>
-                          Approved
-                        </button>
+                        <div className="tooltip" data-tip="Already approved">
+                          <button className="btn btn-xs" disabled>
+                            Approved
+                          </button>
+                        </div>
                       )}
                     </td>
                   </tr>

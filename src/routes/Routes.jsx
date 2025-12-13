@@ -11,6 +11,8 @@ import Admin from "../components/pages/dashboards/Admin";
 import ApplyForClubManager from "../components/pages/member/ApplyForClubManager";
 import ClubManager from "../components/pages/dashboards/ClubManager";
 import AddClub from "../components/pages/manager/AddClub";
+import ManageClub from "../components/pages/manager/ManageClub";
+import ClubDetails from "../components/pages/root/ClubDetails";
 
 export const Routes = createBrowserRouter([
   {
@@ -19,6 +21,10 @@ export const Routes = createBrowserRouter([
       { path: "/", Component: Home },
       { path: "/login", Component: Login },
       { path: "/register", Component: Register },
+      {
+        path: "/clubs/:id",
+        element: <ClubDetails />,
+      },
       {
         path: "/dashboard",
         element: (
@@ -51,6 +57,16 @@ export const Routes = createBrowserRouter([
           <PrivateRoute>
             <ClubManagerRoute>
               <AddClub />
+            </ClubManagerRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/club-manager/manage-club/:id",
+        element: (
+          <PrivateRoute>
+            <ClubManagerRoute>
+              <ManageClub />
             </ClubManagerRoute>
           </PrivateRoute>
         ),

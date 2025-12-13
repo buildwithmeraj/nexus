@@ -152,7 +152,7 @@ const UsersList = () => {
             {usersList
               .filter((u) => u.email !== adminEmail)
               .map((user) => (
-                <tr key={user._id}>
+                <tr key={user._id} className="hover:bg-base-300">
                   <td>
                     <div className="font-bold">{user.name}</div>
                   </td>

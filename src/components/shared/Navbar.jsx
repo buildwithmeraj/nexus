@@ -4,7 +4,6 @@ import ThemeSwitcher from "../utilities/ThemeSwitcher";
 import { FaUser } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link } from "react-router";
-import { TiThMenu } from "react-icons/ti";
 import { RiMenuFill } from "react-icons/ri";
 
 const Navbar = () => {
@@ -16,7 +15,6 @@ const Navbar = () => {
           <div className="drawer">
             <input id="my-drawer-1" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content">
-              {/* Page content here */}
               <label
                 htmlFor="my-drawer-1"
                 className="btn btn-circle btn-ghost drawer-button"
@@ -31,7 +29,6 @@ const Navbar = () => {
                 className="drawer-overlay"
               ></label>
               <ul className="menu bg-base-200 min-h-full w-80 p-4">
-                {/* Sidebar content here */}
                 <li>
                   <a
                     href="#"
@@ -51,9 +48,9 @@ const Navbar = () => {
           </div>
         </div>
         <div className="navbar-center">
-          <a className="btn btn-ghost text-xl">
+          <Link className="text-xl" to="/">
             <Logo />
-          </a>
+          </Link>
         </div>
         <div className="navbar-end">
           <div className="dropdown dropdown-center">
