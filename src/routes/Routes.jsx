@@ -13,6 +13,7 @@ import ClubManager from "../components/pages/dashboards/ClubManager";
 import AddClub from "../components/pages/manager/AddClub";
 import ManageClub from "../components/pages/manager/ManageClub";
 import ClubDetails from "../components/pages/root/ClubDetails";
+import MembershipSuccess from "../components/pages/root/MembershipSuccess";
 
 export const Routes = createBrowserRouter([
   {
@@ -24,6 +25,14 @@ export const Routes = createBrowserRouter([
       {
         path: "/clubs/:id",
         element: <ClubDetails />,
+      },
+      {
+        path: "/membership-success",
+        element: (
+          <PrivateRoute>
+            <MembershipSuccess />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/dashboard",

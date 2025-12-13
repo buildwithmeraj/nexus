@@ -1,64 +1,54 @@
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import axiosInstance from "../../../hooks/axiosInstance";
-import { useAuth } from "../../../contexts/AuthContext";
+import React, { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
+import { useAuth } from "../../../contexts/AuthContext";
+import toast from "react-hot-toast";
+import PaymentModal from "./PaymentModal";
 
-const fetchMembershipStatus = async ({ queryKey }) => {
-  const [, clubId, user] = queryKey;
+const fetchMembershipStatus = async ({ queryKey }, axiosSecure) => {
+  const [, clubId] = queryKey;
 
-  if (!user) return null;
-
-  const token = await user.getIdToken();
-
-  const res = await axiosInstance.get(`/clubs/${clubId}/membership-status`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await axiosSecure.get(`/clubs/${clubId}/membership-status`);
 
   return res.data;
 };
 
-const joinClub = async () => {
-  try {
-    axiosSecure = useAxiosSecureInstance();
-    const token = await user.getIdToken();
-
-    const res = await axiosInstance.post(
-      `/clubs/${clubId}/join`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    // Refetch membership status after joining
-    queryClient.invalidateQueries(["membershipStatus", clubId, user]);
-
-    alert(res.data.message || "Joined successfully");
-  } catch (err) {
-    console.error(err);
-    alert(err.response?.data?.message || "Failed to join club");
-  }
-};
-
-export default function ClubMembershipStatus({ clubId }) {
+export default function ClubMembershipStatus({ clubId, clubFee }) {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const axiosSecure = useAxiosSecureInstance();
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentType, setPaymentType] = useState(null);
 
   const {
     data: membership,
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["membershipStatus", clubId, user],
-    queryFn: fetchMembershipStatus,
+    queryFn: (context) => fetchMembershipStatus(context, axiosSecure),
     enabled: !!user && !!clubId,
     retry: false,
   });
+
+  const handleJoinClick = () => {
+    setPaymentType("join");
+    setShowPaymentModal(true);
+  };
+
+  const handleRenewClick = () => {
+    setPaymentType("renew");
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    setShowPaymentModal(false);
+    refetch();
+    queryClient.invalidateQueries(["membershipStatus", clubId, user]);
+    toast.success("Membership activated successfully!");
+  };
 
   if (!user) {
     return (
@@ -100,46 +90,69 @@ export default function ClubMembershipStatus({ clubId }) {
       : "badge-ghost";
 
   return (
-    <div className="mt-6 p-6 rounded-xl border bg-white shadow-md">
-      <h3 className="text-xl font-semibold mb-3">Membership Status</h3>
+    <>
+      <div className="mt-6 p-6 rounded-xl border bg-white shadow-md">
+        <h3 className="text-xl font-semibold mb-3">Membership Status</h3>
 
-      <p className="text-gray-700 mb-2">
-        Current Status:{" "}
-        <span className={`badge ${badgeStyle} badge-lg capitalize`}>
-          {status}
-        </span>
-      </p>
-
-      {/* Optional details */}
-      {membership.joinedAt && (
-        <p className="text-sm text-gray-600">
-          Joined: {new Date(membership.joinedAt).toLocaleDateString()}
+        <p className="text-gray-700 mb-2">
+          Current Status:{" "}
+          <span className={`badge ${badgeStyle} badge-lg capitalize`}>
+            {status}
+          </span>
         </p>
-      )}
 
-      {membership.expiresAt && (
-        <p className="text-sm text-gray-600">
-          Expires: {new Date(membership.expiresAt).toLocaleDateString()}
-        </p>
-      )}
-
-      <div className="mt-4 flex gap-3">
-        {status === "none" && (
-          <button className="btn btn-primary">Join Club</button>
+        {membership.joinedAt && (
+          <p className="text-sm text-gray-600">
+            Joined: {new Date(membership.joinedAt).toLocaleDateString()}
+          </p>
         )}
 
-        {status === "expired" && (
-          <button className="btn btn-warning">Renew Membership</button>
+        {membership.expiresAt && (
+          <p className="text-sm text-gray-600">
+            Expires: {new Date(membership.expiresAt).toLocaleDateString()}
+          </p>
         )}
 
-        {status === "pendingPayment" && (
-          <button className="btn btn-accent">Complete Payment</button>
-        )}
+        <div className="mt-4 flex gap-3 flex-wrap">
+          {status === "none" && (
+            <button className="btn btn-primary" onClick={handleJoinClick}>
+              {clubFee ? `Join Club ($${clubFee})` : "Join Club"}
+            </button>
+          )}
 
-        {status === "active" && (
-          <button className="btn btn-disabled">Already a Member</button>
-        )}
+          {status === "expired" && (
+            <button className="btn btn-warning" onClick={handleRenewClick}>
+              {clubFee ? `Renew Membership ($${clubFee})` : "Renew Membership"}
+            </button>
+          )}
+
+          {status === "pendingPayment" && (
+            <button
+              className="btn btn-accent"
+              onClick={() => {
+                setPaymentType("join");
+                setShowPaymentModal(true);
+              }}
+            >
+              Complete Payment
+            </button>
+          )}
+
+          {status === "active" && (
+            <button className="btn btn-disabled">Already a Member</button>
+          )}
+        </div>
       </div>
-    </div>
+
+      {showPaymentModal && (
+        <PaymentModal
+          clubId={clubId}
+          clubFee={clubFee}
+          paymentType={paymentType}
+          onClose={() => setShowPaymentModal(false)}
+          onSuccess={handlePaymentSuccess}
+        />
+      )}
+    </>
   );
 }

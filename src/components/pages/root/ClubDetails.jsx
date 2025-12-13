@@ -2,8 +2,9 @@ import React from "react";
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../../hooks/axiosInstance";
-import { useAuth } from "../../../contexts/AuthContext";
 import ClubMembershipStatus from "../auth/ClubMembershipStatus";
+import Loading from "../../utilities/Loading";
+import ClubEventsView from "./ClubEventsView";
 
 const fetchClubDetails = async ({ queryKey }) => {
   const [, clubId] = queryKey;
@@ -14,9 +15,8 @@ const fetchClubDetails = async ({ queryKey }) => {
 };
 
 export default function ClubDetails() {
-  const { user } = useAuth();
   const { id } = useParams();
-  const userEmail = user?.email;
+
   const {
     data: club,
     isLoading,
@@ -29,11 +29,7 @@ export default function ClubDetails() {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center py-20">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (isError) {
@@ -74,7 +70,7 @@ export default function ClubDetails() {
       {/* Info */}
       <h1 className="text-4xl font-bold mb-4">{club.clubName}</h1>
 
-      <div className="space-y-3 text-gray-700">
+      <div className="space-y-3 text-gray-700 mb-6">
         <p className="text-lg">{club.description}</p>
 
         <p>
@@ -87,7 +83,9 @@ export default function ClubDetails() {
 
         <p>
           <span className="font-semibold">Membership Fee:</span>{" "}
-          {club.membershipFee ? `$${club.membershipFee}` : "Free"}
+          {club.membershipFee && club.membershipFee > 0
+            ? `$${club.membershipFee}`
+            : "Free"}
         </p>
 
         <p>
@@ -111,8 +109,19 @@ export default function ClubDetails() {
         </p>
       </div>
 
-      {/* Actions */}
-      <ClubMembershipStatus clubId={club._id} />
+      {/* Membership Actions */}
+      {club.status === "approved" && (
+        <ClubMembershipStatus clubId={club._id} clubFee={club.membershipFee} />
+      )}
+
+      {club.status !== "approved" && (
+        <div className="mt-6 p-6 rounded-xl border bg-yellow-50 border-yellow-200">
+          <p className="text-yellow-800">
+            This club is not currently available for membership.
+          </p>
+        </div>
+      )}
+      <ClubEventsView />
     </div>
   );
 }
