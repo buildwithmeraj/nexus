@@ -6,61 +6,50 @@ import toast from "react-hot-toast";
 import { FaCheckCircle } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 
-export default function MembershipSuccess() {
+export default function EventRegistrationSuccess() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecureInstance();
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
-  const [processed, setProcessed] = useState(false);
   const verificationStarted = useRef(false);
 
   useEffect(() => {
-    // Prevent processing the same verification twice
-    const verificationKey = `verified_${searchParams.get("sessionId")}`;
+    const verificationKey = `event_verified_${searchParams.get("sessionId")}`;
 
     if (sessionStorage.getItem(verificationKey)) {
-      setProcessed(true);
       setSuccess(true);
       setLoading(false);
       setTimeout(() => {
-        navigate(`/clubs/${searchParams.get("clubId")}`);
+        navigate(`/events/${searchParams.get("eventId")}`);
       }, 1500);
       return;
     }
 
-    // Prevent running verification twice
-    if (verificationStarted.current) {
-      return;
-    }
+    if (verificationStarted.current) return;
 
-    const verifyPayment = async () => {
+    const verifyRegistration = async () => {
       try {
-        const clubId = searchParams.get("clubId");
+        const eventId = searchParams.get("eventId");
         const sessionId = searchParams.get("sessionId");
 
-        if (!sessionId || !clubId) {
-          throw new Error("Missing session or club information");
+        if (!sessionId || !eventId) {
+          throw new Error("Missing session or event information");
         }
 
-        const res = await axiosSecure.post("/clubs/verify-session", {
-          sessionId,
-        });
+        const res = await axiosSecure.post(
+          "/events/verify-registration-session",
+          { sessionId }
+        );
 
-        if (
-          res.data.success ||
-          res.data.alreadyProcessed ||
-          res.data.alreadyMember
-        ) {
-          // Mark as processed
+        if (res.data.success || res.data.alreadyRegistered) {
           sessionStorage.setItem(verificationKey, "true");
-
-          toast.success("Payment successful! Membership activated.");
+          toast.success("Event registration successful!");
           setSuccess(true);
 
           setTimeout(() => {
-            navigate(`/clubs/${clubId}`);
+            navigate(`/events/${eventId}`);
           }, 1500);
         } else {
           throw new Error(res.data.message || "Unknown error");
@@ -68,12 +57,12 @@ export default function MembershipSuccess() {
       } catch (error) {
         console.error(error);
         toast.error(
-          error.response?.data?.message || "Failed to verify payment"
+          error.response?.data?.message || "Failed to verify registration"
         );
         setSuccess(false);
-        // setTimeout(() => {
-        //   navigate("/");
-        // }, 2000);
+        setTimeout(() => {
+          navigate("/events");
+        }, 2000);
       } finally {
         setLoading(false);
       }
@@ -81,7 +70,7 @@ export default function MembershipSuccess() {
 
     if (user) {
       verificationStarted.current = true;
-      verifyPayment();
+      verifyRegistration();
     }
   }, [user, searchParams, axiosSecure, navigate]);
 
@@ -91,7 +80,7 @@ export default function MembershipSuccess() {
         <div className="text-center">
           <span className="loading loading-spinner loading-lg text-primary"></span>
           <p className="mt-4 text-lg font-semibold">
-            Verifying your payment...
+            Verifying your registration...
           </p>
         </div>
       </div>
@@ -107,10 +96,10 @@ export default function MembershipSuccess() {
               <FaCheckCircle />
             </div>
             <h1 className="text-3xl font-bold text-green-600 mb-4">
-              {processed ? "Already Processed" : "Payment Successful!"}
+              Registration Successful!
             </h1>
             <p className="text-gray-600 mb-6">
-              Your membership has been activated. Redirecting you back...
+              You're all set! Redirecting you back to the event...
             </p>
           </>
         ) : (
@@ -119,7 +108,7 @@ export default function MembershipSuccess() {
               <MdCancel />
             </div>
             <h1 className="text-3xl font-bold text-red-600 mb-4">
-              Payment Failed
+              Registration Failed
             </h1>
             <p className="text-gray-600 mb-6">
               Something went wrong. Redirecting you back...

@@ -1,28 +1,25 @@
 import React from "react";
+import { Navigate, Outlet } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
-import { Navigate, useLocation } from "react-router";
 import Loading from "../components/utilities/Loading";
 
-const AdminRoute = ({ children }) => {
-  const { user, authLoading, role } = useAuth();
-  const location = useLocation();
+const AdminRoute = () => {
+  const { user, role, authLoading } = useAuth();
 
-  if (authLoading) return <Loading />;
-
-  if (user && role === "admin") {
-    return children;
+  if (authLoading) {
+    return <Loading />;
   }
 
-  return (
-    <Navigate
-      to="/login"
-      replace
-      state={{
-        from: location.pathname,
-        message: "You must be an admin to view this page.",
-      }}
-    />
-  );
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (role !== "admin") {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // IMPORTANT: Return Outlet, not children
+  return <Outlet />;
 };
 
 export default AdminRoute;

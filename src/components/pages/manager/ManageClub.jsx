@@ -1,26 +1,31 @@
 import React, { useState } from "react";
-import { useParams, Navigate, Link } from "react-router";
+import { useParams, Navigate, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Loading from "../../utilities/Loading";
+import {
+  FaArrowLeft,
+  FaCalendar,
+  FaUsers,
+  FaExclamationTriangle,
+} from "react-icons/fa";
 import ClubEvents from "./ClubEvents";
 
 const ManageClub = () => {
   const { id: clubId } = useParams();
+  const navigate = useNavigate();
   const axiosSecure = useAxiosSecureInstance();
   const queryClient = useQueryClient();
 
   const [editMode, setEditMode] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [selectedClub, setSelectedClub] = useState(null);
-  const [activeTab, setActiveTab] = useState("details"); // "details" or "events"
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const imgbbKey = import.meta.env.VITE_IMGBB_API_KEY;
 
-  // -----------------------------
-  // FETCH CLUB DATA
-  // -----------------------------
+  // Fetch club data
   const {
     data: club,
     isLoading,
@@ -33,9 +38,7 @@ const ManageClub = () => {
     },
   });
 
-  // -----------------------------
-  // IMAGE UPLOAD
-  // -----------------------------
+  // Image upload
   const uploadImageToImgBB = async (file) => {
     const formData = new FormData();
     formData.append("image", file);
@@ -53,9 +56,7 @@ const ManageClub = () => {
     return data.data.url;
   };
 
-  // -----------------------------
-  // UPDATE MUTATION
-  // -----------------------------
+  // Update mutation
   const updateMutation = useMutation({
     mutationFn: async ({ updatedData }) => {
       const res = await axiosSecure.patch(`/clubs/${clubId}`, updatedData);
@@ -69,24 +70,20 @@ const ManageClub = () => {
     onError: () => toast.error("Failed to update club"),
   });
 
-  // -----------------------------
-  // DELETE MUTATION
-  // -----------------------------
+  // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async () => {
       return await axiosSecure.delete(`/clubs/${clubId}`);
     },
     onSuccess: () => {
       toast.success("Club deleted successfully");
-      document.getElementById("delete_club_modal").checked = false;
-      return <Navigate to="/dashboard/club-manager" replace />;
+      setShowDeleteModal(false);
+      navigate("/dashboard/manager/clubs");
     },
     onError: () => toast.error("Failed to delete club"),
   });
 
-  // -----------------------------
-  // UPDATE FORM SUBMIT
-  // -----------------------------
+  // Update form submit
   const handleUpdate = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -111,107 +108,157 @@ const ManageClub = () => {
 
   if (!clubId) {
     toast.error("Invalid Club ID");
-    return <Navigate to="/dashboard/club-manager" replace />;
+    return <Navigate to="/dashboard/manager/clubs" replace />;
   }
+
   if (isLoading) return <Loading />;
-  if (isError) return <p className="text-red-500">Failed to load club</p>;
+  if (isError)
+    return (
+      <div className="alert alert-error">
+        <FaExclamationTriangle />
+        <span>Failed to load club</span>
+      </div>
+    );
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <h2 className="text-2xl font-bold">Manage Club</h2>
+    <>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate("/dashboard/manager/clubs")}
+            className="btn btn-ghost btn-circle btn-sm"
+            title="Go back"
+          >
+            <FaArrowLeft size={18} />
+          </button>
+          <div>
+            <h1 className="text-3xl font-bold">Manage Club</h1>
+            <p className="text-gray-600 text-sm">{club?.clubName}</p>
+          </div>
+        </div>
 
-      {/* Tab Navigation */}
-      <div className="tabs tabs-bordered">
-        <button
-          className={`tab ${activeTab === "details" ? "tab-active" : ""}`}
-          onClick={() => setActiveTab("details")}
-        >
-          Club Details
-        </button>
-        <button
-          className={`tab ${activeTab === "events" ? "tab-active" : ""}`}
-          onClick={() => setActiveTab("events")}
-        >
-          Events
-        </button>
-      </div>
-
-      {/* Details Tab */}
-      {activeTab === "details" && (
-        <>
-          {/* ------------------------- VIEW MODE ------------------------- */}
-          {!editMode && (
-            <div className="space-y-4 border rounded-xl p-5 bg-base-100 shadow">
+        {/* View Mode */}
+        {!editMode && (
+          <div className="space-y-6">
+            {/* Club Banner & Info */}
+            <div className="bg-base-100 rounded-lg overflow-hidden border border-base-300 shadow-md">
+              {/* Banner Image */}
               <img
-                src={club.bannerImage}
-                alt="Banner"
-                className="rounded-lg max-h-56 object-cover w-full"
+                src={club?.bannerImage}
+                alt="Club Banner"
+                className="w-full h-80 object-cover"
               />
 
-              <h3 className="text-xl font-bold">{club.clubName}</h3>
+              {/* Club Info */}
+              <div className="p-6 space-y-4">
+                <div>
+                  <h2 className="text-2xl font-bold">{club?.clubName}</h2>
+                  <p className="text-gray-600 text-sm mt-1">
+                    {club?.description}
+                  </p>
+                </div>
 
-              <div className="space-y-2 text-sm">
-                <p>
-                  <strong>Description:</strong> {club.description}
-                </p>
-                <p>
-                  <strong>Category:</strong> {club.category}
-                </p>
-                <p>
-                  <strong>Location:</strong> {club.location}
-                </p>
-                <p>
-                  <strong>Membership Fee:</strong> ${club.membershipFee}
-                </p>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span className="badge badge-info">{club.status}</span>
-                </p>
-                <p>
-                  <strong>Manager:</strong> {club.managerEmail}
-                </p>
-              </div>
+                {/* Info Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-base-200 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Category</p>
+                    <p className="font-semibold">{club?.category}</p>
+                  </div>
 
-              {/* Buttons */}
-              <div className="flex justify-between mt-4">
-                <button
-                  className="btn btn-primary"
-                  onClick={() => setEditMode(true)}
-                >
-                  Edit Club
-                </button>
+                  <div className="bg-base-200 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Location</p>
+                    <p className="font-semibold">{club?.location}</p>
+                  </div>
 
-                <label
-                  htmlFor="delete_club_modal"
-                  className="btn btn-error"
-                  onClick={() =>
-                    setSelectedClub({
-                      id: club._id,
-                      name: club.clubName,
-                    })
-                  }
-                >
-                  Delete Club
-                </label>
+                  <div className="bg-base-200 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Membership Fee</p>
+                    <p className="font-bold text-lg text-primary">
+                      ${club?.membershipFee}
+                    </p>
+                  </div>
+
+                  <div className="bg-base-200 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Status</p>
+                    <span className="badge badge-info badge-lg">
+                      {club?.status}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Manager Info */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-gray-600 mb-1">Manager Email</p>
+                  <p className="font-semibold">{club?.managerEmail}</p>
+                </div>
+
+                {/* Quick Stats */}
+                {club?.memberCount !== undefined && (
+                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-base-300">
+                    <div className="flex items-center gap-2">
+                      <FaUsers className="text-primary text-xl" />
+                      <div>
+                        <p className="text-sm text-gray-600">Members</p>
+                        <p className="text-xl font-bold">
+                          {club?.memberCount || 0}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FaCalendar className="text-success text-xl" />
+                      <div>
+                        <p className="text-sm text-gray-600">Events</p>
+                        <p className="text-xl font-bold">
+                          {club?.eventCount || 0}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          )}
 
-          {/* ------------------------- EDIT MODE ------------------------- */}
-          {editMode && (
-            <form
-              onSubmit={handleUpdate}
-              className="space-y-4 border rounded-xl p-5 bg-base-100 shadow"
-            >
-              <h3 className="text-xl font-bold mb-2">Edit Club</h3>
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                className="btn btn-primary flex-1 gap-2"
+                onClick={() => setEditMode(true)}
+              >
+                Edit Club
+              </button>
 
-              {/* IMAGE PREVIEW */}
-              <div className="space-y-2">
-                <label className="label">Banner Image</label>
+              <button
+                className="btn btn-error flex-1 gap-2"
+                onClick={() => {
+                  setSelectedClub({ id: club?._id, name: club?.clubName });
+                  setShowDeleteModal(true);
+                }}
+              >
+                Delete Club
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Mode */}
+        {editMode && (
+          <form
+            onSubmit={handleUpdate}
+            className="bg-base-100 rounded-lg border border-base-300 shadow-md overflow-hidden"
+          >
+            <div className="p-6 space-y-6">
+              <h2 className="text-2xl font-bold">Edit Club Details</h2>
+
+              {/* Banner Image */}
+              <div className="space-y-3">
+                <label className="label">
+                  <span className="label-text font-semibold">Banner Image</span>
+                </label>
 
                 <img
-                  src={previewImage || club.bannerImage}
-                  className="rounded-lg max-h-40 object-cover"
+                  src={previewImage || club?.bannerImage}
+                  alt="Preview"
+                  className="w-full h-60 object-cover rounded-lg border border-base-300"
                 />
 
                 <input
@@ -219,123 +266,176 @@ const ManageClub = () => {
                   name="bannerImage"
                   accept="image/*"
                   className="file-input file-input-bordered w-full"
-                  onChange={(e) =>
-                    setPreviewImage(URL.createObjectURL(e.target.files[0]))
-                  }
+                  onChange={(e) => {
+                    if (e.target.files[0]) {
+                      setPreviewImage(URL.createObjectURL(e.target.files[0]));
+                    }
+                  }}
                 />
+                <p className="text-xs text-gray-500">
+                  Recommended size: 1200x400px
+                </p>
               </div>
 
-              {/* FORM FIELDS */}
-              <div>
-                <label className="label">Club Name</label>
+              {/* Club Name */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-semibold">Club Name</span>
+                </label>
                 <input
                   type="text"
                   name="clubName"
-                  defaultValue={club.clubName}
-                  className="input input-bordered w-full"
+                  defaultValue={club?.clubName}
+                  className="input input-bordered"
                   required
+                  disabled={updateMutation.isPending}
                 />
               </div>
 
-              <div>
-                <label className="label">Description</label>
+              {/* Description */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-semibold">Description</span>
+                </label>
                 <textarea
                   name="description"
-                  defaultValue={club.description}
-                  className="textarea textarea-bordered w-full"
+                  defaultValue={club?.description}
+                  className="textarea textarea-bordered h-24"
                   required
+                  disabled={updateMutation.isPending}
                 />
               </div>
 
-              <div>
-                <label className="label">Category</label>
+              {/* Category */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-semibold">Category</span>
+                </label>
                 <input
                   type="text"
                   name="category"
-                  defaultValue={club.category}
-                  className="input input-bordered w-full"
+                  defaultValue={club?.category}
+                  className="input input-bordered"
                   required
+                  disabled={updateMutation.isPending}
                 />
               </div>
 
-              <div>
-                <label className="label">Location</label>
+              {/* Location */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-semibold">Location</span>
+                </label>
                 <input
                   type="text"
                   name="location"
-                  defaultValue={club.location}
-                  className="input input-bordered w-full"
+                  defaultValue={club?.location}
+                  className="input input-bordered"
                   required
+                  disabled={updateMutation.isPending}
                 />
               </div>
 
-              <div>
-                <label className="label">Membership Fee</label>
+              {/* Membership Fee */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-semibold">
+                    Membership Fee ($)
+                  </span>
+                </label>
                 <input
                   type="number"
                   name="membershipFee"
-                  defaultValue={club.membershipFee}
+                  defaultValue={club?.membershipFee}
                   min="0"
-                  className="input input-bordered w-full"
+                  step="0.01"
+                  className="input input-bordered"
                   required
+                  disabled={updateMutation.isPending}
                 />
               </div>
 
-              {/* BUTTONS */}
-              <div className="flex justify-between mt-3">
-                <button type="submit" className="btn btn-primary">
-                  {updateMutation.isLoading ? "Saving..." : "Save Changes"}
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-6 border-t border-base-300">
+                <button
+                  type="submit"
+                  className="btn btn-primary flex-1"
+                  disabled={updateMutation.isPending}
+                >
+                  {updateMutation.isPending ? (
+                    <span className="loading loading-spinner loading-sm" />
+                  ) : (
+                    "Save Changes"
+                  )}
                 </button>
 
                 <button
-                  className="btn"
                   type="button"
-                  onClick={() => setEditMode(false)}
+                  className="btn btn-ghost flex-1"
+                  onClick={() => {
+                    setEditMode(false);
+                    setPreviewImage(null);
+                  }}
+                  disabled={updateMutation.isPending}
                 >
                   Cancel
                 </button>
               </div>
-            </form>
-          )}
+            </div>
+          </form>
+        )}
 
-          {/* ------------------------- DELETE MODAL ------------------------- */}
-          <input
-            type="checkbox"
-            id="delete_club_modal"
-            className="modal-toggle"
-          />
-          <div className="modal">
-            <div className="modal-box">
-              <h3 className="font-bold text-lg text-red-600">Delete Club</h3>
+        {/* Delete Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-md w-full p-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <FaExclamationTriangle className="text-warning text-2xl" />
+                <h3 className="text-lg font-bold">Delete Club</h3>
+              </div>
 
-              <p className="py-4">
+              <p className="text-gray-700">
                 Are you sure you want to delete{" "}
-                <span className="font-semibold">{selectedClub?.name}</span>?
-                This action is permanent.
+                <span className="font-bold text-error">
+                  {selectedClub?.name}
+                </span>
+                ? This action is permanent and cannot be undone.
               </p>
 
-              <div className="modal-action">
-                <label
-                  className="btn btn-error"
-                  onClick={() => deleteMutation.mutate()}
-                >
-                  Confirm Delete
-                </label>
+              <div className="alert alert-warning">
+                <FaExclamationTriangle />
+                <span>
+                  All events and memberships associated with this club will be
+                  deleted
+                </span>
+              </div>
 
-                <label htmlFor="delete_club_modal" className="btn">
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="btn btn-ghost flex-1"
+                  disabled={deleteMutation.isPending}
+                >
                   Cancel
-                </label>
+                </button>
+                <button
+                  onClick={() => deleteMutation.mutate()}
+                  className="btn btn-error flex-1"
+                  disabled={deleteMutation.isPending}
+                >
+                  {deleteMutation.isPending ? (
+                    <span className="loading loading-spinner loading-sm" />
+                  ) : (
+                    "Delete Club"
+                  )}
+                </button>
               </div>
             </div>
-
-            <label htmlFor="delete_club_modal" className="modal-backdrop" />
           </div>
-        </>
-      )}
-
-      {/* Events Tab */}
-      {activeTab === "events" && <ClubEvents />}
-    </div>
+        )}
+      </div>
+      <ClubEvents />
+    </>
   );
 };
 

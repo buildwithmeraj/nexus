@@ -1,55 +1,73 @@
-import React, { useState } from "react";
-import { useParams, useNavigate, Link } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import React, { useState } from "react";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
+import { useAuth } from "../../../contexts/AuthContext";
 import Loading from "../../utilities/Loading";
+import { Link } from "react-router";
 import {
-  FaArrowLeft,
-  FaCalendar,
-  FaMapMarkerAlt,
-  FaUsers,
   FaEdit,
   FaTrash,
+  FaCalendar,
+  FaMapMarkerAlt,
   FaDollarSign,
-  FaPlus,
+  FaUsers,
 } from "react-icons/fa";
+import { IoMdAdd } from "react-icons/io";
 import toast from "react-hot-toast";
 import UpdateEventModal from "./UpdateEventModal";
 import DeleteEventModal from "./DeleteEventModal";
 
-const ClubEvents = () => {
-  const { id: clubId } = useParams();
-  const navigate = useNavigate();
-  const axiosSecure = useAxiosSecureInstance();
+const EventsList = () => {
   const queryClient = useQueryClient();
-
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Fetch club data
-  const { data: club, isLoading: clubLoading } = useQuery({
-    queryKey: ["club", clubId],
+  const { user } = useAuth();
+  const managerEmail = user?.email;
+
+  const axiosSecure = useAxiosSecureInstance();
+
+  // Fetch all clubs managed by the user
+  const { data: clubsList = [] } = useQuery({
+    queryKey: ["manager-clubs"],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/clubs/${clubId}`);
+      const res = await axiosSecure.get(`/clubs/${managerEmail}`);
       return res.data;
     },
   });
 
-  // Fetch events for this club
+  // Fetch all events for all clubs managed by the user
   const {
-    data: events = [],
-    isLoading: eventsLoading,
+    data: eventsList = [],
+    isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["club-events", clubId],
+    queryKey: ["manager-events", clubsList],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/clubs/${clubId}/events`);
-      return res.data.sort(
-        (a, b) => new Date(b.eventDate) - new Date(a.eventDate)
-      );
+      if (clubsList.length === 0) return [];
+
+      try {
+        // Fetch events for each club
+        const eventPromises = clubsList.map((club) =>
+          axiosSecure
+            .get(`/clubs/${club._id}/events`)
+            .then((res) =>
+              res.data.map((event) => ({ ...event, clubData: club }))
+            )
+            .catch(() => [])
+        );
+
+        const allEvents = await Promise.all(eventPromises);
+        return allEvents
+          .flat()
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        return [];
+      }
     },
-    enabled: !!clubId,
+    enabled: clubsList.length > 0,
   });
 
   const deleteEvent = async (eventId) => {
@@ -57,9 +75,10 @@ const ClubEvents = () => {
       await axiosSecure.delete(`/events/${eventId}`);
       toast.success("Event deleted successfully");
       refetch();
-      queryClient.invalidateQueries(["club-events", clubId]);
+      queryClient.invalidateQueries(["manager-events"]);
       setShowDeleteModal(false);
     } catch (error) {
+      console.error("Delete failed:", error);
       toast.error(error.response?.data?.message || "Failed to delete event");
     }
   };
@@ -76,7 +95,7 @@ const ClubEvents = () => {
 
   const handleUpdateSuccess = () => {
     refetch();
-    queryClient.invalidateQueries(["club-events", clubId]);
+    queryClient.invalidateQueries(["manager-events"]);
     setShowUpdateModal(false);
     toast.success("Event updated successfully");
   };
@@ -91,73 +110,68 @@ const ClubEvents = () => {
     });
   };
 
-  if (clubLoading) return <Loading />;
+  if (isLoading) return <Loading />;
 
   return (
-    <div className="space-y-6 mt-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <button
-          onClick={() => navigate(`/dashboard/club-manager/clubs/${clubId}`)}
-          className="btn btn-ghost btn-circle btn-sm"
-          title="Go back"
-        >
-          <FaArrowLeft size={18} />
-        </button>
-        <div className="flex-1">
+      <div className="flex items-center flex-col md:flex-row justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">Events Management</h2>
           <p className="text-gray-600 text-sm">
-            Manage events for this club ({events.length} total)
+            Manage all events across your clubs ({eventsList.length} total)
           </p>
         </div>
-      </div>
-
-      {/* Create Event Button */}
-      <div className="flex justify-end">
         <Link
-          className="btn btn-success gap-2"
-          to={`/dashboard/club-manager/clubs/${clubId}/events/add-event`}
+          className="btn btn-success btn-sm gap-2 mt-4 md:mt-0"
+          to="/dashboard/manager/add-event"
         >
-          <FaPlus size={16} />
+          <IoMdAdd size={18} />
           Create Event
         </Link>
       </div>
 
-      {eventsLoading ? (
-        <Loading />
-      ) : events.length === 0 ? (
+      {/* Events List */}
+      {eventsList.length < 1 ? (
         <div className="bg-base-100 rounded-lg p-12 text-center border-2 border-dashed border-base-300">
           <FaCalendar className="text-4xl text-gray-400 mx-auto mb-4" />
           <p className="text-gray-500 font-semibold">No Events Found</p>
           <p className="text-gray-400 text-sm mb-4">
-            Create your first event for this club
+            Create your first event to get started
           </p>
           <Link
             className="btn btn-primary btn-sm gap-2"
-            to={`/dashboard/club-manager/clubs/${clubId}/events/add-event`}
+            to="/dashboard/manager/add-event"
           >
-            <FaPlus size={14} />
+            <IoMdAdd size={16} />
             Create Event
           </Link>
         </div>
       ) : (
         <div className="space-y-4">
-          {/* Desktop Table */}
+          {/* List View for Desktop */}
           <div className="hidden lg:block overflow-x-auto">
             <table className="table w-full">
               <thead>
                 <tr>
                   <th>Event Title</th>
+                  <th>Club</th>
                   <th>Date & Time</th>
                   <th>Location</th>
                   <th>Type</th>
                   <th>Attendees</th>
-                  <th>Actions</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {events.map((event) => (
+                {eventsList.map((event) => (
                   <tr key={event._id} className="hover:bg-base-200">
                     <td className="font-semibold">{event.title}</td>
+                    <td>
+                      <span className="badge badge-outline">
+                        {event.clubData?.clubName || "Unknown Club"}
+                      </span>
+                    </td>
                     <td className="text-sm">
                       <div className="flex items-center gap-2">
                         <FaCalendar size={14} className="text-primary" />
@@ -192,6 +206,7 @@ const ClubEvents = () => {
                       <button
                         className="btn btn-sm btn-ghost gap-1"
                         onClick={() => handleEditClick(event)}
+                        title="Edit event"
                       >
                         <FaEdit size={14} />
                         Edit
@@ -199,8 +214,10 @@ const ClubEvents = () => {
                       <button
                         className="btn btn-sm btn-ghost text-error gap-1"
                         onClick={() => handleDeleteClick(event)}
+                        title="Delete event"
                       >
                         <FaTrash size={14} />
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -209,9 +226,9 @@ const ClubEvents = () => {
             </table>
           </div>
 
-          {/* Mobile Cards */}
+          {/* Card View for Mobile */}
           <div className="lg:hidden grid grid-cols-1 gap-4">
-            {events.map((event) => (
+            {eventsList.map((event) => (
               <div
                 key={event._id}
                 className="bg-base-100 rounded-lg p-4 border border-base-300 shadow-sm"
@@ -219,6 +236,9 @@ const ClubEvents = () => {
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex-1">
                     <h3 className="font-bold text-lg">{event.title}</h3>
+                    <span className="badge badge-outline badge-sm">
+                      {event.clubData?.clubName || "Unknown Club"}
+                    </span>
                   </div>
                   <span
                     className={`badge badge-sm ${
@@ -257,7 +277,7 @@ const ClubEvents = () => {
                         size={14}
                         className="text-success flex-shrink-0"
                       />
-                      <span>${event.eventFee?.toFixed(2)}</span>
+                      <span>${event.eventFee.toFixed(2)}</span>
                     </div>
                   )}
                 </div>
@@ -279,6 +299,7 @@ const ClubEvents = () => {
                     onClick={() => handleDeleteClick(event)}
                   >
                     <FaTrash size={14} />
+                    Delete
                   </button>
                 </div>
               </div>
@@ -310,4 +331,4 @@ const ClubEvents = () => {
   );
 };
 
-export default ClubEvents;
+export default EventsList;

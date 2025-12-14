@@ -6,6 +6,8 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  setPersistence,
+  browserLocalPersistence,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
 import { useContext } from "react";
@@ -59,7 +61,7 @@ export const AuthProvider = ({ children }) => {
     },
   ];
 
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const [role, setRole] = useState("");
   const [authLoading, setAuthLoading] = useState(true);
   const googleProvider = new GoogleAuthProvider();
@@ -80,11 +82,10 @@ export const AuthProvider = ({ children }) => {
     return updateProfile(auth.currentUser, profile);
   };
 
-  const logOut = () => {
-    signOut(auth);
-    setUser({});
+  const logOut = async () => {
+    await signOut(auth);
+    setUser(null);
   };
-
   const addUserToDB = (userData) => {
     axiosInstance
       .post("/users", userData)
@@ -95,6 +96,13 @@ export const AuthProvider = ({ children }) => {
         console.error("Error adding user to DB:", err);
       });
   };
+
+  // Ensure persistence so auth survives full page redirects (Stripe)
+  useEffect(() => {
+    setPersistence(auth, browserLocalPersistence).catch((e) =>
+      console.error("Failed to set auth persistence:", e)
+    );
+  }, []);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
@@ -129,8 +137,11 @@ export const AuthProvider = ({ children }) => {
     addUserToDB,
     firebaseErrors,
     loading: authLoading,
+    authLoading, // add this so guards (PrivateRoute/AdminRoute/ClubManagerRoute) read the correct flag
   };
-  return <AuthContext value={authData}>{children}</AuthContext>;
+  return (
+    <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {

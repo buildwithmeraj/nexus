@@ -5,6 +5,8 @@ import axiosInstance from "../../../hooks/axiosInstance";
 import ClubMembershipStatus from "../auth/ClubMembershipStatus";
 import Loading from "../../utilities/Loading";
 import ClubEventsView from "./ClubEventsView";
+import ErrorMsg from "../../utilities/Error";
+import WarningMsg from "../../utilities/Warning";
 
 const fetchClubDetails = async ({ queryKey }) => {
   const [, clubId] = queryKey;
@@ -39,9 +41,7 @@ export default function ClubDetails() {
           <h2 className="text-red-500 text-xl font-semibold">
             Unauthorized Access
           </h2>
-          <p className="text-gray-600">
-            You do not have permission to view this club.
-          </p>
+          <p className="">You do not have permission to view this club.</p>
         </div>
       );
     }
@@ -70,7 +70,7 @@ export default function ClubDetails() {
       {/* Info */}
       <h1 className="text-4xl font-bold mb-4">{club.clubName}</h1>
 
-      <div className="space-y-3 text-gray-700 mb-6">
+      <div className="space-y-3  mb-6">
         <p className="text-lg">{club.description}</p>
 
         <p>
@@ -115,11 +115,7 @@ export default function ClubDetails() {
       )}
 
       {club.status !== "approved" && (
-        <div className="mt-6 p-6 rounded-xl border bg-yellow-50 border-yellow-200">
-          <p className="text-yellow-800">
-            This club is not currently available for membership.
-          </p>
-        </div>
+        <WarningMsg message="This club is not currently available for membership." />
       )}
       <ClubEventsView />
     </div>

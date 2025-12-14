@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../../hooks/axiosInstance";
 import Loading from "../../utilities/Loading";
+import { Link } from "react-router";
 
 export default function ClubEventsView() {
   const { id: clubId } = useParams();
@@ -18,12 +19,12 @@ export default function ClubEventsView() {
   if (isLoading) return <Loading />;
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
+    <div className="space-y-6">
       <h2 className="text-3xl font-bold">Upcoming Events</h2>
 
       {events.length === 0 ? (
         <div className="text-center py-12 bg-base-200 rounded-lg">
-          <p className="text-gray-600 text-lg">No upcoming events</p>
+          <p className=" text-lg">No upcoming events</p>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -34,7 +35,7 @@ export default function ClubEventsView() {
             >
               <div className="card-body">
                 <h3 className="card-title text-lg">{event.title}</h3>
-                <p className="text-sm text-gray-600">{event.description}</p>
+                <p className="text-sm ">{event.description}</p>
 
                 <div className="space-y-2 text-sm my-2">
                   <p>
@@ -56,9 +57,12 @@ export default function ClubEventsView() {
                   )}
                 </div>
 
-                <button className="btn btn-primary btn-sm">
-                  {event.isPaid ? "Register & Pay" : "Register"}
-                </button>
+                <Link
+                  to={`/events/${event._id}`}
+                  className="btn btn-primary btn-sm w-full"
+                >
+                  View Details
+                </Link>
               </div>
             </div>
           ))}

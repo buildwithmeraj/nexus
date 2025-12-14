@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useAuth } from "../../../contexts/AuthContext";
-import toast from "react-hot-toast";
 import PaymentModal from "./PaymentModal";
+import { GrInfo } from "react-icons/gr";
+import InfoMSg from "../../utilities/Info";
+import ErrorMsg from "../../utilities/Error";
 
 const fetchMembershipStatus = async ({ queryKey }, axiosSecure) => {
   const [, clubId] = queryKey;
@@ -47,15 +49,11 @@ export default function ClubMembershipStatus({ clubId, clubFee }) {
     setShowPaymentModal(false);
     refetch();
     queryClient.invalidateQueries(["membershipStatus", clubId, user]);
-    toast.success("Membership activated successfully!");
+    //toast.success("Membership activated successfully!");
   };
 
   if (!user) {
-    return (
-      <div className="mt-4 p-4 bg-gray-100 rounded-lg text-gray-600">
-        Login to check your membership status.
-      </div>
-    );
+    return <InfoMSg message="Login to check your membership status." />;
   }
 
   if (isLoading) {
@@ -68,9 +66,9 @@ export default function ClubMembershipStatus({ clubId, clubFee }) {
 
   if (isError) {
     return (
-      <div className="mt-4 p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg">
-        Failed to load membership status: {error.message}
-      </div>
+      <ErrorMsg
+        message={`Failed to load membership status: ${error.message}`}
+      />
     );
   }
 
@@ -91,24 +89,22 @@ export default function ClubMembershipStatus({ clubId, clubFee }) {
 
   return (
     <>
-      <div className="mt-6 p-6 rounded-xl border bg-white shadow-md">
-        <h3 className="text-xl font-semibold mb-3">Membership Status</h3>
-
-        <p className="text-gray-700 mb-2">
-          Current Status:{" "}
+      <div className="mt-2">
+        <p className=" mb-2">
+          Membership Status:{" "}
           <span className={`badge ${badgeStyle} badge-lg capitalize`}>
-            {status}
+            {status === "none" ? "Not Joined" : status}
           </span>
         </p>
 
         {membership.joinedAt && (
-          <p className="text-sm text-gray-600">
+          <p className="text-sm ">
             Joined: {new Date(membership.joinedAt).toLocaleDateString()}
           </p>
         )}
 
         {membership.expiresAt && (
-          <p className="text-sm text-gray-600">
+          <p className="text-sm ">
             Expires: {new Date(membership.expiresAt).toLocaleDateString()}
           </p>
         )}

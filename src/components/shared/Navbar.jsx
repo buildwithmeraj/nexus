@@ -1,117 +1,200 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router";
+import {
+  FaUser,
+  FaSignOutAlt,
+  FaCog,
+  FaHome,
+  FaUsers,
+  FaCalendar,
+  FaBars,
+} from "react-icons/fa";
 import Logo from "../utilities/Logo";
 import ThemeSwitcher from "../utilities/ThemeSwitcher";
-import { FaUser } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
-import { Link } from "react-router";
-import { RiMenuFill } from "react-icons/ri";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
-  const { user, logOut, authLoading } = useAuth();
+  const { user, logOut, authLoading, role } = useAuth();
+  const location = useLocation();
+  const [profileDropdown, setProfileDropdown] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      setProfileDropdown(false);
+      toast.success("Logged out successfully");
+    } catch (error) {
+      toast.error("Failed to logout", error);
+    }
+  };
+
+  const isActive = (path) => location.pathname === path;
+  const isDashboard = location.pathname.includes("/dashboard");
+
+  // Navigation items
+  const navItems = [
+    { label: "Home", href: "/", icon: FaHome },
+    { label: "Clubs", href: "/clubs", icon: FaUsers },
+    { label: "Events", href: "/events", icon: FaCalendar },
+  ];
+
   return (
-    <section className="w-full bg-base-100 shadow-sm">
-      <div className="navbar max-w-384 mx-auto">
-        <div className="navbar-start">
-          <div className="drawer">
-            <input id="my-drawer-1" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content">
-              <label
-                htmlFor="my-drawer-1"
-                className="btn btn-circle btn-ghost drawer-button"
-              >
-                <RiMenuFill size={18} />
-              </label>
-            </div>
-            <div className="drawer-side">
-              <label
-                htmlFor="my-drawer-1"
-                aria-label="close sidebar"
-                className="drawer-overlay"
-              ></label>
-              <ul className="menu bg-base-200 min-h-full w-80 p-4">
-                <li>
-                  <a
-                    href="#"
-                    onClick={() => {
-                      // Uncheck the checkbox to close the drawer
-                      document.getElementById("my-drawer-1").checked = false;
-                    }}
-                  >
-                    Close
-                  </a>
-                </li>
-                <li>
-                  <a>Sidebar Item 2</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className="navbar-center">
-          <Link className="text-xl" to="/">
-            <Logo />
-          </Link>
-        </div>
-        <div className="navbar-end">
-          <div className="dropdown dropdown-center">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn m-1 btn-ghost btn-circle relative"
-            >
-              <FaUser />
-            </div>
-            <ul
-              tabIndex="-1"
-              className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm mt-1 user-menu"
-            >
-              {authLoading ? (
-                <span className="loading loading-spinner text-primary"></span>
-              ) : user ? (
-                <>
-                  <li>
-                    <Link to="/dashboard">Profile</Link>
-                  </li>
-                  <li>
-                    <button onClick={() => logOut()}>Logout</button>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li>
-                    <Link to="/login">Login</Link>
-                  </li>
-                  <li>
-                    <a>Register</a>
-                  </li>
-                </>
-              )}
-            </ul>
-          </div>
-          <button className="btn btn-ghost btn-circle">
-            <div className="indicator">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {" "}
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />{" "}
-              </svg>
-              <span className="badge badge-xs badge-primary indicator-item"></span>
-            </div>
-          </button>
-          <ThemeSwitcher />
-        </div>
+    <div className="navbar bg-base-100 shadow-sm">
+      {/* Mobile Menu Button - Opens correct drawer based on route */}
+      <div className="flex-none lg:hidden">
+        <label
+          htmlFor={isDashboard ? "dashboard-drawer" : "navbar-drawer"}
+          aria-label="open sidebar"
+          className="btn btn-square btn-ghost"
+        >
+          <FaBars size={20} />
+        </label>
       </div>
-    </section>
+
+      {/* Logo */}
+      <div className="mx-2 flex-1 px-2">
+        <Link to="/" className="btn btn-ghost text-xl">
+          <Logo />
+        </Link>
+      </div>
+
+      {/* Desktop Navigation Menu */}
+      <div className="hidden flex-none lg:block">
+        <ul className="menu menu-horizontal px-1 space-x-1">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <li key={item.href}>
+                <Link
+                  to={item.href}
+                  className={`flex items-center gap-2 ${
+                    isActive(item.href) ? "active" : ""
+                  }`}
+                >
+                  <Icon size={16} />
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* Right Side - User Menu & Theme */}
+      <div className="flex items-center gap-2">
+        {/* User Dropdown */}
+        <div className="dropdown dropdown-end">
+          <label
+            tabIndex={0}
+            className="btn btn-ghost btn-circle avatar placeholder"
+            title={user?.displayName || "User"}
+          >
+            {authLoading ? (
+              <span className="loading loading-spinner loading-sm text-primary" />
+            ) : user ? (
+              <div className="bg-gradient-to-br from-primary to-secondary text-white rounded-full w-10 flex items-center justify-center font-bold text-sm">
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <span>{user.displayName?.charAt(0) || "U"}</span>
+                )}
+              </div>
+            ) : (
+              <FaUser size={20} />
+            )}
+          </label>
+
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu p-3 shadow bg-base-100 rounded-box w-56 z-50"
+          >
+            {authLoading ? (
+              <li className="flex justify-center py-2">
+                <span className="loading loading-spinner loading-sm text-primary" />
+              </li>
+            ) : user ? (
+              <>
+                {/* User Info */}
+                <li className="menu-title disabled">
+                  <span className="text-xs">{user.displayName}</span>
+                </li>
+                <li className="menu-title disabled">
+                  <span className="text-xs text-gray-500">{user.email}</span>
+                </li>
+                <li className="menu-title disabled">
+                  <span className="badge badge-sm badge-primary capitalize">
+                    {role || "member"}
+                  </span>
+                </li>
+
+                <li className="my-1">
+                  <hr />
+                </li>
+
+                {/* Dashboard Link */}
+                <li>
+                  <Link to="/dashboard" className="flex items-center gap-2">
+                    <FaHome size={16} />
+                    Dashboard
+                  </Link>
+                </li>
+
+                {/* Apply for Manager (Members only) */}
+                {role === "member" && (
+                  <li>
+                    <Link
+                      to="/apply-for-club-manager"
+                      className="flex items-center gap-2"
+                    >
+                      <FaCog size={16} />
+                      Apply for Manager
+                    </Link>
+                  </li>
+                )}
+
+                <li className="my-1">
+                  <hr />
+                </li>
+
+                {/* Logout */}
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 text-red-600 hover:bg-red-50 w-full text-left"
+                  >
+                    <FaSignOutAlt size={16} />
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/login" className="flex items-center gap-2">
+                    <FaUser size={16} />
+                    Login
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/register" className="flex items-center gap-2">
+                    <FaUser size={16} />
+                    Register
+                  </Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
+
+        {/* Theme Switcher */}
+        <ThemeSwitcher />
+      </div>
+    </div>
   );
 };
 

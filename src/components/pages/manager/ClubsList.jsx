@@ -93,7 +93,7 @@ const ClubsList = () => {
                     {club.status === "approved" && (
                       <Link
                         className="btn btn-xs btn-primary"
-                        to={`/dashboard/club-manager/manage-club/${club._id}`}
+                        to={`/dashboard/club-manager/clubs/${club._id}`}
                       >
                         <FaGear />
                         Manage

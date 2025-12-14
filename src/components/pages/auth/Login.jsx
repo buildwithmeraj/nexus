@@ -110,10 +110,10 @@ const Login = () => {
   };
 
   return (
-    <div className="hero min-h-[84vh]">
+    <div className="hero min-h-[78vh]">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="hero-content flex-col">
-          <div className="card bg-base-100 w-[320px] md:w-lg lg:w-xl shadow-2xl">
+          <div className="card bg-base-100 w-[320px] md:w-md lg:w-lg shadow-2xl">
             <div className="card-body">
               <h2 className="text-2xl font-bold text-center">Login</h2>
 
@@ -189,7 +189,7 @@ const Login = () => {
                     type="button"
                     onClick={handleGoogleSignIn}
                   >
-                    <FcGoogle />
+                    <FcGoogle className="mt-0.5" />
                     Google Login
                   </button>
                   <NavLink

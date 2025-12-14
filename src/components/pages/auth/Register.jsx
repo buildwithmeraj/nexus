@@ -119,7 +119,7 @@ const Register = () => {
         } catch (err) {
           return setFormError("root", {
             type: "manual",
-            message: "Failed to upload photo. Please try again.",
+            message: `Failed to upload photo. Please try again. ${err.message}`,
           });
         }
       }
