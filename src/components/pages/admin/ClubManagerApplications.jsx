@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Loading from "../../utilities/Loading";
 
 const ClubManagerApplications = () => {
   const queryClient = useQueryClient();
@@ -39,6 +40,10 @@ const ClubManagerApplications = () => {
       document.getElementById("approve_modal").close();
     }
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div>

@@ -8,6 +8,10 @@ h3 {
   @apply text-2xl font-bold;
 }
 
+label {
+  @apply mb-1;
+}
+
 .btn:not(.btn-circle) {
   @apply rounded-md;
 }

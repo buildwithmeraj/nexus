@@ -5,7 +5,7 @@ const StatCard = ({ icon: Icon, title, value, trend, trendUp = true }) => {
     <div className="p-6 bg-base-100 shadow rounded-lg">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-gray-600 text-sm font-medium">{title}</p>
+          <p className="text-sm font-medium">{title}</p>
           <p className="text-3xl font-bold mt-2">{value}</p>
           {trend && (
             <p
@@ -17,7 +17,7 @@ const StatCard = ({ icon: Icon, title, value, trend, trendUp = true }) => {
             </p>
           )}
         </div>
-        {Icon && <Icon className="text-4xl text-primary opacity-20" />}
+        {Icon && <Icon className="text-4xl text-primary opacity-60" />}
       </div>
     </div>
   );

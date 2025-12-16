@@ -4,6 +4,7 @@ import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useAuth } from "../../../contexts/AuthContext";
 import Loading from "../../utilities/Loading";
 import { Link } from "react-router";
+import AddEventModal from "./AddEventModal";
 import {
   FaEdit,
   FaTrash,
@@ -11,6 +12,7 @@ import {
   FaMapMarkerAlt,
   FaDollarSign,
   FaUsers,
+  FaPlus,
 } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
 import toast from "react-hot-toast";
@@ -22,7 +24,7 @@ const EventsList = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
+  const [showAddModal, setShowAddModal] = useState(false);
   const { user } = useAuth();
   const managerEmail = user?.email;
 
@@ -93,6 +95,11 @@ const EventsList = () => {
     setShowDeleteModal(true);
   };
 
+  const handleAddSuccess = () => {
+    refetch();
+    queryClient.invalidateQueries(["manager-events"]);
+  };
+
   const handleUpdateSuccess = () => {
     refetch();
     queryClient.invalidateQueries(["manager-events"]);
@@ -114,24 +121,22 @@ const EventsList = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center flex-col md:flex-row justify-between">
         <div>
           <h2 className="text-2xl font-bold">Events Management</h2>
-          <p className="text-gray-600 text-sm">
-            Manage all events across your clubs ({eventsList.length} total)
+          <p className="text-sm">
+            Manage all events across your clubs ({eventsList.length} in total)
           </p>
         </div>
-        <Link
+        <button
           className="btn btn-success btn-sm gap-2 mt-4 md:mt-0"
-          to="/dashboard/manager/add-event"
+          onClick={() => setShowAddModal(true)}
         >
-          <IoMdAdd size={18} />
+          <FaPlus size={16} />
           Create Event
-        </Link>
+        </button>
       </div>
 
-      {/* Events List */}
       {eventsList.length < 1 ? (
         <div className="bg-base-100 rounded-lg p-12 text-center border-2 border-dashed border-base-300">
           <FaCalendar className="text-4xl text-gray-400 mx-auto mb-4" />
@@ -139,17 +144,16 @@ const EventsList = () => {
           <p className="text-gray-400 text-sm mb-4">
             Create your first event to get started
           </p>
-          <Link
+          <button
             className="btn btn-primary btn-sm gap-2"
-            to="/dashboard/manager/add-event"
+            onClick={() => setShowAddModal(true)}
           >
-            <IoMdAdd size={16} />
+            <FaPlus size={16} />
             Create Event
-          </Link>
+          </button>
         </div>
       ) : (
         <div className="space-y-4">
-          {/* List View for Desktop */}
           <div className="hidden lg:block overflow-x-auto">
             <table className="table w-full">
               <thead>
@@ -226,7 +230,6 @@ const EventsList = () => {
             </table>
           </div>
 
-          {/* Card View for Mobile */}
           <div className="lg:hidden grid grid-cols-1 gap-4">
             {eventsList.map((event) => (
               <div
@@ -251,21 +254,15 @@ const EventsList = () => {
 
                 <div className="space-y-2 mb-4 text-sm">
                   <div className="flex items-center gap-2">
-                    <FaCalendar
-                      size={14}
-                      className="text-primary flex-shrink-0"
-                    />
+                    <FaCalendar size={14} className="text-primary shrink-0" />
                     <span>{formatDate(event.eventDate)}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FaMapMarkerAlt
-                      size={14}
-                      className="text-error flex-shrink-0"
-                    />
+                    <FaMapMarkerAlt size={14} className="text-error shrink-0" />
                     <span>{event.location}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FaUsers size={14} className="text-info flex-shrink-0" />
+                    <FaUsers size={14} className="text-info shrink-0" />
                     <span>
                       {event.attendeeCount || 0}
                       {event.maxAttendees && `/${event.maxAttendees}`} attendees
@@ -275,7 +272,7 @@ const EventsList = () => {
                     <div className="flex items-center gap-2">
                       <FaDollarSign
                         size={14}
-                        className="text-success flex-shrink-0"
+                        className="text-success shrink-0"
                       />
                       <span>${event.eventFee.toFixed(2)}</span>
                     </div>
@@ -308,7 +305,15 @@ const EventsList = () => {
         </div>
       )}
 
-      {/* Update Event Modal */}
+      {showAddModal && (
+        <AddEventModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          onSuccess={handleAddSuccess}
+          clubs={clubsList}
+        />
+      )}
+
       {showUpdateModal && (
         <UpdateEventModal
           event={selectedEvent}
@@ -318,7 +323,6 @@ const EventsList = () => {
         />
       )}
 
-      {/* Delete Event Modal */}
       {showDeleteModal && (
         <DeleteEventModal
           event={selectedEvent}

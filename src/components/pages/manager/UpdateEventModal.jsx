@@ -19,16 +19,11 @@ const UpdateEventModal = ({ event, isOpen, onClose, onSuccess }) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  /* ---------------- OPEN / CLOSE MODAL ---------------- */
   useEffect(() => {
-    if (isOpen) {
-      dialogRef.current?.showModal();
-    } else {
-      dialogRef.current?.close();
-    }
+    if (isOpen) dialogRef.current?.showModal();
+    else dialogRef.current?.close();
   }, [isOpen]);
 
-  /* ---------------- PREFILL FORM ---------------- */
   useEffect(() => {
     if (event) {
       setFormData({
@@ -53,7 +48,6 @@ const UpdateEventModal = ({ event, isOpen, onClose, onSuccess }) => {
     }));
   };
 
-  /* ---------------- SUBMIT ---------------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -61,9 +55,9 @@ const UpdateEventModal = ({ event, isOpen, onClose, onSuccess }) => {
     try {
       await axiosSecure.patch(`/events/${event._id}`, {
         ...formData,
-        eventFee: formData.isPaid ? parseFloat(formData.eventFee) : 0,
+        eventFee: formData.isPaid ? Number(formData.eventFee) : 0,
         maxAttendees: formData.maxAttendees
-          ? parseInt(formData.maxAttendees)
+          ? Number(formData.maxAttendees)
           : null,
       });
 
@@ -79,9 +73,8 @@ const UpdateEventModal = ({ event, isOpen, onClose, onSuccess }) => {
 
   return (
     <dialog ref={dialogRef} className="modal">
-      <div className="modal-box max-w-2xl">
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-4">
+      <div className="modal-box max-w-3xl">
+        <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-bold">Update Event</h3>
           <button
             onClick={onClose}
@@ -92,139 +85,150 @@ const UpdateEventModal = ({ event, isOpen, onClose, onSuccess }) => {
           </button>
         </div>
 
-        {/* FORM */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Title */}
-          <div className="form-control">
-            <label className="label font-semibold">Event Title</label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-              className="input input-bordered"
-              required
-              disabled={isLoading}
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Event Title</span>
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  className="input input-bordered w-full"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
 
-          {/* Description */}
-          <div className="form-control">
-            <label className="label font-semibold">Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="textarea textarea-bordered h-24"
-              required
-              disabled={isLoading}
-            />
-          </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Date & Time</span>
+                </label>
+                <input
+                  type="datetime-local"
+                  name="eventDate"
+                  value={formData.eventDate}
+                  onChange={handleInputChange}
+                  className="input input-bordered w-full"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
 
-          {/* Date */}
-          <div className="form-control">
-            <label className="label font-semibold">Date & Time</label>
-            <input
-              type="datetime-local"
-              name="eventDate"
-              value={formData.eventDate}
-              onChange={handleInputChange}
-              className="input input-bordered"
-              required
-              disabled={isLoading}
-            />
-          </div>
-
-          {/* Location */}
-          <div className="form-control">
-            <label className="label font-semibold">Location</label>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleInputChange}
-              className="input input-bordered"
-              required
-              disabled={isLoading}
-            />
-          </div>
-
-          {/* Max Attendees */}
-          <div className="form-control">
-            <label className="label font-semibold">
-              Max Attendees
-              <span className="label-text-alt">(Optional)</span>
-            </label>
-            <input
-              type="number"
-              name="maxAttendees"
-              value={formData.maxAttendees}
-              onChange={handleInputChange}
-              className="input input-bordered"
-              min="1"
-              disabled={isLoading}
-            />
-          </div>
-
-          {/* Paid Toggle */}
-          <div className="form-control">
-            <label className="label cursor-pointer font-semibold">
-              Paid Event
-              <input
-                type="checkbox"
-                name="isPaid"
-                checked={formData.isPaid}
-                onChange={handleInputChange}
-                className="checkbox"
-                disabled={isLoading}
-              />
-            </label>
-          </div>
-
-          {/* Event Fee */}
-          {formData.isPaid && (
-            <div className="form-control">
-              <label className="label font-semibold">Event Fee ($)</label>
-              <input
-                type="number"
-                name="eventFee"
-                value={formData.eventFee}
-                onChange={handleInputChange}
-                className="input input-bordered"
-                min="0"
-                step="0.01"
-                required
-                disabled={isLoading}
-              />
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Location</span>
+                </label>
+                <input
+                  type="text"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                  className="input input-bordered w-full"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="form-control">
+                <label className="label cursor-pointer justify-between mt-3">
+                  <span className="label-text">Paid Event</span>
+                  <input
+                    type="checkbox"
+                    name="isPaid"
+                    checked={formData.isPaid}
+                    onChange={handleInputChange}
+                    className="toggle toggle-primary"
+                    disabled={isLoading}
+                  />
+                </label>
+              </div>
             </div>
-          )}
 
-          {/* ACTIONS */}
-          <div className="modal-action">
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn btn-ghost"
-              disabled={isLoading}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="loading loading-spinner loading-sm" />
-              ) : (
-                "Update Event"
+            <div className="space-y-4">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Description</span>
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="textarea textarea-bordered w-full min-h-[120px]"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">
+                    Max Attendees
+                    <span className="text-xs text-gray-400 ml-1">
+                      (Optional)
+                    </span>
+                  </span>
+                </label>
+                <input
+                  type="number"
+                  name="maxAttendees"
+                  value={formData.maxAttendees}
+                  onChange={handleInputChange}
+                  className="input input-bordered w-full"
+                  min="1"
+                  disabled={isLoading}
+                />
+              </div>
+
+              {formData.isPaid && (
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Event Fee ($)</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="eventFee"
+                    value={formData.eventFee}
+                    onChange={handleInputChange}
+                    className="input input-bordered w-full"
+                    min="0"
+                    step="0.01"
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
               )}
-            </button>
+            </div>
+          </div>
+
+          <div className="modal-action flex flex-col sm:flex-row gap-3 justify-end">
+            <div>
+              <button
+                type="submit"
+                className="btn btn-primary flex-1 mr-2"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="loading loading-spinner loading-sm" />
+                ) : (
+                  "Update Event"
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="btn btn-neutral flex-1"
+                disabled={isLoading}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </form>
       </div>
 
-      {/* BACKDROP */}
       <form method="dialog" className="modal-backdrop">
         <button onClick={onClose}>close</button>
       </form>

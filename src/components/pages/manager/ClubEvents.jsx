@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { useParams, useNavigate, Link } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import Loading from "../../utilities/Loading";
 import {
-  FaArrowLeft,
   FaCalendar,
   FaMapMarkerAlt,
   FaUsers,
@@ -16,25 +14,17 @@ import {
 import toast from "react-hot-toast";
 import UpdateEventModal from "./UpdateEventModal";
 import DeleteEventModal from "./DeleteEventModal";
+import { useParams, Link } from "react-router";
+import AddEventModal from "./AddEventModal";
 
 const ClubEvents = () => {
   const { id: clubId } = useParams();
-  const navigate = useNavigate();
   const axiosSecure = useAxiosSecureInstance();
   const queryClient = useQueryClient();
-
+  const [showAddModal, setShowAddModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  // Fetch club data
-  const { data: club, isLoading: clubLoading } = useQuery({
-    queryKey: ["club", clubId],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/clubs/${clubId}`);
-      return res.data;
-    },
-  });
 
   // Fetch events for this club
   const {
@@ -74,6 +64,11 @@ const ClubEvents = () => {
     setShowDeleteModal(true);
   };
 
+  const handleAddSuccess = () => {
+    refetch();
+    queryClient.invalidateQueries(["club-events", clubId]);
+  };
+
   const handleUpdateSuccess = () => {
     refetch();
     queryClient.invalidateQueries(["club-events", clubId]);
@@ -91,35 +86,19 @@ const ClubEvents = () => {
     });
   };
 
-  if (clubLoading) return <Loading />;
+  if (eventsLoading) return <Loading />;
 
   return (
     <div className="space-y-6 mt-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between gap-4">
+        <h2>Club Events</h2>
         <button
-          onClick={() => navigate(`/dashboard/club-manager/clubs/${clubId}`)}
-          className="btn btn-ghost btn-circle btn-sm"
-          title="Go back"
-        >
-          <FaArrowLeft size={18} />
-        </button>
-        <div className="flex-1">
-          <p className="text-gray-600 text-sm">
-            Manage events for this club ({events.length} total)
-          </p>
-        </div>
-      </div>
-
-      {/* Create Event Button */}
-      <div className="flex justify-end">
-        <Link
           className="btn btn-success gap-2"
-          to={`/dashboard/club-manager/clubs/${clubId}/events/add-event`}
+          onClick={() => setShowAddModal(true)}
         >
           <FaPlus size={16} />
           Create Event
-        </Link>
+        </button>
       </div>
 
       {eventsLoading ? (
@@ -131,17 +110,16 @@ const ClubEvents = () => {
           <p className="text-gray-400 text-sm mb-4">
             Create your first event for this club
           </p>
-          <Link
+          <button
             className="btn btn-primary btn-sm gap-2"
-            to={`/dashboard/club-manager/clubs/${clubId}/events/add-event`}
+            onClick={() => setShowAddModal(true)}
           >
-            <FaPlus size={14} />
+            <FaPlus size={16} />
             Create Event
-          </Link>
+          </button>
         </div>
       ) : (
         <div className="space-y-4">
-          {/* Desktop Table */}
           <div className="hidden lg:block overflow-x-auto">
             <table className="table w-full">
               <thead>
@@ -200,7 +178,7 @@ const ClubEvents = () => {
                         className="btn btn-sm btn-ghost text-error gap-1"
                         onClick={() => handleDeleteClick(event)}
                       >
-                        <FaTrash size={14} />
+                        <FaTrash size={14} /> Delete
                       </button>
                     </td>
                   </tr>
@@ -209,7 +187,6 @@ const ClubEvents = () => {
             </table>
           </div>
 
-          {/* Mobile Cards */}
           <div className="lg:hidden grid grid-cols-1 gap-4">
             {events.map((event) => (
               <div
@@ -231,21 +208,15 @@ const ClubEvents = () => {
 
                 <div className="space-y-2 mb-4 text-sm">
                   <div className="flex items-center gap-2">
-                    <FaCalendar
-                      size={14}
-                      className="text-primary flex-shrink-0"
-                    />
+                    <FaCalendar size={14} className="text-primary shrink-0" />
                     <span>{formatDate(event.eventDate)}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FaMapMarkerAlt
-                      size={14}
-                      className="text-error flex-shrink-0"
-                    />
+                    <FaMapMarkerAlt size={14} className="text-error shrink-0" />
                     <span>{event.location}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FaUsers size={14} className="text-info flex-shrink-0" />
+                    <FaUsers size={14} className="text-info shrink-0" />
                     <span>
                       {event.attendeeCount || 0}
                       {event.maxAttendees && `/${event.maxAttendees}`} attendees
@@ -255,7 +226,7 @@ const ClubEvents = () => {
                     <div className="flex items-center gap-2">
                       <FaDollarSign
                         size={14}
-                        className="text-success flex-shrink-0"
+                        className="text-success shrink-0"
                       />
                       <span>${event.eventFee?.toFixed(2)}</span>
                     </div>
@@ -278,7 +249,7 @@ const ClubEvents = () => {
                     className="btn btn-sm btn-error flex-1 gap-1"
                     onClick={() => handleDeleteClick(event)}
                   >
-                    <FaTrash size={14} />
+                    <FaTrash size={14} /> Delete
                   </button>
                 </div>
               </div>
@@ -287,7 +258,15 @@ const ClubEvents = () => {
         </div>
       )}
 
-      {/* Update Event Modal */}
+      {showAddModal && (
+        <AddEventModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          clubId={clubId}
+          onSuccess={handleAddSuccess}
+        />
+      )}
+
       {showUpdateModal && (
         <UpdateEventModal
           event={selectedEvent}
@@ -297,7 +276,6 @@ const ClubEvents = () => {
         />
       )}
 
-      {/* Delete Event Modal */}
       {showDeleteModal && (
         <DeleteEventModal
           event={selectedEvent}

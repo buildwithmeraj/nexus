@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -67,7 +67,7 @@ const AddEvent = () => {
       });
 
       toast.success("Event created successfully");
-      navigate("/dashboard/manager/events");
+      navigate("/dashboard/club-manager/events");
     } catch (error) {
       console.error("Creation failed:", error);
       toast.error(error.response?.data?.message || "Failed to create event");
@@ -256,14 +256,13 @@ const AddEvent = () => {
         </div>
         {/* Action Buttons */}
         <div className="flex items-center gap-3 pt-4 mt-4 border-t border-base-300 justify-end lg:px-24">
-          <button
-            type="button"
-            onClick={() => navigate("/dashboard/manager/events")}
+          <Link
+            to="/dashboard/club-manager/events"
             className="btn btn-ghost"
             disabled={isLoading}
           >
             Cancel
-          </button>
+          </Link>
           <button
             type="submit"
             className="btn btn-primary "

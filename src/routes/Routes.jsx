@@ -24,7 +24,7 @@ import AddClub from "../components/pages/manager/AddClub";
 import ManageClub from "../components/pages/manager/ManageClub";
 import AddEvent from "../components/pages/manager/AddEvent";
 
-/* ---------- Guards ---------- */
+/* ---------- Members ---------- */
 import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
 import ClubManagerRoute from "./ClubManagerRoute";
@@ -96,6 +96,10 @@ export const Routes = createBrowserRouter([
               {
                 path: "club-manager/clubs/:id/events",
                 element: <ClubEvents />,
+              },
+              {
+                path: "club-manager/events/add-event",
+                element: <AddEvent />,
               },
               {
                 path: "club-manager/clubs/:id/events/add-event",

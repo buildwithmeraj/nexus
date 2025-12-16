@@ -126,16 +126,15 @@ const ClubsList = () => {
         </div>
       )}
 
-      {/* DELETE MODAL */}
       <input type="checkbox" id="delete_club_modal" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg text-red-600">Delete Club</h3>
+          <h3 className="font-bold text-lg text-error">Delete Club</h3>
 
           <p className="py-4">
             Are you sure you want to delete{" "}
             <span className="font-semibold">{selectedClub?.name}</span>? This
-            action is permanent.
+            action is permanent and cannot be undone.
           </p>
 
           <div className="modal-action">
@@ -146,7 +145,7 @@ const ClubsList = () => {
               Confirm Delete
             </label>
 
-            <label htmlFor="delete_club_modal" className="btn">
+            <label htmlFor="delete_club_modal" className="btn btn-neutral">
               Cancel
             </label>
           </div>

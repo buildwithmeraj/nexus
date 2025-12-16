@@ -3,6 +3,7 @@ import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import Loading from "../../utilities/Loading";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import ClubManagerApplications from "./ClubManagerApplications";
 
 const UsersList = () => {
   const queryClient = useQueryClient();
@@ -171,6 +172,8 @@ const UsersList = () => {
           </tbody>
         </table>
       </div>
+
+      <ClubManagerApplications />
 
       <input type="checkbox" id="promote_modal" className="modal-toggle" />
       <div className="modal">

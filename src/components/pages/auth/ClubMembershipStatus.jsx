@@ -3,22 +3,50 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useAuth } from "../../../contexts/AuthContext";
 import PaymentModal from "./PaymentModal";
-import { GrInfo } from "react-icons/gr";
-import InfoMSg from "../../utilities/Info";
+import InfoMsg from "../../utilities/Info";
 import ErrorMsg from "../../utilities/Error";
 
 const fetchMembershipStatus = async ({ queryKey }, axiosSecure) => {
   const [, clubId] = queryKey;
-
   const res = await axiosSecure.get(`/clubs/${clubId}/membership-status`);
-
   return res.data;
+};
+
+const STATUS_CONFIG = {
+  none: {
+    label: "Not Joined",
+    badge: "badge-ghost",
+    actionLabel: "Join Club",
+    actionClass: "btn-primary",
+    paymentType: "join",
+  },
+  expired: {
+    label: "Expired",
+    badge: "badge-error",
+    actionLabel: "Renew Membership",
+    actionClass: "btn-warning",
+    paymentType: "renew",
+  },
+  pendingPayment: {
+    label: "Pending Payment",
+    badge: "badge-warning",
+    actionLabel: "Complete Payment",
+    actionClass: "btn-accent",
+    paymentType: "join",
+  },
+  active: {
+    label: "Active",
+    badge: "badge-success",
+    actionLabel: "Already a Member",
+    disabled: true,
+  },
 };
 
 export default function ClubMembershipStatus({ clubId, clubFee }) {
   const { user } = useAuth();
-  const queryClient = useQueryClient();
   const axiosSecure = useAxiosSecureInstance();
+  const queryClient = useQueryClient();
+
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentType, setPaymentType] = useState(null);
 
@@ -29,37 +57,31 @@ export default function ClubMembershipStatus({ clubId, clubFee }) {
     error,
     refetch,
   } = useQuery({
-    queryKey: ["membershipStatus", clubId, user],
-    queryFn: (context) => fetchMembershipStatus(context, axiosSecure),
+    queryKey: ["membershipStatus", clubId, user?.email],
+    queryFn: (ctx) => fetchMembershipStatus(ctx, axiosSecure),
     enabled: !!user && !!clubId,
     retry: false,
   });
 
-  const handleJoinClick = () => {
-    setPaymentType("join");
-    setShowPaymentModal(true);
-  };
-
-  const handleRenewClick = () => {
-    setPaymentType("renew");
+  const openPaymentModal = (type) => {
+    setPaymentType(type);
     setShowPaymentModal(true);
   };
 
   const handlePaymentSuccess = () => {
     setShowPaymentModal(false);
     refetch();
-    queryClient.invalidateQueries(["membershipStatus", clubId, user]);
-    //toast.success("Membership activated successfully!");
+    queryClient.invalidateQueries(["membershipStatus", clubId, user?.email]);
   };
 
   if (!user) {
-    return <InfoMSg message="Login to check your membership status." />;
+    return <InfoMsg message="Login to check your membership status." />;
   }
 
   if (isLoading) {
     return (
-      <div className="mt-4 p-4 flex justify-center">
-        <span className="loading loading-spinner text-primary"></span>
+      <div className="flex justify-center py-6">
+        <span className="loading loading-spinner loading-md text-primary" />
       </div>
     );
   }
@@ -72,70 +94,52 @@ export default function ClubMembershipStatus({ clubId, clubFee }) {
     );
   }
 
-  if (!membership) {
-    return null;
-  }
+  if (!membership) return null;
 
-  const { status } = membership;
-
-  const badgeStyle =
-    status === "active"
-      ? "badge-success"
-      : status === "expired"
-      ? "badge-error"
-      : status === "pendingPayment"
-      ? "badge-warning"
-      : "badge-ghost";
+  const { status, joinedAt, expiresAt } = membership;
+  const config = STATUS_CONFIG[status] || STATUS_CONFIG.none;
 
   return (
     <>
-      <div className="mt-2">
-        <p className=" mb-2">
-          Membership Status:{" "}
-          <span className={`badge ${badgeStyle} badge-lg capitalize`}>
-            {status === "none" ? "Not Joined" : status}
+      <div className="mt-8 bg-base-100 border rounded-xl p-6 shadow-sm space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Membership Status</h3>
+          <span className={`badge badge-lg capitalize ${config.badge}`}>
+            {config.label}
           </span>
-        </p>
+        </div>
 
-        {membership.joinedAt && (
-          <p className="text-sm ">
-            Joined: {new Date(membership.joinedAt).toLocaleDateString()}
-          </p>
+        {(joinedAt || expiresAt) && (
+          <div className="text-sm text-base-content/80 space-y-1">
+            {joinedAt && (
+              <p>
+                <strong>Joined:</strong>{" "}
+                {new Date(joinedAt).toLocaleDateString()}
+              </p>
+            )}
+            {expiresAt && (
+              <p>
+                <strong>Expires:</strong>{" "}
+                {new Date(expiresAt).toLocaleDateString()}
+              </p>
+            )}
+          </div>
         )}
 
-        {membership.expiresAt && (
-          <p className="text-sm ">
-            Expires: {new Date(membership.expiresAt).toLocaleDateString()}
-          </p>
-        )}
-
-        <div className="mt-4 flex gap-3 flex-wrap">
-          {status === "none" && (
-            <button className="btn btn-primary" onClick={handleJoinClick}>
-              {clubFee ? `Join Club ($${clubFee})` : "Join Club"}
+        <div className="pt-4 border-t">
+          {config.disabled ? (
+            <button className="btn btn-disabled w-full">
+              {config.actionLabel}
             </button>
-          )}
-
-          {status === "expired" && (
-            <button className="btn btn-warning" onClick={handleRenewClick}>
-              {clubFee ? `Renew Membership ($${clubFee})` : "Renew Membership"}
-            </button>
-          )}
-
-          {status === "pendingPayment" && (
+          ) : (
             <button
-              className="btn btn-accent"
-              onClick={() => {
-                setPaymentType("join");
-                setShowPaymentModal(true);
-              }}
+              className={`btn ${config.actionClass} w-full`}
+              onClick={() => openPaymentModal(config.paymentType)}
             >
-              Complete Payment
+              {clubFee
+                ? `${config.actionLabel} ($${clubFee})`
+                : config.actionLabel}
             </button>
-          )}
-
-          {status === "active" && (
-            <button className="btn btn-disabled">Already a Member</button>
           )}
         </div>
       </div>

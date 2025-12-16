@@ -20,22 +20,13 @@ const Root = () => {
     <div className="drawer">
       <input id="navbar-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col min-h-screen">
-        {/* Navbar */}
         <Navbar />
-
-        {/* Main Content */}
         <main className="flex-1 container mx-auto px-4 py-6">
           <Outlet />
         </main>
-
-        {/* Toast */}
         <Toaster position="bottom-center" reverseOrder={false} />
-
-        {/* Footer */}
         <Footer />
       </div>
-
-      {/* Sidebar Drawer */}
       <div className="drawer-side z-40">
         <label
           htmlFor="navbar-drawer"

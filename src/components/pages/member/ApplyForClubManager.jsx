@@ -7,150 +7,162 @@ import Loading from "../../utilities/Loading";
 
 const ApplyForClubManager = ({ onAccept }) => {
   const axiosSecure = useAxiosSecureInstance();
-  const [accepted, setAccepted] = useState(false);
   const { role } = useAuth();
+  const [accepted, setAccepted] = useState(false);
+
   const {
-    data: applicationStatus = [],
+    data: applicationStatus = {},
     isPending,
     error,
     refetch,
   } = useQuery({
-    queryKey: ["application"],
+    queryKey: ["club-manager-application"],
     queryFn: async () => {
       const res = await axiosSecure.get("/users/apply-club-manager/status");
-      console.log(res.data);
       return res.data;
     },
   });
 
   if (role !== "member") {
-    return <div>Only Members can apply for club manager</div>;
+    return (
+      <div className="alert alert-warning max-w-3xl mx-auto">
+        Only members can apply to become a Club Manager.
+      </div>
+    );
   }
 
-  const handleSubmit = () => {
+  if (isPending) return <Loading />;
+
+  if (error) {
+    toast.error(error.message || "Failed to load application status");
+    return null;
+  }
+
+  if (applicationStatus?.application) {
+    return (
+      <div className="card bg-base-100 shadow-sm max-w-3xl mx-auto">
+        <div className="card-body text-center space-y-3">
+          <h2 className="text-xl font-bold text-success">
+            Application Submitted
+          </h2>
+          <p className="text-sm">
+            Your request to become a Club Manager has already been submitted.
+            Please wait for admin approval.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleSubmit = async () => {
     if (!accepted) {
       toast.error("You must accept the terms to continue.");
       return;
     }
 
-    if (role !== "member") {
-      toast.error("Only Members can apply for Club Manager");
-      return;
+    try {
+      await axiosSecure.post("/users/apply-club-manager");
+      await refetch();
+      toast.success("Application submitted successfully!");
+      onAccept?.();
+    } catch (err) {
+      toast.error(err.message || "Failed to apply");
     }
-    axiosSecure
-      .post("/users/apply-club-manager")
-      .then(async () => {
-        await refetch();
-        toast.success(
-          "You have successfully applied to become a Club Manager!"
-        );
-      })
-      .catch((error) => {
-        toast.error(error.message || "Failed to apply");
-      });
-
-    // Call the passed-in onAccept function
-    onAccept && onAccept();
   };
-
-  if (applicationStatus.application) {
-    return <>Already applied</>;
-  }
-
-  if (error) {
-    return toast.error(error.message);
-  }
-
-  if (isPending) return <Loading />;
 
   return (
     <div className="max-w-5xl mx-auto">
-      <h2>Apply for Club Manager</h2>
-      <p className="mb-4 text-sm text-gray-600">
-        By applying to become a Club Manager, you agree to the following terms.
-        Please read carefully.
-      </p>
+      <div className="card bg-base-100 shadow-lg rounded-xl">
+        <div className="card-body space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold">Apply for Club Manager</h2>
+            <p className="text-sm mt-1">
+              Please review the terms and responsibilities carefully before
+              applying.
+            </p>
+          </div>
 
-      <div className="mt-6">
-        <h1 className="font-semibold text-lg mb-2">1. Eligibility</h1>
-        <p>
-          To become a Club Manager, you must be a registered user and comply
-          with all applicable laws and site policies.
-        </p>
+          <div className="space-y-4 text-sm leading-relaxed">
+            <section>
+              <h3 className="font-semibold text-base mb-1">1. Eligibility</h3>
+              <p>
+                You must be a registered member and comply with all platform
+                policies and applicable laws.
+              </p>
+            </section>
 
-        <h1 className="font-semibold text-lg mt-4 mb-2">2. Responsibilities</h1>
-        <ul className="list-disc ml-5">
-          <li>
-            Manage clubs you have created: update details, oversee memberships.
-          </li>
-          <li>
-            Host events: create, edit, delete events and manage participants.
-          </li>
-          <li>
-            Manage club users: approve/remove members, assign roles, enforce
-            rules.
-          </li>
-          <li>
-            Payments and memberships: set fees, view payments, maintain
-            transparency.
-          </li>
-        </ul>
+            <section>
+              <h3 className="font-semibold text-base mb-1">
+                2. Responsibilities
+              </h3>
+              <ul className="list-disc ml-5 space-y-1">
+                <li>Manage club details and memberships</li>
+                <li>Create and manage events</li>
+                <li>Moderate club members and enforce rules</li>
+                <li>Handle memberships and payments responsibly</li>
+              </ul>
+            </section>
 
-        <h1 className="font-semibold text-lg mt-4 mb-2">3. Restrictions</h1>
-        <ul className="list-disc ml-5">
-          <li>Do not manage clubs you do not own.</li>
-          <li>Do not collect fees outside the approved platform.</li>
-          <li>Respect privacy and safety of members.</li>
-          <li>No fraudulent or illegal activity.</li>
-        </ul>
+            <section>
+              <h3 className="font-semibold text-base mb-1">3. Restrictions</h3>
+              <ul className="list-disc ml-5 space-y-1">
+                <li>No unauthorized club management</li>
+                <li>No off-platform fee collection</li>
+                <li>Respect user privacy and safety</li>
+                <li>No fraudulent or illegal activities</li>
+              </ul>
+            </section>
 
-        <h1 className="font-semibold text-lg mt-4 mb-2">4. Liability</h1>
-        <p>
-          You are responsible for the management of your club and events. Misuse
-          may result in suspension or termination of your Club Manager status.
-        </p>
+            <section>
+              <h3 className="font-semibold text-base mb-1">4. Liability</h3>
+              <p>
+                You are responsible for your club operations. Violations may
+                lead to suspension or termination.
+              </p>
+            </section>
 
-        <h1 className="font-semibold text-lg mt-4 mb-2">5. Termination</h1>
-        <p>
-          You may relinquish your Club Manager role at any time. The platform
-          can revoke privileges for violations.
-        </p>
+            <section>
+              <h3 className="font-semibold text-base mb-1">5. Termination</h3>
+              <p>
+                You may step down at any time. The platform reserves the right
+                to revoke privileges.
+              </p>
+            </section>
 
-        <h1 className="font-semibold text-lg mt-4 mb-2">6. Changes to Terms</h1>
-        <p>
-          Terms may be updated. Continued use constitutes acceptance of updated
-          terms.
-        </p>
+            <section>
+              <h3 className="font-semibold text-base mb-1">6. Agreement</h3>
+              <p>
+                By applying, you confirm that you understand and agree to these
+                terms.
+              </p>
+            </section>
+          </div>
 
-        <h1 className="font-semibold text-lg mt-4 mb-2">7. Agreement</h1>
-        <p>
-          By applying, you acknowledge that you have read, understood, and
-          agreed to these terms.
-        </p>
+          <div className="form-control">
+            <label className="label cursor-pointer justify-start gap-3">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-primary"
+                checked={accepted}
+                onChange={(e) => setAccepted(e.target.checked)}
+              />
+              <span className="label-text">
+                I have read and agree to the Terms and Conditions
+              </span>
+            </label>
+          </div>
+
+          <div className="card-actions">
+            <button
+              onClick={handleSubmit}
+              disabled={!accepted}
+              className="btn btn-primary w-full"
+            >
+              Apply to Become Club Manager
+            </button>
+          </div>
+        </div>
       </div>
-
-      <div className="flex items-center my-6">
-        <input
-          type="checkbox"
-          id="acceptTerms"
-          className="mr-2"
-          checked={accepted}
-          onChange={(e) => setAccepted(e.target.checked)}
-        />
-        <label htmlFor="acceptTerms" className="text">
-          I have read and agree to the Terms and Conditions for Club Managers.
-        </label>
-      </div>
-
-      <button
-        onClick={handleSubmit}
-        disabled={!accepted}
-        className={`btn btn-primary w-full ${
-          !accepted ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-      >
-        Apply to Become Club Manager
-      </button>
     </div>
   );
 };

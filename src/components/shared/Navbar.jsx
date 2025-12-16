@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router";
 import {
   FaUser,
@@ -17,15 +17,13 @@ import toast from "react-hot-toast";
 const Navbar = () => {
   const { user, logOut, authLoading, role } = useAuth();
   const location = useLocation();
-  const [profileDropdown, setProfileDropdown] = useState(false);
 
   const handleLogout = async () => {
     try {
       await logOut();
-      setProfileDropdown(false);
       toast.success("Logged out successfully");
     } catch (error) {
-      toast.error("Failed to logout", error);
+      toast.error(error?.message || "Failed to logout");
     }
   };
 
@@ -40,8 +38,7 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="navbar bg-base-100 shadow-sm">
-      {/* Mobile Menu Button - Opens correct drawer based on route */}
+    <div className="navbar bg-base-100 shadow-sm px-4">
       <div className="flex-none lg:hidden">
         <label
           htmlFor={isDashboard ? "dashboard-drawer" : "navbar-drawer"}
@@ -52,14 +49,12 @@ const Navbar = () => {
         </label>
       </div>
 
-      {/* Logo */}
-      <div className="mx-2 flex-1 px-2">
-        <Link to="/" className="btn btn-ghost text-xl">
+      <div className="flex-1">
+        <Link to="/" className="text-xl">
           <Logo />
         </Link>
       </div>
 
-      {/* Desktop Navigation Menu */}
       <div className="hidden flex-none lg:block">
         <ul className="menu menu-horizontal px-1 space-x-1">
           {navItems.map((item) => {
@@ -69,7 +64,7 @@ const Navbar = () => {
                 <Link
                   to={item.href}
                   className={`flex items-center gap-2 ${
-                    isActive(item.href) ? "active" : ""
+                    isActive(item.href) ? "font-extrabold text-primary" : ""
                   }`}
                 >
                   <Icon size={16} />
@@ -81,9 +76,7 @@ const Navbar = () => {
         </ul>
       </div>
 
-      {/* Right Side - User Menu & Theme */}
       <div className="flex items-center gap-2">
-        {/* User Dropdown */}
         <div className="dropdown dropdown-end">
           <label
             tabIndex={0}
@@ -119,10 +112,10 @@ const Navbar = () => {
               </li>
             ) : user ? (
               <>
-                {/* User Info */}
-                <li className="menu-title disabled">
-                  <span className="text-xs">{user.displayName}</span>
+                <li className="px-4 py-1 text-xs text-base-content/60">
+                  {user.displayName}
                 </li>
+
                 <li className="menu-title disabled">
                   <span className="text-xs text-gray-500">{user.email}</span>
                 </li>
@@ -136,7 +129,6 @@ const Navbar = () => {
                   <hr />
                 </li>
 
-                {/* Dashboard Link */}
                 <li>
                   <Link to="/dashboard" className="flex items-center gap-2">
                     <FaHome size={16} />
@@ -144,7 +136,6 @@ const Navbar = () => {
                   </Link>
                 </li>
 
-                {/* Apply for Manager (Members only) */}
                 {role === "member" && (
                   <li>
                     <Link
@@ -161,7 +152,6 @@ const Navbar = () => {
                   <hr />
                 </li>
 
-                {/* Logout */}
                 <li>
                   <button
                     onClick={handleLogout}
@@ -191,7 +181,6 @@ const Navbar = () => {
           </ul>
         </div>
 
-        {/* Theme Switcher */}
         <ThemeSwitcher />
       </div>
     </div>

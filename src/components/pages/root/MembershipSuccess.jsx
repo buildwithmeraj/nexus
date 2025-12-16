@@ -71,9 +71,9 @@ export default function MembershipSuccess() {
           error.response?.data?.message || "Failed to verify payment"
         );
         setSuccess(false);
-        // setTimeout(() => {
-        //   navigate("/");
-        // }, 2000);
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       } finally {
         setLoading(false);
       }
