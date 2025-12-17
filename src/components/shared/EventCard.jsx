@@ -6,6 +6,7 @@ import {
   FaDollarSign,
 } from "react-icons/fa";
 import { Link } from "react-router";
+import AnimatedCard from "../animations/AnimatedCard";
 
 const EventCard = ({ event }) => {
   const formatDate = (date) =>
@@ -21,7 +22,7 @@ const EventCard = ({ event }) => {
   const isPast = new Date(event.eventDate) < new Date();
 
   return (
-    <div className="card bg-base-100 shadow-md hover:shadow-xl transition">
+    <AnimatedCard className="card bg-base-100 shadow-md hover:shadow-xl transition">
       <div className="card-body space-y-3">
         {/* Header */}
         <div className="flex justify-between items-start gap-2">
@@ -80,7 +81,7 @@ const EventCard = ({ event }) => {
           </Link>
         </div>
       </div>
-    </div>
+    </AnimatedCard>
   );
 };
 

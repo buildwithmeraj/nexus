@@ -15,6 +15,7 @@ import {
 import { MdDashboard } from "react-icons/md";
 import { FaHandsHoldingCircle } from "react-icons/fa6";
 import { BsFillCalendarEventFill } from "react-icons/bs";
+import PageTransition from "../components/animations/PageTransition";
 
 export default function Root() {
   const location = useLocation();
@@ -42,7 +43,9 @@ export default function Root() {
         <Navbar />
 
         <main className="flex-1 max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
-          <Outlet />
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
         </main>
 
         <Toaster position="bottom-center" />

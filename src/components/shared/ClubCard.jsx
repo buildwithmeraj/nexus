@@ -1,10 +1,14 @@
 import React from "react";
 import { Link } from "react-router";
 import { format } from "../../../node_modules/date-fns/format";
+import AnimatedCard from "../animations/AnimatedCard";
 
 const ClubCard = ({ club }) => {
   return (
-    <div key={club._id} className="card bg-base-100 shadow-xl rounded-xl">
+    <AnimatedCard
+      key={club._id}
+      className="card bg-base-100 shadow-xl rounded-xl"
+    >
       <figure className="relative">
         <img
           src={club.bannerImage}
@@ -57,7 +61,7 @@ const ClubCard = ({ club }) => {
           </Link>
         </div>
       </div>
-    </div>
+    </AnimatedCard>
   );
 };
 

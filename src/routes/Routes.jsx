@@ -45,6 +45,9 @@ import UsersList from "../components/pages/admin/UsersList";
 import AdminClubsList from "../components/pages/admin/ClubsList";
 import AdminPayments from "../components/pages/admin/Payments";
 
+/* ========= Extra ========= */
+import NotFound from "../pages/NotFound";
+
 export const Routes = createBrowserRouter([
   /* ================= PUBLIC ================= */
   {
@@ -137,5 +140,9 @@ export const Routes = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
