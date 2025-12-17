@@ -133,6 +133,16 @@ const UsersList = () => {
     );
   };
 
+  // Add this helper function:
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
     <div>
       <h2>User List ({usersList.length - 1})</h2>
@@ -164,7 +174,7 @@ const UsersList = () => {
                     {capitalizeWords(user.role)}
                   </td>
 
-                  <td>{user.createdAt}</td>
+                  <td>{formatDate(user.createdAt)}</td>
 
                   <td>{renderActionButtons(user)}</td>
                 </tr>

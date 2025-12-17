@@ -148,7 +148,7 @@ const AllEvents = ({ limit = 0 }) => {
         </div>
       )}
 
-      {limit && (
+      {limit > 0 && (
         <div className="flex justify-center mt-4">
           <Link to="/events" className="btn btn-primary">
             View All Events

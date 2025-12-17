@@ -13,7 +13,7 @@ import ClubManagerRoute from "./ClubManagerRoute";
 import Home from "../components/pages/root/Home";
 import Login from "../components/pages/auth/Login";
 import Register from "../components/pages/auth/Register";
-import Clubs from "../components/pages/root/Clubs";
+import AllClubs from "../components/pages/root/AllClubs";
 import ClubDetails from "../components/pages/root/ClubDetails";
 import AllEvents from "../components/pages/root/AllEvents";
 import EventDetails from "../components/pages/root/EventDetails";
@@ -29,6 +29,7 @@ import ClubManager from "../components/pages/dashboards/ClubManager";
 import JoinedClubs from "../components/pages/member/JoinedClubs";
 import JoinedEvents from "../components/pages/member/JoinedEvents";
 import ApplyForClubManager from "../components/pages/member/ApplyForClubManager";
+import MembersPayments from "../components/pages/member/Payments";
 
 /* ========= Club Manager ========= */
 import ClubsList from "../components/pages/manager/ClubsList";
@@ -37,10 +38,12 @@ import AddClub from "../components/pages/manager/AddClub";
 import EventsList from "../components/pages/manager/EventsList";
 import ClubEvents from "../components/pages/manager/ClubEvents";
 import AddEvent from "../components/pages/manager/AddEvent";
+import ClubManagerPayments from "../components/pages/manager/Payments";
 
 /* ========= Admin ========= */
 import UsersList from "../components/pages/admin/UsersList";
 import AdminClubsList from "../components/pages/admin/ClubsList";
+import AdminPayments from "../components/pages/admin/Payments";
 
 export const Routes = createBrowserRouter([
   /* ================= PUBLIC ================= */
@@ -52,7 +55,7 @@ export const Routes = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
 
-      { path: "clubs", element: <Clubs /> },
+      { path: "clubs", element: <AllClubs /> },
       { path: "clubs/:id", element: <ClubDetails /> },
 
       { path: "events", element: <AllEvents /> },
@@ -86,6 +89,7 @@ export const Routes = createBrowserRouter([
           { path: "member", element: <Member /> },
           { path: "member/clubs", element: <JoinedClubs /> },
           { path: "member/events", element: <JoinedEvents /> },
+          { path: "member/payments", element: <MembersPayments /> },
           {
             path: "member/apply-for-club-manager",
             element: <ApplyForClubManager />,
@@ -97,7 +101,7 @@ export const Routes = createBrowserRouter([
             children: [
               { path: "club-manager", element: <ClubManager /> },
               { path: "club-manager/clubs", element: <ClubsList /> },
-              { path: "club-manager/clubs/add", element: <AddClub /> },
+              { path: "club-manager/add-club", element: <AddClub /> },
               { path: "club-manager/clubs/:id", element: <ManageClub /> },
 
               { path: "club-manager/events", element: <EventsList /> },
@@ -113,6 +117,10 @@ export const Routes = createBrowserRouter([
                 path: "club-manager/clubs/:id/events/add",
                 element: <AddEvent />,
               },
+              {
+                path: "club-manager/payments",
+                element: <ClubManagerPayments />,
+              },
             ],
           },
 
@@ -123,7 +131,7 @@ export const Routes = createBrowserRouter([
               { path: "admin", element: <Admin /> },
               { path: "admin/users", element: <UsersList /> },
               { path: "admin/clubs", element: <AdminClubsList /> },
-              { path: "admin/payments", element: <Admin /> },
+              { path: "admin/payments", element: <AdminPayments /> },
             ],
           },
         ],

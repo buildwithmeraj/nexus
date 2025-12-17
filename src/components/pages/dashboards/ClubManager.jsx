@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import StatCard from "../../charts/StatCard.jsx";
 import LineChartComponent from "../../charts/LineChart.jsx";
 import PieChartComponent from "../../charts/PieChart.jsx";
 import BarChartComponent from "../../charts/BarChart.jsx";
@@ -48,34 +47,101 @@ const ClubManager = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          icon={FaUsers}
-          title="Total Members"
-          value={stats?.totalMembers || 0}
-          trend={stats?.membersTrend || 0}
-          trendUp={true}
-        />
-        <StatCard
-          icon={FaChartLine}
-          title="Total Clubs"
-          value={stats?.totalClubs || 0}
-          trend={stats?.clubsTrend || 0}
-          trendUp={true}
-        />
-        <StatCard
-          icon={FaCalendarAlt}
-          title="Total Events"
-          value={stats?.totalEvents || 0}
-          trend={stats?.eventsTrend || 0}
-          trendUp={true}
-        />
-        <StatCard
-          icon={FaCreditCard}
-          title="Total Revenue"
-          value={`$${stats?.totalRevenue || 0}`}
-          trend={stats?.revenueTrend || 0}
-          trendUp={true}
-        />
+        <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-base-content/60 text-sm font-medium">
+                Total Members
+              </p>
+              <p className="text-3xl font-bold mt-2">
+                {stats?.totalMembers || 0}
+              </p>
+              {stats?.membersTrend !== undefined && (
+                <p
+                  className={`text-sm mt-2 font-semibold ${
+                    stats.membersTrend >= 0 ? "text-success" : "text-error"
+                  }`}
+                >
+                  {stats.membersTrend >= 0 ? "+" : ""}
+                  {stats.membersTrend}%
+                </p>
+              )}
+            </div>
+            <FaUsers size={32} className="text-primary opacity-30" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-base-content/60 text-sm font-medium">
+                Total Clubs
+              </p>
+              <p className="text-3xl font-bold mt-2">
+                {stats?.totalClubs || 0}
+              </p>
+              {stats?.clubsTrend !== undefined && (
+                <p
+                  className={`text-sm mt-2 font-semibold ${
+                    stats.clubsTrend >= 0 ? "text-success" : "text-error"
+                  }`}
+                >
+                  {stats.clubsTrend >= 0 ? "+" : ""}
+                  {stats.clubsTrend}%
+                </p>
+              )}
+            </div>
+            <FaChartLine size={32} className="text-success opacity-30" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-base-content/60 text-sm font-medium">
+                Total Events
+              </p>
+              <p className="text-3xl font-bold mt-2">
+                {stats?.totalEvents || 0}
+              </p>
+              {stats?.eventsTrend !== undefined && (
+                <p
+                  className={`text-sm mt-2 font-semibold ${
+                    stats.eventsTrend >= 0 ? "text-success" : "text-error"
+                  }`}
+                >
+                  {stats.eventsTrend >= 0 ? "+" : ""}
+                  {stats.eventsTrend}%
+                </p>
+              )}
+            </div>
+            <FaCalendarAlt size={32} className="text-info opacity-30" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-base-content/60 text-sm font-medium">
+                Total Revenue
+              </p>
+              <p className="text-3xl font-bold mt-2">
+                ${(stats?.totalRevenue || 0).toFixed(2)}
+              </p>
+              {stats?.revenueTrend !== undefined && (
+                <p
+                  className={`text-sm mt-2 font-semibold ${
+                    stats.revenueTrend >= 0 ? "text-success" : "text-error"
+                  }`}
+                >
+                  {stats.revenueTrend >= 0 ? "+" : ""}
+                  {stats.revenueTrend}%
+                </p>
+              )}
+            </div>
+            <FaCreditCard size={32} className="text-warning opacity-30" />
+          </div>
+        </div>
       </div>
 
       {/* Charts */}

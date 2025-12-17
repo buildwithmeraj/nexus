@@ -1,0 +1,454 @@
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../../utilities/Loading";
+import {
+  FaDownload,
+  FaWallet,
+  FaCalendarAlt,
+  FaTicketAlt,
+} from "react-icons/fa";
+import toast from "react-hot-toast";
+import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
+
+const Payments = () => {
+  const axiosSecure = useAxiosSecureInstance();
+  const [filterType, setFilterType] = useState("all");
+
+  // Fetch all member payments
+  const {
+    data: paymentsData = { membershipPayments: [], eventPayments: [] },
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["member-payments"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/member/payments");
+      return res.data;
+    },
+  });
+
+  // Fetch payment statistics
+  const { data: statistics = {} } = useQuery({
+    queryKey: ["member-payment-statistics"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/member/payments/statistics");
+      return res.data;
+    },
+  });
+
+  const { membershipPayments = [], eventPayments = [] } = paymentsData;
+
+  // Format date
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  // Export to CSV
+  const exportToCSV = (data, filename) => {
+    if (data.length === 0) {
+      toast.error("No data to export");
+      return;
+    }
+
+    const headers = Object.keys(data[0] || {});
+    const csvContent = [
+      headers.join(","),
+      ...data.map((row) =>
+        headers
+          .map((header) => {
+            const value = row[header];
+            if (typeof value === "object") return "";
+            return `"${value}"`;
+          })
+          .join(",")
+      ),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(url);
+    toast.success("Downloaded successfully");
+  };
+
+  if (isLoading) return <Loading />;
+
+  if (error) {
+    return (
+      <div className="alert alert-error">
+        <span>Error loading payments: {error.message}</span>
+      </div>
+    );
+  }
+
+  const totalMemberships = membershipPayments.length;
+  const totalEvents = eventPayments.length;
+  const totalTransactions = totalMemberships + totalEvents;
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h2 className="text-3xl font-bold">Payment History</h2>
+        <p className="text-base-content/60 mt-1">
+          View your club memberships and event registration payments
+        </p>
+      </div>
+
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-base-content/60 text-sm font-medium">
+                Total Spent
+              </p>
+              <p className="text-3xl font-bold mt-2">
+                ${(statistics.totalSpent || 0).toFixed(2)}
+              </p>
+            </div>
+            <FaWallet size={32} className="text-primary opacity-30" />
+          </div>
+          <p className="text-xs text-base-content/50 mt-3">
+            {totalTransactions} transaction{totalTransactions !== 1 ? "s" : ""}
+          </p>
+        </div>
+
+        <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-base-content/60 text-sm font-medium">
+                Membership Fees
+              </p>
+              <p className="text-3xl font-bold mt-2">
+                ${(statistics.membershipSpent || 0).toFixed(2)}
+              </p>
+            </div>
+            <FaCalendarAlt size={32} className="text-success opacity-30" />
+          </div>
+          <p className="text-xs text-base-content/50 mt-3">
+            {statistics.membershipCount || 0} membership
+            {statistics.membershipCount !== 1 ? "s" : ""}
+          </p>
+        </div>
+
+        <div className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-base-content/60 text-sm font-medium">
+                Event Registrations
+              </p>
+              <p className="text-3xl font-bold mt-2">
+                ${(statistics.eventSpent || 0).toFixed(2)}
+              </p>
+            </div>
+            <FaTicketAlt size={32} className="text-info opacity-30" />
+          </div>
+          <p className="text-xs text-base-content/50 mt-3">
+            {statistics.eventCount || 0} event
+            {statistics.eventCount !== 1 ? "s" : ""}
+          </p>
+        </div>
+
+        <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-base-content/60 text-sm font-medium">
+                Total Transactions
+              </p>
+              <p className="text-3xl font-bold mt-2">{totalTransactions}</p>
+            </div>
+            <div className="text-4xl text-warning opacity-20">📊</div>
+          </div>
+          <p className="text-xs text-base-content/50 mt-3">All your payments</p>
+        </div>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="flex gap-2 border-b border-base-200">
+        <button
+          onClick={() => setFilterType("all")}
+          className={`px-4 py-3 font-medium border-b-2 transition ${
+            filterType === "all"
+              ? "border-primary text-primary"
+              : "border-transparent text-base-content/60 hover:text-base-content"
+          }`}
+        >
+          All Payments ({totalTransactions})
+        </button>
+        <button
+          onClick={() => setFilterType("membership")}
+          className={`px-4 py-3 font-medium border-b-2 transition ${
+            filterType === "membership"
+              ? "border-primary text-primary"
+              : "border-transparent text-base-content/60 hover:text-base-content"
+          }`}
+        >
+          Memberships ({totalMemberships})
+        </button>
+        <button
+          onClick={() => setFilterType("event")}
+          className={`px-4 py-3 font-medium border-b-2 transition ${
+            filterType === "event"
+              ? "border-primary text-primary"
+              : "border-transparent text-base-content/60 hover:text-base-content"
+          }`}
+        >
+          Events ({totalEvents})
+        </button>
+      </div>
+
+      {/* Membership Payments Table */}
+      {(filterType === "all" || filterType === "membership") && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold">Club Memberships</h3>
+            <button
+              onClick={() => exportToCSV(membershipPayments, "memberships.csv")}
+              className="btn btn-sm btn-outline gap-2"
+              disabled={membershipPayments.length === 0}
+            >
+              <FaDownload size={14} />
+              Export CSV
+            </button>
+          </div>
+
+          {membershipPayments.length === 0 ? (
+            <div className="bg-base-100 rounded-lg p-12 text-center border border-dashed border-base-300">
+              <FaCalendarAlt
+                size={48}
+                className="mx-auto text-base-content/20 mb-4"
+              />
+              <p className="text-base-content/60 font-medium">
+                No membership payments yet
+              </p>
+              <p className="text-base-content/40 text-sm mt-1">
+                Join a club to see your payments here
+              </p>
+            </div>
+          ) : (
+            <div className="bg-base-100 rounded-lg border border-base-200 overflow-x-auto">
+              <table className="table table-zebra w-full">
+                <thead className="bg-base-200">
+                  <tr>
+                    <th>Club Name</th>
+                    <th>Amount Paid</th>
+                    <th>Payment Date</th>
+                    <th>Renewal Date</th>
+                    <th>Status</th>
+                    <th>Transaction ID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {membershipPayments.map((payment) => (
+                    <tr key={payment._id}>
+                      <td className="font-medium">
+                        {payment.relatedName || "Deleted Club"}
+                      </td>
+                      <td className="font-semibold text-success">
+                        ${payment.amount?.toFixed(2) || "0.00"}
+                      </td>
+                      <td className="text-sm whitespace-nowrap">
+                        {formatDate(payment.createdAt)}
+                      </td>
+                      <td className="text-sm">
+                        {payment.expiresAt
+                          ? new Date(payment.expiresAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )
+                          : "N/A"}
+                      </td>
+                      <td>
+                        <span className="badge badge-success capitalize">
+                          {payment.status}
+                        </span>
+                      </td>
+                      <td className="text-xs font-mono text-base-content/60">
+                        {payment.transactionId?.substring(0, 12)}...
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Event Registration Payments Table */}
+      {(filterType === "all" || filterType === "event") && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold">Event Registrations</h3>
+            <button
+              onClick={() => exportToCSV(eventPayments, "events.csv")}
+              className="btn btn-sm btn-outline gap-2"
+              disabled={eventPayments.length === 0}
+            >
+              <FaDownload size={14} />
+              Export CSV
+            </button>
+          </div>
+
+          {eventPayments.length === 0 ? (
+            <div className="bg-base-100 rounded-lg p-12 text-center border border-dashed border-base-300">
+              <FaTicketAlt
+                size={48}
+                className="mx-auto text-base-content/20 mb-4"
+              />
+              <p className="text-base-content/60 font-medium">
+                No event registration payments yet
+              </p>
+              <p className="text-base-content/40 text-sm mt-1">
+                Register for events to see your payments here
+              </p>
+            </div>
+          ) : (
+            <div className="bg-base-100 rounded-lg border border-base-200 overflow-x-auto">
+              <table className="table table-zebra w-full">
+                <thead className="bg-base-200">
+                  <tr>
+                    <th>Event Name</th>
+                    <th>Amount Paid</th>
+                    <th>Registration Date</th>
+                    <th>Event Date</th>
+                    <th>Status</th>
+                    <th>Transaction ID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {eventPayments.map((payment) => (
+                    <tr key={payment._id}>
+                      <td className="font-medium">
+                        {payment.relatedName || "Deleted Event"}
+                      </td>
+                      <td className="font-semibold text-info">
+                        ${payment.amount?.toFixed(2) || "0.00"}
+                      </td>
+                      <td className="text-sm whitespace-nowrap">
+                        {formatDate(payment.createdAt)}
+                      </td>
+                      <td className="text-sm">
+                        {payment.eventDate
+                          ? new Date(payment.eventDate).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )
+                          : "N/A"}
+                      </td>
+                      <td>
+                        <span className="badge badge-success capitalize">
+                          {payment.status}
+                        </span>
+                      </td>
+                      <td className="text-xs font-mono text-base-content/60">
+                        {payment.transactionId?.substring(0, 12)}...
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Summary Section */}
+      {totalTransactions > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-base-200">
+          <div className="bg-base-100 rounded-lg p-6 border border-base-200">
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <FaWallet className="text-success" />
+              Spending Breakdown
+            </h3>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-base-content/70">Club Memberships:</span>
+                <span className="font-semibold text-success">
+                  ${(statistics.membershipSpent || 0).toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-base-content/70">
+                  Event Registrations:
+                </span>
+                <span className="font-semibold text-info">
+                  ${(statistics.eventSpent || 0).toFixed(2)}
+                </span>
+              </div>
+              <div className="divider my-2"></div>
+              <div className="flex justify-between text-lg">
+                <span className="font-bold">Total Spent:</span>
+                <span className="font-bold text-primary">
+                  ${(statistics.totalSpent || 0).toFixed(2)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-base-100 rounded-lg p-6 border border-base-200"></div>
+          <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+            <FaTicketAlt className="text-warning" />
+            Payment Summary
+          </h3>
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span className="text-base-content/70">Membership Payments:</span>
+              <span className="font-semibold">
+                {statistics.membershipCount || 0}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-base-content/70">Event Registrations:</span>
+              <span className="font-semibold">
+                {statistics.eventCount || 0}
+              </span>
+            </div>
+            <div className="divider my-2"></div>
+            <div className="flex justify-between text-lg">
+              <span className="font-bold">Total Payments:</span>
+              <span className="font-bold text-warning">
+                {totalTransactions}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {totalTransactions === 0 && (
+        <div className="bg-gradient-to-br from-base-200 to-base-300 rounded-lg p-12 text-center">
+          <FaWallet size={64} className="mx-auto text-base-content/20 mb-4" />
+          <h3 className="text-2xl font-bold text-base-content/60 mb-2">
+            No Payments Yet
+          </h3>
+          <p className="text-base-content/40 max-w-md mx-auto">
+            Start exploring clubs and events to make your first payment. Your
+            transaction history will appear here once you join a club or
+            register for an event.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Payments;

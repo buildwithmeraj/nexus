@@ -5,15 +5,16 @@ import toast, { Toaster } from "react-hot-toast";
 import Footer from "../components/shared/Footer";
 import Navbar from "../components/shared/Navbar";
 import {
-  FaHome,
   FaUsers,
   FaClipboardList,
   FaCalendar,
   FaSignOutAlt,
   FaCog,
   FaChartBar,
+  FaPlus,
 } from "react-icons/fa";
 import { ImStatsDots } from "react-icons/im";
+import { MdDashboard, MdOutlinePayment } from "react-icons/md";
 
 export default function Sidebar() {
   const { user, logOut, role } = useAuth();
@@ -29,14 +30,14 @@ export default function Sidebar() {
 
   const menus = {
     admin: [
-      { label: "Dashboard", to: "/dashboard", icon: FaHome },
+      { label: "Dashboard", to: "/dashboard", icon: MdDashboard },
       { label: "Overview", to: "/dashboard/admin", icon: ImStatsDots },
       { label: "Users", to: "/dashboard/admin/users", icon: FaUsers },
       { label: "Clubs", to: "/dashboard/admin/clubs", icon: FaClipboardList },
       { label: "Payments", to: "/dashboard/admin/payments", icon: FaChartBar },
     ],
     clubManager: [
-      { label: "Dashboard", to: "/dashboard", icon: FaHome },
+      { label: "Dashboard", to: "/dashboard", icon: MdDashboard },
       { label: "Overview", to: "/dashboard/club-manager", icon: ImStatsDots },
 
       {
@@ -50,15 +51,18 @@ export default function Sidebar() {
         icon: FaCalendar,
       },
       {
+        label: "Payments",
+        to: "/dashboard/club-manager/payments",
+        icon: MdOutlinePayment,
+      },
+      {
         label: "Add Club",
         to: "/dashboard/club-manager/add-club",
-        icon: FaCog,
+        icon: FaPlus,
       },
     ],
     member: [
-      { label: "Dashboard", to: "/dashboard", icon: FaHome },
-      { label: "Overview", to: "/dashboard/member", icon: ImStatsDots },
-
+      { label: "Dashboard", to: "/dashboard", icon: MdDashboard },
       {
         label: "My Clubs",
         to: "/dashboard/member/clubs",
@@ -68,6 +72,11 @@ export default function Sidebar() {
         label: "My Events",
         to: "/dashboard/member/events",
         icon: FaCalendar,
+      },
+      {
+        label: "Payments",
+        to: "/dashboard/member/payments",
+        icon: MdOutlinePayment,
       },
       {
         label: "Apply for Club Manager",

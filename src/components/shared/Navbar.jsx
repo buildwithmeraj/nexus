@@ -13,6 +13,7 @@ import Logo from "../utilities/Logo";
 import ThemeSwitcher from "../utilities/ThemeSwitcher";
 import { useAuth } from "../../contexts/AuthContext";
 import toast from "react-hot-toast";
+import { MdDashboard } from "react-icons/md";
 
 const Navbar = () => {
   const { user, logOut, authLoading, role } = useAuth();
@@ -77,7 +78,7 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        <div className="dropdown dropdown-end">
+        <div className="dropdown dropdown-center">
           <label
             tabIndex={0}
             className="btn btn-ghost btn-circle avatar placeholder"
@@ -112,26 +113,20 @@ const Navbar = () => {
               </li>
             ) : user ? (
               <>
-                <li className="px-4 py-1 text-xs text-base-content/60">
+                <li className="px-2 py-1 text-center text-base-content/90 text-lg">
                   {user.displayName}
                 </li>
-
-                <li className="menu-title disabled">
-                  <span className="text-xs text-gray-500">{user.email}</span>
-                </li>
-                <li className="menu-title disabled">
+                <li className="menu-title flex items-center justify-center disabled">
                   <span className="badge badge-sm badge-primary capitalize">
                     {role || "member"}
                   </span>
                 </li>
 
-                <li className="my-1">
-                  <hr />
-                </li>
+                <li className="my-1"></li>
 
                 <li>
                   <Link to="/dashboard" className="flex items-center gap-2">
-                    <FaHome size={16} />
+                    <MdDashboard size={16} />
                     Dashboard
                   </Link>
                 </li>
@@ -148,9 +143,7 @@ const Navbar = () => {
                   </li>
                 )}
 
-                <li className="my-1">
-                  <hr />
-                </li>
+                <li className="my-1"></li>
 
                 <li>
                   <button

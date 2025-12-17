@@ -1,12 +1,12 @@
 import React from "react";
-import Clubs from "./Clubs";
+import AllClubs from "./AllClubs";
 import AllEvents from "./AllEvents";
 
 const Home = () => {
   return (
     <div>
       <h2>New Clubs</h2>
-      <Clubs limit={4} />
+      <AllClubs limit={4} />
       <h2>Recent Events</h2>
       <AllEvents limit={4} />
     </div>

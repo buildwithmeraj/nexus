@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router";
 import { useAuth } from "../../../contexts/AuthContext";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance.jsx";
 import { HiUserCircle } from "react-icons/hi";
@@ -14,14 +14,11 @@ import LineChartComponent from "../../charts/LineChart.jsx";
 import PieChartComponent from "../../charts/PieChart.jsx";
 
 const Member = () => {
-  const location = useLocation();
   const { user, role } = useAuth();
   const axiosSecure = useAxiosSecureInstance();
   const [stats, setStats] = useState(null);
   const [clubs, setClubs] = useState([]);
-  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("clubs");
 
   useEffect(() => {
     const fetchMemberStats = async () => {
@@ -51,26 +48,6 @@ const Member = () => {
     fetchClubs();
   }, [axiosSecure]);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await axiosSecure.get("/member/events");
-        setEvents(response.data);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-
-    fetchEvents();
-  }, [axiosSecure]);
-
-  // Determine which tab to show based on URL
-  const showClubs =
-    location.pathname.includes("/clubs") ||
-    location.pathname === "/dashboard/member" ||
-    location.pathname === "/dashboard";
-  const showEvents = location.pathname.includes("/events");
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -79,11 +56,22 @@ const Member = () => {
     );
   }
 
+  const activeMemberships =
+    clubs?.filter((c) => c.membershipStatus === "active")?.length || 0;
+
   return (
     <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold">Member Dashboard</h1>
+        <p className="text-base-content/60 mt-1">
+          Overview of your clubs and event registrations
+        </p>
+      </div>
+
       {/* Profile Card */}
       <div className="flex items-center justify-center">
-        <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-base-300 rounded-2xl shadow-md p-8 max-w-xl">
+        <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-base-300 rounded-2xl shadow-md p-8 max-w-xl w-full">
           <div className="flex flex-col sm:flex-row items-center gap-6">
             <div className="flex-shrink-0">
               {user?.photoURL ? (
@@ -102,16 +90,13 @@ const Member = () => {
               <h2 className="text-3xl font-bold">
                 {user?.displayName || "User"}
               </h2>
-              <p className="mt-1">{user?.email || "N/A"}</p>
+              <p className="mt-1 text-base-content/60">
+                {user?.email || "N/A"}
+              </p>
               <div className="flex flex-wrap gap-2 mt-3">
                 <span className="badge badge-primary badge-lg capitalize">
                   {role || "member"}
                 </span>
-                {stats?.membershipStatus && (
-                  <span className="badge badge-success badge-lg">
-                    {stats.membershipStatus}
-                  </span>
-                )}
               </div>
 
               {role === "member" && (
@@ -132,35 +117,62 @@ const Member = () => {
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard
-            icon={FaUsers}
-            title="My Clubs"
-            value={stats?.totalClubs || 0}
-            trend={stats?.clubsTrend || 0}
-            trendUp={true}
-          />
-          <StatCard
-            icon={FaCalendarAlt}
-            title="Events Attended"
-            value={stats?.eventsAttended || 0}
-            trend={stats?.eventsTrend || 0}
-            trendUp={true}
-          />
-          <StatCard
-            icon={FaTrophy}
-            title="Active Memberships"
-            value={stats?.activeMemberships || 0}
-            trend={stats?.membershipsTrend || 0}
-            trendUp={true}
-          />
-          <StatCard
-            icon={FaUsers}
-            title="Friends in Clubs"
-            value={stats?.friendsCount || 0}
-            trend={stats?.friendsTrend || 0}
-            trendUp={true}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-base-content/60 text-sm font-medium">
+                  My Clubs
+                </p>
+                <p className="text-3xl font-bold mt-2">
+                  {stats?.totalClubs || 0}
+                </p>
+              </div>
+              <FaUsers size={32} className="text-primary opacity-30" />
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-base-content/60 text-sm font-medium">
+                  Active Memberships
+                </p>
+                <p className="text-3xl font-bold mt-2">{activeMemberships}</p>
+              </div>
+              <div className="text-2xl font-bold text-success opacity-30">
+                M
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-base-content/60 text-sm font-medium">
+                  Events Registered
+                </p>
+                <p className="text-3xl font-bold mt-2">
+                  {stats?.eventsRegistered || 0}
+                </p>
+              </div>
+              <FaCalendarAlt size={32} className="text-info opacity-30" />
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-base-content/60 text-sm font-medium">
+                  Achievements
+                </p>
+                <p className="text-3xl font-bold mt-2">
+                  {stats?.achievements || 0}
+                </p>
+              </div>
+              <FaTrophy size={32} className="text-warning opacity-30" />
+            </div>
+          </div>
         </div>
       )}
 
@@ -169,7 +181,7 @@ const Member = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <LineChartComponent
             data={stats.eventAttendanceHistory}
-            title="Event Attendance (Last 6 Months)"
+            title="Event Registration (Last 6 Months)"
             dataKey="attendance"
           />
           <PieChartComponent

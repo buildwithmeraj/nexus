@@ -10,7 +10,7 @@ const AdminClubsList = () => {
   const queryClient = useQueryClient();
   const { role } = useAuth();
   const [selectedClub, setSelectedClub] = useState(null);
-  const [modalType, setModalType] = useState(null); // "approve", "reject", "delete"
+  const [modalType, setModalType] = useState(null);
 
   // FETCH ALL CLUBS
   const {
@@ -18,9 +18,9 @@ const AdminClubsList = () => {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["clubs"],
+    queryKey: ["admin-clubs"],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/clubs`);
+      const res = await axiosSecure.get(`/admin/clubs`);
       return res.data;
     },
     enabled: role === "admin",

@@ -10,7 +10,7 @@ const fetchClubs = async ({ queryKey }) => {
   return res.data;
 };
 
-export default function Clubs({ limit = 0 }) {
+export default function AllClubs({ limit = 0 }) {
   const {
     data: clubs = [],
     isLoading,
@@ -61,7 +61,7 @@ export default function Clubs({ limit = 0 }) {
           <ClubCard club={club} />
         ))}
       </div>
-      {limit && (
+      {limit > 0 && (
         <div className="flex items-center justify-center mt-4">
           <Link to="/clubs" className="btn btn-primary">
             All Clubs

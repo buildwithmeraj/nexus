@@ -32,7 +32,6 @@ export default function EventDetails() {
   });
 
   // Fetch same-club events
-
   const { data: sameClubEvents = [] } = useQuery({
     queryKey: ["same-club-events", event?.clubId],
     queryFn: async () => {
@@ -43,14 +42,18 @@ export default function EventDetails() {
   });
 
   // Registration status
-  const { data: registrationStatus, refetch: refetchStatus } = useQuery({
+  const {
+    data: registrationStatus,
+    isLoading: isCheckingRegistration,
+    refetch: refetchStatus,
+  } = useQuery({
     queryKey: ["userEventRegistration", eventId, user?.email],
     queryFn: async () => {
       if (!user) return false;
-      const res = await axiosSecure.get(`/users/event-registrations`);
-      return res.data.some(
-        (reg) => reg.eventId === eventId || reg.eventId?._id === eventId
+      const res = await axiosSecure.get(
+        `/users/event-registrations/${eventId}`
       );
+      return res.data.isRegistered || false;
     },
     enabled: !!user && !!eventId,
   });
@@ -140,7 +143,14 @@ export default function EventDetails() {
 
             <div className="pt-2">
               {isUpcoming ? (
-                registrationStatus ? (
+                isCheckingRegistration ? (
+                  <div className="flex items-center justify-center gap-2 py-3">
+                    <span className="loading loading-spinner loading-sm"></span>
+                    <span className="text-sm text-base-content/70">
+                      Checking registration status...
+                    </span>
+                  </div>
+                ) : registrationStatus ? (
                   <SuccessMsg message="You are registered for this event" />
                 ) : (
                   <button
