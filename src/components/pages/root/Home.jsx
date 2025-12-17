@@ -5,7 +5,7 @@ import AllEvents from "./AllEvents";
 const Home = () => {
   return (
     <div>
-      <h2>New Clubs</h2>
+      <h2>Featured Clubs</h2>
       <AllClubs limit={4} />
       <h2>Recent Events</h2>
       <AllEvents limit={4} />

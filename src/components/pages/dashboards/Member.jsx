@@ -23,7 +23,7 @@ const Member = () => {
   useEffect(() => {
     const fetchMemberStats = async () => {
       try {
-        const response = await axiosSecure.get("/member/stats");
+        const response = await axiosSecure.get("/member/statistics");
         setStats(response.data);
       } catch (error) {
         console.error("Error fetching member stats:", error);

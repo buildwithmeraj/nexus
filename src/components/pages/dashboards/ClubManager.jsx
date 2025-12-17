@@ -18,7 +18,7 @@ const ClubManager = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axiosSecure.get("/club-manager/stats");
+        const response = await axiosSecure.get("/club-manager/statistics");
         setStats(response.data);
       } catch (error) {
         console.error("Error fetching club manager stats:", error);
