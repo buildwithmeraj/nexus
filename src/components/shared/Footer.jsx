@@ -37,11 +37,11 @@ const Footer = () => {
             <div className="space-y-2 text-sm text-base-content/70">
               <p className="flex items-center gap-2">
                 <FaEnvelope className="text-primary" />
-                support@yourdomain.com
+                contact@nexus.io
               </p>
               <p className="flex items-center gap-2">
                 <FaPhoneAlt className="text-primary" />
-                +1 (555) 123-4567
+                +880 1995489248
               </p>
               <p className="flex items-center gap-2">
                 <FaMapMarkerAlt className="text-primary" />

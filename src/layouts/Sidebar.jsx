@@ -1,10 +1,9 @@
+import React, { useEffect } from "react";
 import { Outlet, useLocation, useNavigate, Link } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
-import toast from "react-hot-toast";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import Footer from "../components/shared/Footer";
 import Navbar from "../components/shared/Navbar";
-import React from "react";
 import {
   FaHome,
   FaUsers,
@@ -14,6 +13,7 @@ import {
   FaCog,
   FaChartBar,
 } from "react-icons/fa";
+import { ImStatsDots } from "react-icons/im";
 
 export default function Sidebar() {
   const { user, logOut, role } = useAuth();
@@ -22,23 +22,23 @@ export default function Sidebar() {
 
   const userRole = role || "member";
 
-  // Close drawer when route changes
-  React.useEffect(() => {
+  useEffect(() => {
     const drawer = document.getElementById("dashboard-drawer");
-    if (drawer) {
-      drawer.checked = false;
-    }
+    if (drawer) drawer.checked = false;
   }, [location]);
 
-  const allMenus = {
+  const menus = {
     admin: [
-      { label: "Dashboard", to: "/dashboard/admin", icon: FaHome },
+      { label: "Dashboard", to: "/dashboard", icon: FaHome },
+      { label: "Overview", to: "/dashboard/admin", icon: ImStatsDots },
       { label: "Users", to: "/dashboard/admin/users", icon: FaUsers },
       { label: "Clubs", to: "/dashboard/admin/clubs", icon: FaClipboardList },
       { label: "Payments", to: "/dashboard/admin/payments", icon: FaChartBar },
     ],
     clubManager: [
-      { label: "Dashboard", to: "/dashboard/club-manager", icon: FaHome },
+      { label: "Dashboard", to: "/dashboard", icon: FaHome },
+      { label: "Overview", to: "/dashboard/club-manager", icon: ImStatsDots },
+
       {
         label: "My Clubs",
         to: "/dashboard/club-manager/clubs",
@@ -56,13 +56,19 @@ export default function Sidebar() {
       },
     ],
     member: [
-      { label: "Dashboard", to: "/dashboard/member", icon: FaHome },
+      { label: "Dashboard", to: "/dashboard", icon: FaHome },
+      { label: "Overview", to: "/dashboard/member", icon: ImStatsDots },
+
       {
         label: "My Clubs",
         to: "/dashboard/member/clubs",
         icon: FaClipboardList,
       },
-      { label: "My Events", to: "/dashboard/member/events", icon: FaCalendar },
+      {
+        label: "My Events",
+        to: "/dashboard/member/events",
+        icon: FaCalendar,
+      },
       {
         label: "Apply for Club Manager",
         to: "/dashboard/member/apply-for-club-manager",
@@ -71,134 +77,98 @@ export default function Sidebar() {
     ],
   };
 
-  const getMenuItems = () => {
-    if (userRole === "admin") {
-      return allMenus.admin;
-    } else if (userRole === "clubManager") {
-      return allMenus.clubManager;
-    } else {
-      return allMenus.member;
-    }
-  };
+  const currentMenus = menus[userRole] || menus.member;
+  const isActive = (path) => location.pathname === path;
 
   const handleLogout = async () => {
     try {
       await logOut();
       toast.success("Logged out successfully");
       navigate("/");
-    } catch (error) {
+    } catch {
       toast.error("Logout failed");
-      console.error(error);
     }
   };
-
-  const isActive = (path) => location.pathname === path;
-  const currentMenus = getMenuItems();
 
   return (
     <div className="drawer lg:drawer-open">
       <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
 
-      {/* DRAWER CONTENT */}
       <div className="drawer-content flex flex-col min-h-screen">
-        {/* Navbar */}
         <Navbar />
 
-        {/* Main Content - OUTLET RENDERS HERE */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 container mx-auto max-w-7xl w-full">
+        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full">
           <Outlet />
         </main>
 
-        {/* Toast */}
-        <Toaster position="bottom-center" reverseOrder={false} />
-
-        {/* Footer */}
+        <Toaster position="bottom-center" />
         <Footer />
       </div>
 
-      {/* DRAWER SIDEBAR */}
       <div className="drawer-side z-40">
-        <label
-          htmlFor="dashboard-drawer"
-          aria-label="close sidebar"
-          className="drawer-overlay"
-        ></label>
+        <label htmlFor="dashboard-drawer" className="drawer-overlay" />
 
-        <ul className="menu bg-base-200 min-h-full w-80 p-4 space-y-2 overflow-y-auto">
-          {/* User Info Section */}
+        <aside className="w-80 min-h-full bg-base-200 border-r border-base-300 p-4 flex flex-col">
           {user && (
             <>
-              <li className="menu-title disabled">
-                <div className="flex items-center gap-3">
-                  <div className="avatar placeholder">
-                    <div className="bg-gradient-to-br from-primary to-secondary text-white rounded-full w-12 flex items-center justify-center font-bold">
-                      {user?.photoURL ? (
-                        <img
-                          src={user.photoURL}
-                          alt={user.displayName}
-                          className="w-12 h-12 rounded-full object-cover"
-                        />
-                      ) : (
-                        <span>{user?.displayName?.charAt(0) || "U"}</span>
-                      )}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm">{user?.displayName}</p>
-                    <span className="badge badge-sm badge-primary capitalize">
-                      {userRole}
-                    </span>
+              <div className="flex items-center gap-4 p-3 rounded-xl bg-base-100 shadow-sm mb-2">
+                <div className="avatar">
+                  <div className="w-12 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold">
+                    {user.photoURL ? (
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName}
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span>{user.displayName?.charAt(0) || "U"}</span>
+                    )}
                   </div>
                 </div>
-              </li>
 
-              <li>
-                <hr />
-              </li>
+                <div>
+                  <p className="font-semibold text-sm truncate">
+                    {user.displayName}
+                  </p>
+                  <span className="badge badge-sm badge-primary capitalize">
+                    {userRole}
+                  </span>
+                </div>
+              </div>
 
-              {/* Navigation Menu Items */}
-              {currentMenus.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <li key={item.to}>
+              <ul className="menu w-full space-y-1 flex-1">
+                {currentMenus.map(({ label, to, icon: Icon }) => (
+                  <li key={to}>
                     <Link
-                      to={item.to}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-                        isActive(item.to)
-                          ? "bg-primary text-white font-semibold shadow-md"
-                          : "text-gray-700 hover:bg-gray-300"
-                      }`}
+                      to={to}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition 
+                        ${
+                          isActive(to)
+                            ? "bg-primary text-primary-content font-semibold"
+                            : "hover:bg-base-300"
+                        }`}
                     >
-                      <Icon size={18} className="flex-shrink-0" />
-                      <span className="text-sm font-medium">{item.label}</span>
+                      <Icon size={18} />
+                      <span className="text-sm">{label}</span>
+
+                      {isActive(to) && <span className="" />}
                     </Link>
                   </li>
-                );
-              })}
+                ))}
+              </ul>
 
-              <li className="my-2">
-                <hr />
-              </li>
-
-              <li>
-                <button className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-300 transition">
-                  <FaCog size={18} className="flex-shrink-0" />
-                  <span className="text-sm font-medium">Settings</span>
-                </button>
-              </li>
-
-              <li className="lg:hidden">
+              <div className="mt-6 pt-4 border-t border-base-300 space-y-1">
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition font-medium"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 text-error transition w-full text-left"
                 >
-                  <FaSignOutAlt size={18} className="flex-shrink-0" />
-                  <span className="text-sm">Logout</span>
+                  <FaSignOutAlt size={18} />
+                  <span className="text-sm font-medium">Logout</span>
                 </button>
-              </li>
+              </div>
             </>
           )}
-        </ul>
+        </aside>
       </div>
     </div>
   );
