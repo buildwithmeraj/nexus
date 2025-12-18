@@ -2,14 +2,18 @@ import React from "react";
 import PageTransition from "../../animations/PageTransition";
 import Hero from "../../home/Hero";
 import FeaturesSection from "../../home/Features";
+import HowItWorks from "../../home/HowItWorks";
+import PopularCategories from "../../home/PopularCategories";
 import AllClubs from "./AllClubs";
 import AllEvents from "./AllEvents";
+import CTA from "../../home/CTA";
 
 const Home = () => {
   return (
     <PageTransition>
       <Hero />
       <FeaturesSection />
+      <HowItWorks />
 
       {/* Featured Clubs */}
       <section className="py-20 bg-base-50">
@@ -21,6 +25,8 @@ const Home = () => {
         </div>
       </section>
 
+      {/* <PopularCategories /> */}
+
       {/* Featured Events */}
       <section className="py-20 bg-base-100">
         <div className="max-w-7xl mx-auto px-4">
@@ -30,6 +36,7 @@ const Home = () => {
           <AllEvents limit={8} />
         </div>
       </section>
+      <CTA />
     </PageTransition>
   );
 };

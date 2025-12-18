@@ -47,6 +47,9 @@ import AdminPayments from "../components/pages/admin/Payments";
 
 /* ========= Extra ========= */
 import NotFound from "../pages/NotFound";
+import AboutUs from "../pages/AboutUs";
+import TermsOfService from "../pages/TermsOfService";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
 
 export const Routes = createBrowserRouter([
   /* ================= PUBLIC ================= */
@@ -73,6 +76,18 @@ export const Routes = createBrowserRouter([
             element: <EventRegistrationSuccess />,
           },
         ],
+      },
+      {
+        path: "about",
+        element: <AboutUs />,
+      },
+      {
+        path: "terms",
+        element: <TermsOfService />,
+      },
+      {
+        path: "privacy",
+        element: <PrivacyPolicy />,
       },
     ],
   },

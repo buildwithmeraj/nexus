@@ -11,12 +11,14 @@ import {
 } from "react-icons/fa";
 import { TbBrandYoutubeFilled } from "react-icons/tb";
 import { BsTwitterX } from "react-icons/bs";
+import { Link } from "react-router";
+import { MdDescription } from "react-icons/md";
 
 const Footer = () => {
   return (
-    <footer className="bg-base-200 border-t border-base-300 px-4">
+    <footer className="footer px-10 bg-base-200 text-base-content">
       <div className="mx-auto py-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 lg:justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 lg:gap-10 lg:justify-items-center">
           <div className="space-y-2">
             <div className="flex items-center gap-3 justify-center lg:justify-normal">
               <Icon classes="w-12" />
@@ -46,6 +48,39 @@ const Footer = () => {
               <p className="flex items-center gap-2">
                 <FaMapMarkerAlt className="text-primary" />
                 Remote • Worldwide
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold text-center">Company</h3>
+            <div className="space-y-2 text-sm text-base-content/70">
+              <p className="flex items-center gap-2">
+                <Link to="/about" className="">
+                  <MdDescription
+                    className="inline mb-0.5 text-primary mr-2"
+                    size={16}
+                  />
+                  About Us
+                </Link>
+              </p>
+              <p className="flex items-center gap-2">
+                <Link to="/terms" className="">
+                  <MdDescription
+                    className="inline mb-0.5 text-primary mr-2"
+                    size={16}
+                  />
+                  Terms of Service
+                </Link>
+              </p>
+              <p className="flex items-center gap-2">
+                <Link to="/privacy" className="">
+                  <MdDescription
+                    className="inline mb-0.5 text-primary mr-2"
+                    size={16}
+                  />
+                  Privacy Policy
+                </Link>
               </p>
             </div>
           </div>
@@ -90,9 +125,11 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-6 pt-4 border-t border-base-300 text-center text-base-content/60">
-          © {new Date().getFullYear()} {import.meta.env.VITE_SITE_NAME}. All
-          rights reserved.
+        <div className="mt-2 pt-4 border-t border-base-300 text-base-content/80 w-full">
+          <p className="text-center">
+            © {new Date().getFullYear()} {import.meta.env.VITE_SITE_NAME}. All
+            rights reserved.
+          </p>
         </div>
       </div>
     </footer>
