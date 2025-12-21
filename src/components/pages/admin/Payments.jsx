@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../utilities/Loading";
-import { FaDownload, FaFilter, FaChartBar } from "react-icons/fa";
+import { FaDownload, FaChartBar, FaSearch } from "react-icons/fa";
 import toast from "react-hot-toast";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 
 const Payments = () => {
   const axiosSecure = useAxiosSecureInstance();
   const [filterType, setFilterType] = useState("all");
+  const [membershipSearchTerm, setMembershipSearchTerm] = useState("");
+  const [eventSearchTerm, setEventSearchTerm] = useState("");
 
   // Fetch all payments
   const {
@@ -44,7 +46,7 @@ const Payments = () => {
     });
   };
 
-  // Export to CSV
+  // Export CSV
   const exportToCSV = (data, filename) => {
     const headers = Object.keys(data[0] || {});
     const csvContent = [
@@ -83,6 +85,28 @@ const Payments = () => {
   const totalMemberships = membershipPayments.length;
   const totalEvents = eventPayments.length;
   const totalTransactions = totalMemberships + totalEvents;
+
+  // Filter helpers
+  const filterMembershipPayment = (payment) => {
+    if (!membershipSearchTerm) return true;
+    const term = membershipSearchTerm.toLowerCase();
+    return (
+      payment.userEmail?.toLowerCase().includes(term) ||
+      payment.relatedName?.toLowerCase().includes(term) ||
+      payment.status?.toLowerCase().includes(term)
+    );
+  };
+
+  const filterEventPayment = (payment) => {
+    if (!eventSearchTerm) return true;
+    const term = eventSearchTerm.toLowerCase();
+    return (
+      payment.userEmail?.toLowerCase().includes(term) ||
+      payment.relatedName?.toLowerCase().includes(term) ||
+      payment.status?.toLowerCase().includes(term) ||
+      payment.transactionId?.toLowerCase().includes(term)
+    );
+  };
 
   return (
     <div className="space-y-8">
@@ -188,8 +212,28 @@ const Payments = () => {
       {/* Membership Payments Table */}
       {(filterType === "all" || filterType === "membership") && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          {/* Membership Search */}
+          <div className="flex items-center justify-between gap-2">
             <h3 className="text-xl font-bold">Club Membership Payments</h3>
+            <div className="flex gap-2">
+              <div className="relative">
+                <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40 z-10" />
+                <input
+                  type="text"
+                  placeholder="Search memberships..."
+                  value={membershipSearchTerm}
+                  onChange={(e) => setMembershipSearchTerm(e.target.value)}
+                  className="input input-bordered input-sm pl-10 w-64"
+                />
+              </div>
+              <button
+                className="btn btn-soft btn-sm"
+                onClick={() => setMembershipSearchTerm("")}
+                disabled={!membershipSearchTerm}
+              >
+                Clear
+              </button>
+            </div>
             <button
               onClick={() => exportToCSV(membershipPayments, "memberships.csv")}
               className="btn btn-sm btn-outline gap-2"
@@ -200,7 +244,7 @@ const Payments = () => {
             </button>
           </div>
 
-          {membershipPayments.length === 0 ? (
+          {membershipPayments.filter(filterMembershipPayment).length === 0 ? (
             <div className="bg-base-100 rounded-lg p-12 text-center border border-dashed border-base-300">
               <p className="text-base-content/60">
                 No membership payments found
@@ -220,32 +264,34 @@ const Payments = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {membershipPayments.map((payment) => (
-                    <tr key={payment._id}>
-                      <td>
-                        <div>
-                          <p className="font-semibold">
-                            {payment.userEmail || "Unknown"}
-                          </p>
-                        </div>
-                      </td>
-                      <td>{payment.relatedName || "Deleted Club"}</td>
-                      <td className="font-semibold">
-                        ${payment.amount?.toFixed(2) || "0.00"}
-                      </td>
-                      <td className="text-sm">
-                        {formatDate(payment.createdAt)}
-                      </td>
-                      <td>
-                        <span className="badge badge-success capitalize">
-                          {payment.status}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="badge badge-outline">Standard</span>
-                      </td>
-                    </tr>
-                  ))}
+                  {membershipPayments
+                    .filter(filterMembershipPayment)
+                    .map((payment) => (
+                      <tr key={payment._id}>
+                        <td>
+                          <div>
+                            <p className="font-semibold">
+                              {payment.userEmail || "Unknown"}
+                            </p>
+                          </div>
+                        </td>
+                        <td>{payment.relatedName || "Deleted Club"}</td>
+                        <td className="font-semibold">
+                          ${payment.amount?.toFixed(2) || "0.00"}
+                        </td>
+                        <td className="text-sm">
+                          {formatDate(payment.createdAt)}
+                        </td>
+                        <td>
+                          <span className="badge badge-success capitalize">
+                            {payment.status}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="badge badge-outline">Standard</span>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -256,8 +302,28 @@ const Payments = () => {
       {/* Event Registration Payments Table */}
       {(filterType === "all" || filterType === "event") && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          {/* Event Search */}
+          <div className="flex items-center justify-between gap-2">
             <h3 className="text-xl font-bold">Event Registration Payments</h3>
+            <div className="flex gap-2">
+              <div className="relative">
+                <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40 z-10" />
+                <input
+                  type="text"
+                  placeholder="Search events..."
+                  value={eventSearchTerm}
+                  onChange={(e) => setEventSearchTerm(e.target.value)}
+                  className="input input-bordered input-sm pl-10 w-64"
+                />
+              </div>
+              <button
+                className="btn btn-soft btn-sm"
+                onClick={() => setEventSearchTerm("")}
+                disabled={!eventSearchTerm}
+              >
+                Clear
+              </button>
+            </div>
             <button
               onClick={() => exportToCSV(eventPayments, "events.csv")}
               className="btn btn-sm btn-outline gap-2"
@@ -268,7 +334,7 @@ const Payments = () => {
             </button>
           </div>
 
-          {eventPayments.length === 0 ? (
+          {eventPayments.filter(filterEventPayment).length === 0 ? (
             <div className="bg-base-100 rounded-lg p-12 text-center border border-dashed border-base-300">
               <p className="text-base-content/60">
                 No event registration payments found
@@ -288,7 +354,7 @@ const Payments = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {eventPayments.map((payment) => (
+                  {eventPayments.filter(filterEventPayment).map((payment) => (
                     <tr key={payment._id}>
                       <td>
                         <div>

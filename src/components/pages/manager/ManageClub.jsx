@@ -3,7 +3,6 @@ import { useParams, Navigate, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import Loading from "../../utilities/Loading";
 import {
   FaArrowLeft,
   FaCalendar,
@@ -13,6 +12,7 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import ClubEvents from "./ClubEvents";
+import LoadingDashboard from "../../utilities/LoadingDashboard";
 
 const ManageClub = () => {
   const { id: clubId } = useParams();
@@ -96,7 +96,7 @@ const ManageClub = () => {
   };
 
   if (!clubId) return <Navigate to="/dashboard/manager/clubs" replace />;
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingDashboard />;
   if (isError)
     return (
       <div className="alert alert-error">
@@ -159,19 +159,6 @@ const ManageClub = () => {
               <span className="badge badge-outline">{club.location}</span>
               <span className="badge badge-primary">${club.membershipFee}</span>
               <span className="badge badge-info">{club.status}</span>
-            </div>
-
-            <div className="flex gap-6">
-              <div className="flex items-center gap-2">
-                <FaUsers className="text-primary" />
-                <span className="font-semibold">{club.memberCount || 0}</span>
-                <span className="text-sm">Members</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaCalendar className="text-success" />
-                <span className="font-semibold">{club.eventCount || 0}</span>
-                <span className="text-sm">Events</span>
-              </div>
             </div>
 
             <div className="card-actions text-xs pt-2">
@@ -281,7 +268,7 @@ const ManageClub = () => {
                 </button>
                 <button
                   type="button"
-                  className="btn btn-neutral flex-1"
+                  className="btn flex-1"
                   onClick={() => {
                     setEditMode(false);
                     setPreviewImage(null);

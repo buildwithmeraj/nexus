@@ -37,7 +37,6 @@ import ManageClub from "../components/pages/manager/ManageClub";
 import AddClub from "../components/pages/manager/AddClub";
 import EventsList from "../components/pages/manager/EventsList";
 import ClubEvents from "../components/pages/manager/ClubEvents";
-import AddEvent from "../components/pages/manager/AddEvent";
 import ClubManagerPayments from "../components/pages/manager/Payments";
 
 /* ========= Admin ========= */
@@ -46,16 +45,17 @@ import AdminClubsList from "../components/pages/admin/ClubsList";
 import AdminPayments from "../components/pages/admin/Payments";
 
 /* ========= Extra ========= */
-import NotFound from "../pages/NotFound";
-import AboutUs from "../pages/AboutUs";
-import TermsOfService from "../pages/TermsOfService";
-import PrivacyPolicy from "../pages/PrivacyPolicy";
+import NotFound from "../components/pages/root/NotFound";
+import AboutUs from "../components/pages/root/AboutUs";
+import TermsOfService from "../components/pages/root/TermsOfService";
+import PrivacyPolicy from "../components/pages/root/PrivacyPolicy";
 
 export const Routes = createBrowserRouter([
   /* ================= PUBLIC ================= */
   {
     path: "/",
     element: <Root />,
+    errorElement: <NotFound />,
     children: [
       { index: true, element: <Home /> },
       { path: "login", element: <Login /> },
@@ -128,14 +128,6 @@ export const Routes = createBrowserRouter([
                 element: <ClubEvents />,
               },
               {
-                path: "club-manager/events/add",
-                element: <AddEvent />,
-              },
-              {
-                path: "club-manager/clubs/:id/events/add",
-                element: <AddEvent />,
-              },
-              {
                 path: "club-manager/payments",
                 element: <ClubManagerPayments />,
               },
@@ -150,14 +142,12 @@ export const Routes = createBrowserRouter([
               { path: "admin/users", element: <UsersList /> },
               { path: "admin/clubs", element: <AdminClubsList /> },
               { path: "admin/payments", element: <AdminPayments /> },
+              { path: "admin/events", element: <EventsList /> },
+              { path: "admin/add-club", element: <AddClub /> },
             ],
           },
         ],
       },
     ],
-  },
-  {
-    path: "*",
-    element: <NotFound />,
   },
 ]);

@@ -8,12 +8,15 @@ import {
   FaUsers,
   FaCalendar,
   FaBars,
+  FaSignInAlt,
 } from "react-icons/fa";
 import Logo from "../utilities/Logo";
 import ThemeSwitcher from "../utilities/ThemeSwitcher";
 import { useAuth } from "../../contexts/AuthContext";
 import toast from "react-hot-toast";
 import { MdDashboard } from "react-icons/md";
+import { LogIn, UserPlus } from "lucide-react";
+import { FaCircleUser, FaUserPlus } from "react-icons/fa6";
 
 const Navbar = () => {
   const { user, logOut, authLoading, role } = useAuth();
@@ -39,7 +42,7 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="navbar bg-base-100 shadow-sm px-4">
+    <div className="navbar bg-base-100 shadow-sm px-4 fixed top-0 left-0 right-0 z-50">
       <div className="flex-none lg:hidden">
         <label
           htmlFor={isDashboard ? "dashboard-drawer" : "navbar-drawer"}
@@ -99,7 +102,7 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              <FaUser size={20} />
+              <FaCircleUser size={36} />
             )}
           </label>
 
@@ -157,15 +160,18 @@ const Navbar = () => {
               </>
             ) : (
               <>
+                <li className="flex items-center text-lg">Guest User</li>
+                <li className="my-1"></li>
                 <li>
                   <Link to="/login" className="flex items-center gap-2">
-                    <FaUser size={16} />
+                    <FaSignInAlt size={18} className="mt-0.5" />
                     Login
                   </Link>
                 </li>
+                <li className="my-1"></li>
                 <li>
                   <Link to="/register" className="flex items-center gap-2">
-                    <FaUser size={16} />
+                    <FaUserPlus size={18} />
                     Register
                   </Link>
                 </li>

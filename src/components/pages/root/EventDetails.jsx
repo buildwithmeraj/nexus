@@ -4,12 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../../hooks/axiosInstance";
 import { useAuth } from "../../../contexts/AuthContext";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
-import Loading from "../../utilities/Loading";
 import EventRegistrationModal from "./EventRegistrationModal";
 import SuccessMsg from "../../utilities/Success";
 import WarningMsg from "../../utilities/Warning";
 import { FaCalendar, FaMapMarkerAlt, FaUsers } from "react-icons/fa";
 import EventCard from "../../shared/EventCard";
+import Loading from "../../utilities/Loading";
+import { useEffect } from "react";
 
 export default function EventDetails() {
   const { id: eventId } = useParams();
@@ -33,12 +34,13 @@ export default function EventDetails() {
 
   // Fetch same-club events
   const { data: sameClubEvents = [] } = useQuery({
-    queryKey: ["same-club-events", event?.clubId],
+    queryKey: ["same-club-events", event?.clubId, eventId],
+    enabled: !!event?.clubId && !!eventId,
     queryFn: async () => {
-      const res = await axiosInstance.get(`/events?clubId=${event.clubId}`);
-      return res.data.filter((e) => e._id !== eventId);
+      const res = await axiosInstance.get(`/clubs/${event.clubId}/events`);
+
+      return res.data.filter((e) => String(e._id) !== String(eventId));
     },
-    enabled: !!event?.clubId,
   });
 
   // Registration status
@@ -51,7 +53,7 @@ export default function EventDetails() {
     queryFn: async () => {
       if (!user) return false;
       const res = await axiosSecure.get(
-        `/users/event-registrations/${eventId}`
+        `/member/event-registrations/${eventId}`
       );
       return res.data.isRegistered || false;
     },
@@ -70,6 +72,8 @@ export default function EventDetails() {
     setShowRegistrationModal(false);
     refetchStatus();
   };
+
+  useEffect(() => {}, [eventId]);
 
   if (isLoading) return <Loading />;
 

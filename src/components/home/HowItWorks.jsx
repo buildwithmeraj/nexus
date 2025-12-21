@@ -100,9 +100,8 @@ const HowItWorks = () => {
   };
 
   return (
-    <section className="py-20 bg-base-50">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
+    <section className="py-10 bg-base-50">
+      <div className="mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -110,7 +109,7 @@ const HowItWorks = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+          <h2 className="mb-4">
             How <span className="text-primary">Nexus</span> Works
           </h2>
           <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
@@ -119,13 +118,12 @@ const HowItWorks = () => {
           </p>
         </motion.div>
 
-        {/* Steps Container */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-4"
         >
           {steps.map((step, index) => {
             const Icon = step.icon;
@@ -136,7 +134,6 @@ const HowItWorks = () => {
                 whileHover="whileHover"
                 className="relative group"
               >
-                {/* Background Number */}
                 <motion.div
                   variants={numberVariants}
                   className="absolute -top-8 -right-4 text-9xl font-black text-base-content/40 pointer-events-none z-10"
@@ -144,14 +141,11 @@ const HowItWorks = () => {
                   {step.number}
                 </motion.div>
 
-                {/* Card */}
                 <div className="relative bg-base-100 border border-base-300 rounded-xl p-8 h-full hover:shadow-xl transition-shadow">
-                  {/* Connector Line */}
                   {index < steps.length - 1 && (
                     <div className="hidden lg:block absolute top-1/2 -right-6 w-12 h-0.5 bg-gradient-to-r from-primary to-transparent"></div>
                   )}
 
-                  {/* Icon */}
                   <motion.div
                     variants={iconVariants}
                     whileHover="whileHover"
@@ -160,13 +154,11 @@ const HowItWorks = () => {
                     <Icon className="text-2xl" />
                   </motion.div>
 
-                  {/* Content */}
                   <h3 className="text-xl font-bold mb-3">{step.title}</h3>
                   <p className="text-base-content/70 text-sm leading-relaxed">
                     {step.description}
                   </p>
 
-                  {/* Step Badge */}
                   <div className="mt-6 inline-block">
                     <span className="badge badge-lg badge-primary">
                       Step {step.number.trim()}

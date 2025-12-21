@@ -9,6 +9,7 @@ import {
   FaChartLine,
 } from "react-icons/fa";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance.jsx";
+import LoadingDashboard from "../../utilities/LoadingDashboard.jsx";
 
 const ClubManager = () => {
   const axiosSecure = useAxiosSecureInstance();
@@ -31,11 +32,7 @@ const ClubManager = () => {
   }, [axiosSecure]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
-    );
+    return <LoadingDashboard />;
   }
 
   return (
@@ -45,7 +42,6 @@ const ClubManager = () => {
         <p className="">Manage your clubs and track performance</p>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20">
           <div className="flex items-center justify-between">
@@ -144,7 +140,6 @@ const ClubManager = () => {
         </div>
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {stats?.membershipGrowth && (
           <LineChartComponent

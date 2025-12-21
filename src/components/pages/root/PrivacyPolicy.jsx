@@ -108,7 +108,6 @@ const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-base-50 via-base-100 to-base-50 py-20">
       <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -125,7 +124,6 @@ const PrivacyPolicy = () => {
           </p>
         </motion.div>
 
-        {/* Content */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -141,7 +139,7 @@ const PrivacyPolicy = () => {
                 className="bg-base-100 border border-base-300 rounded-xl p-8 hover:shadow-lg transition-shadow"
               >
                 <div className="flex items-start gap-4">
-                  <Icon className="text-success text-2xl flex-shrink-0 mt-1" />
+                  <Icon className="text-success text-2xl shrink-0 mt-1" />
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold mb-4">{section.title}</h2>
                     <div className="space-y-3">
@@ -161,7 +159,6 @@ const PrivacyPolicy = () => {
           })}
         </motion.div>
 
-        {/* Footer Note */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

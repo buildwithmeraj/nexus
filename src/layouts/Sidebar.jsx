@@ -34,7 +34,17 @@ export default function Sidebar() {
       { label: "Overview", to: "/dashboard/admin", icon: ImStatsDots },
       { label: "Users", to: "/dashboard/admin/users", icon: FaUsers },
       { label: "Clubs", to: "/dashboard/admin/clubs", icon: FaClipboardList },
+      {
+        label: "Events",
+        to: "/dashboard/admin/events",
+        icon: FaCalendar,
+      },
       { label: "Payments", to: "/dashboard/admin/payments", icon: FaChartBar },
+      {
+        label: "Add Club",
+        to: "/dashboard/admin/add-club",
+        icon: FaPlus,
+      },
     ],
     clubManager: [
       { label: "Dashboard", to: "/dashboard", icon: MdDashboard },
@@ -106,7 +116,7 @@ export default function Sidebar() {
       <div className="drawer-content flex flex-col min-h-screen">
         <Navbar />
 
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full">
+        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mt-16 mx-auto w-full">
           <Outlet />
         </main>
 
@@ -114,7 +124,7 @@ export default function Sidebar() {
         <Footer />
       </div>
 
-      <div className="drawer-side z-40">
+      <div className="drawer-side z-40 pt-16">
         <label htmlFor="dashboard-drawer" className="drawer-overlay" />
 
         <aside className="w-80 min-h-full bg-base-200 border-r border-base-300 p-4 flex flex-col">

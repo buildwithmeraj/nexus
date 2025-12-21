@@ -14,6 +14,7 @@ import {
   FaExternalLinkSquareAlt,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
+import LoadingDashboard from "../../utilities/LoadingDashboard";
 
 const JoinedClubs = () => {
   const { user } = useAuth();
@@ -32,7 +33,7 @@ const JoinedClubs = () => {
   } = useQuery({
     queryKey: ["user-memberships", user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get("/users/memberships");
+      const res = await axiosSecure.get("/member/memberships");
       return res.data;
     },
     enabled: !!user?.email,
@@ -85,7 +86,7 @@ const JoinedClubs = () => {
     window.location.href = `/clubs/${clubId}`;
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingDashboard />;
 
   return (
     <div className="space-y-6">
@@ -101,9 +102,10 @@ const JoinedClubs = () => {
         <h2 className="text-2xl font-bold">Active Memberships</h2>
 
         {activeMemberships.length === 0 ? (
-          <div className="bg-base-100 rounded-lg p-12 text-center border-2 border-dashed">
+          <div className="bg-base-100 rounded-lg p-12 text-center border-2 border-dashed border-base-300">
             <FaUsers className="text-4xl mx-auto mb-4" />
             <p className="font-semibold mb-2">No Active Memberships</p>
+            <p className="text-sm mb-4">Join clubs to see them here</p>
             <Link to="/clubs" className="btn btn-primary btn-sm">
               Browse Clubs
             </Link>

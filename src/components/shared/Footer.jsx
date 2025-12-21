@@ -109,15 +109,15 @@ const Footer = () => {
               </a>
               <a
                 href="#"
-                aria-label="Facebook"
+                aria-label="Instagram"
                 className="text-red-500 hover:text-primary"
               >
                 <FaInstagram size={32} />
               </a>
               <a
                 href="#"
-                aria-label="Facebook"
-                className="text-gray-900 hover:text-primary"
+                aria-label="TikTok"
+                className="text-base-content hover:text-primary"
               >
                 <FaTiktok size={28} />
               </a>

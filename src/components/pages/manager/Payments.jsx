@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Loading from "../../utilities/Loading";
 import { FaDownload, FaChartBar } from "react-icons/fa";
 import toast from "react-hot-toast";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
+import LoadingDashboard from "../../utilities/LoadingDashboard";
 
 const Payments = () => {
   const axiosSecure = useAxiosSecureInstance();
@@ -75,7 +75,7 @@ const Payments = () => {
     toast.success("Downloaded successfully");
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingDashboard />;
 
   if (error) {
     return (

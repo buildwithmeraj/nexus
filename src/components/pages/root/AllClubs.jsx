@@ -1,33 +1,28 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
-import { FaSearch, FaFilter } from "react-icons/fa";
+import { FaSearch, FaFilter, FaExclamationTriangle } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import ClubCard from "../../shared/ClubCard";
 import Loading from "../../utilities/Loading";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { MdCategory } from "react-icons/md";
 import { FaFilterCircleDollar } from "react-icons/fa6";
+import { TiThSmall } from "react-icons/ti";
 
 const fetchClubs = async ({ queryKey, axiosInstance }) => {
-  const [
-    ,
-    limit,
-    searchQuery,
-    selectedCategory,
-    minFee,
-    maxFee,
-    status, // ✅ added
-  ] = queryKey;
+  const [, limit, searchQuery, selectedCategory, minFee, maxFee, status] =
+    queryKey;
 
   const params = new URLSearchParams();
 
   if (limit > 0) params.append("limit", limit);
+  if (limit > 0) params.append("status", "approved");
   if (searchQuery) params.append("search", searchQuery);
   if (selectedCategory) params.append("category", selectedCategory);
   if (minFee) params.append("minFee", minFee);
   if (maxFee) params.append("maxFee", maxFee);
-  if (status) params.append("status", status); // ✅ added
+  if (status) params.append("status", status);
 
   const res = await axiosInstance.get(`/clubs?${params.toString()}`);
   return res.data;
@@ -69,7 +64,7 @@ export default function AllClubs({ limit = 0 }) {
       selectedCategory,
       minFee,
       maxFee,
-      status, // ✅ added
+      status,
     ],
     queryFn: ({ queryKey }) =>
       fetchClubs({
@@ -96,19 +91,19 @@ export default function AllClubs({ limit = 0 }) {
 
   if (isError) {
     return (
-      <div className="text-center py-20">
-        <h2 className="text-red-500 font-semibold">Failed to load clubs</h2>
+      <div className="text-center py-10">
+        <h2 className="text-error font-semibold">Failed to load clubs</h2>
         <p>{error.message}</p>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="my-6">
       {!limit && (
         <div className="mb-6">
           <h2 className="text-3xl font-bold mb-2">Discover Clubs</h2>
-          <p className="text-sm text-base-content/60">
+          <p className="text-sm text-base-content/70">
             Find clubs that match your interests
           </p>
         </div>
@@ -143,9 +138,10 @@ export default function AllClubs({ limit = 0 }) {
                 ))}
               </select>
             </div>
-            <div>
+            <div className="relative">
+              <FaFilter className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40 z-10 mt-0.5" />{" "}
               <select
-                className="select select-bordered w-full"
+                className="select select-bordered w-full pl-10"
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
               >
@@ -189,8 +185,21 @@ export default function AllClubs({ limit = 0 }) {
       )}
 
       {clubs.length === 0 && (
-        <div className="text-center py-20">
-          <p className="text-gray-500">No clubs available.</p>
+        <div className="bg-base-100 rounded-lg text-center border-2 border-dashed border-base-300 flex items-center justify-center flex-col py-30 text-base-content/50">
+          <FaExclamationTriangle className="text-4xl text-warning mx-auto mb-4" />
+          <p className="font-semibold mb-2">No Clubs Found</p>
+          <p className="text-sm text-base-content/70">
+            Try adjusting your filters
+          </p>
+          {hasActiveFilters && (
+            <button
+              onClick={resetFilters}
+              className="btn btn-outline btn-sm mt-4"
+            >
+              <IoMdClose size={16} />
+              Clear Filters
+            </button>
+          )}
         </div>
       )}
 
@@ -203,6 +212,7 @@ export default function AllClubs({ limit = 0 }) {
       {limit > 0 && (
         <div className="flex justify-center mt-6">
           <Link to="/clubs" className="btn btn-primary">
+            <TiThSmall />
             All Clubs
           </Link>
         </div>

@@ -97,7 +97,6 @@ const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-base-50 via-base-100 to-base-50 py-20">
       <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -113,7 +112,6 @@ const TermsOfService = () => {
           </p>
         </motion.div>
 
-        {/* Content */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -149,7 +147,6 @@ const TermsOfService = () => {
           })}
         </motion.div>
 
-        {/* Footer Note */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

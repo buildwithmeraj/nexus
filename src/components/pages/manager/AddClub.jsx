@@ -130,7 +130,7 @@ const AddClub = () => {
           value={formData.description}
           onChange={handleChange}
           placeholder="Description"
-          className="textarea textarea-bordered w-full"
+          className="textarea textarea-bordered h-36 w-full"
           required
         />
 
@@ -154,7 +154,6 @@ const AddClub = () => {
           required
         />
 
-        {/* ImgBB file upload */}
         <div>
           <label className="block mb-1 font-medium">Banner Image</label>
           <input
@@ -164,7 +163,7 @@ const AddClub = () => {
             className="file-input file-input-bordered w-full"
           />
           {uploading && (
-            <p className="text-sm text-gray-500 mt-1">Uploading...</p>
+            <p className="text-sm text-base-content/60 mt-1">Uploading...</p>
           )}
           {formData.bannerImage && (
             <img

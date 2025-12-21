@@ -81,11 +81,11 @@ export default function ClubDetails() {
           <h2 className="">{club.clubName}</h2>
         </div>
 
-        <div className="relative h-48 md:h-80 lg:h-96 overflow-hidden">
+        <div className="relative w-full overflow-hidden rounded-xl">
           <img
             src={club.bannerImage}
             alt={club.clubName}
-            className="w-full h-full object-contain"
+            className="w-full object-cover"
             onError={(e) => {
               e.target.src =
                 "https://via.placeholder.com/1200x400?text=" +
@@ -104,6 +104,7 @@ export default function ClubDetails() {
             </div>
           )}
         </div>
+        <p className="text-lg leading-relaxed py-3">{club.description}</p>
 
         <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <div className="bg-base-100 rounded-lg p-4 shadow-sm border border-base-200">
@@ -155,8 +156,6 @@ export default function ClubDetails() {
             </p>
           </div>
         </div>
-
-        <p className="text-lg leading-relaxed">{club.description}</p>
 
         <div className="mb-8">
           {club.status === "approved" ? (

@@ -53,10 +53,9 @@ const Hero = () => {
   };
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-primary/5 via-base-100 to-secondary/5 py-20 flex items-center">
-      <div className="max-w-7xl mx-auto px-4 w-full">
+    <section className="py-10 flex items-center">
+      <div className="mx-auto px-4 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -64,18 +63,12 @@ const Hero = () => {
             viewport={{ once: true, amount: 0.3 }}
             className="space-y-6"
           >
-            <motion.div variants={itemVariants}>
-              <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
-                🎯 Connect & Grow Together
-              </span>
-            </motion.div>
-
-            <motion.h1
+            <motion.h2
               variants={itemVariants}
-              className="text-5xl lg:text-6xl font-bold leading-tight"
+              className="text-4xl font-bold leading-tight"
             >
               Join Amazing <span className="text-primary">Clubs</span> & Events
-            </motion.h1>
+            </motion.h2>
 
             <motion.p
               variants={itemVariants}
@@ -88,7 +81,7 @@ const Hero = () => {
 
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-4 pt-4"
+              className="flex flex-col sm:flex-row gap-4"
             >
               <Link to="/clubs" className="btn btn-primary btn-lg gap-2 group">
                 Explore Clubs
@@ -100,27 +93,25 @@ const Hero = () => {
               </Link>
             </motion.div>
 
-            {/* Stats */}
             <motion.div
               variants={itemVariants}
-              className="grid grid-cols-3 gap-4 pt-8 border-t border-base-300"
+              className="grid grid-cols-3 gap-4 pt-4 border-t border-base-300"
             >
               <div>
-                <p className="text-2xl font-bold text-primary">500+</p>
+                <p className="text-2xl font-bold text-primary">40+</p>
                 <p className="text-sm text-base-content/60">Active Members</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-success">50+</p>
+                <p className="text-2xl font-bold text-success">10+</p>
                 <p className="text-sm text-base-content/60">Clubs</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-info">200+</p>
+                <p className="text-2xl font-bold text-info">30+</p>
                 <p className="text-sm text-base-content/60">Events</p>
               </div>
             </motion.div>
           </motion.div>
 
-          {/* Right Image */}
           <motion.div
             variants={imageVariants}
             initial="hidden"

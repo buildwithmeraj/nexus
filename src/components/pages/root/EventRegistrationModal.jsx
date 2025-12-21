@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import toast from "react-hot-toast";
 
@@ -10,18 +10,15 @@ export default function EventRegistrationModal({
   onSuccess,
 }) {
   const axiosSecure = useAxiosSecureInstance();
-  const [loading, setLoading] = useState(false);
-  const hasRunRef = useRef(false); // 👈 IMPORTANT
+  const [loading, setLoading] = useState(true);
+  const hasRunRef = useRef(false);
 
   useEffect(() => {
-    if (hasRunRef.current) return; // prevent double call
+    if (hasRunRef.current) return;
     hasRunRef.current = true;
 
     const registerForEvent = async () => {
       try {
-        setLoading(true);
-
-        // Free event
         if (!isPaid || eventFee === 0) {
           await axiosSecure.post(`/events/${eventId}/register`);
           toast.success("Successfully registered!");
@@ -30,7 +27,6 @@ export default function EventRegistrationModal({
           return;
         }
 
-        // Paid event
         const res = await axiosSecure.post(
           `/events/${eventId}/create-registration-session`
         );
@@ -42,6 +38,7 @@ export default function EventRegistrationModal({
         const errorMsg =
           error.response?.data?.message || "Failed to register for event";
         toast.error(errorMsg);
+        onClose();
       } finally {
         setLoading(false);
       }
@@ -53,17 +50,17 @@ export default function EventRegistrationModal({
   if (!loading) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-base-100 rounded-lg p-8 max-w-md w-full">
-        <div className="flex justify-center mb-4">
-          <span className="loading loading-spinner loading-lg text-primary"></span>
-        </div>
-        <p className="text-center text-lg font-semibold">
+    <dialog className="modal modal-open">
+      <div className="modal-box text-center">
+        <span className="loading loading-spinner loading-lg text-primary mb-4" />
+        <p className="text-lg font-semibold">
           {isPaid && eventFee > 0
             ? "Redirecting to payment..."
             : "Registering..."}
         </p>
       </div>
-    </div>
+
+      <div className="modal-backdrop" />
+    </dialog>
   );
 }

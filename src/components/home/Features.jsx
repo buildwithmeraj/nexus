@@ -91,8 +91,8 @@ const FeaturesSection = () => {
   };
 
   return (
-    <section className="py-20 bg-base-100">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="py-10">
+      <div className="mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -100,7 +100,7 @@ const FeaturesSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+          <h2 className="mb-4">
             Why Choose <span className="text-primary">Nexus</span>?
           </h2>
           <p className="text-lg text-base-content/60 max-w-2xl mx-auto">

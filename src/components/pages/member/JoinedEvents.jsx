@@ -2,7 +2,6 @@ import React, { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useAuth } from "../../../contexts/AuthContext";
-import Loading from "../../utilities/Loading";
 import { Link } from "react-router";
 import {
   FaCalendar,
@@ -13,6 +12,7 @@ import {
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { MdCancel } from "react-icons/md";
+import LoadingDashboard from "../../utilities/LoadingDashboard";
 
 const JoinedEvents = () => {
   const { user } = useAuth();
@@ -29,7 +29,8 @@ const JoinedEvents = () => {
   } = useQuery({
     queryKey: ["user-event-registrations", user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get("/users/event-registrations");
+      const res = await axiosSecure.get("/member/event-registrations");
+      console.log(res.data);
       return res.data;
     },
     enabled: !!user?.email,
@@ -108,7 +109,7 @@ const JoinedEvents = () => {
     }
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingDashboard />;
 
   return (
     <div className="space-y-6">

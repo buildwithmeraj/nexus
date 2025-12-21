@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "../../utilities/Loading";
+import { FaSearch } from "react-icons/fa";
 
 const ClubManagerApplications = () => {
   const queryClient = useQueryClient();
   const [selectedMember, setSelectedMember] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const axiosSecure = useAxiosSecureInstance();
 
   const {
@@ -41,13 +43,49 @@ const ClubManagerApplications = () => {
     }
   };
 
+  const matchesSearch = (application) => {
+    if (!searchTerm) return true;
+
+    const term = searchTerm.toLowerCase();
+    return (
+      application.name?.toLowerCase().includes(term) ||
+      application.email?.toLowerCase().includes(term) ||
+      application.status?.toLowerCase().includes(term)
+    );
+  };
+
   if (isLoading) {
     return <Loading />;
   }
 
   return (
     <div>
-      <h2>Club Manager Applications ({clubManagerApplicationsList.length})</h2>
+      <div className="flex items-center gap-2 justify-between flex-col lg:flex-row">
+        <h2>
+          Club Manager Applications ({clubManagerApplicationsList.length})
+        </h2>
+        <div className="flex items-center gap-2 justify-between lg:pr-[8%]">
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40 z-10" />
+            <input
+              type="text"
+              placeholder="Search users..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input input-bordered input-sm max-w-6xl pl-10"
+            />
+          </div>
+
+          <button
+            className="btn btn-soft btn-sm"
+            onClick={() => setSearchTerm("")}
+            disabled={!searchTerm}
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+
       {clubManagerApplicationsList.length < 1 ? (
         "No Applications found"
       ) : (
@@ -65,46 +103,48 @@ const ClubManagerApplications = () => {
               </thead>
 
               <tbody>
-                {clubManagerApplicationsList.map((applications) => (
-                  <tr key={applications._id} className="hover:bg-base-300">
-                    <td>
-                      <div className="font-bold">{applications.name}</div>
-                    </td>
+                {clubManagerApplicationsList
+                  .filter(matchesSearch)
+                  .map((applications) => (
+                    <tr key={applications._id} className="hover:bg-base-300">
+                      <td>
+                        <div className="font-bold">{applications.name}</div>
+                      </td>
 
-                    <td>{applications.email}</td>
+                      <td>{applications.email}</td>
 
-                    <td className="font-semibold">
-                      {capitalizeWords(applications.status)}
-                    </td>
+                      <td className="font-semibold">
+                        {capitalizeWords(applications.status)}
+                      </td>
 
-                    <td>{applications.createdAt}</td>
+                      <td>{applications.createdAt}</td>
 
-                    <td>
-                      {applications.status === "pending" ? (
-                        <button
-                          className="btn btn-xs btn-success"
-                          onClick={() => {
-                            setSelectedMember({
-                              email: applications.email,
-                              name: applications.name,
-                            });
-                            document
-                              .getElementById("approve_modal")
-                              .showModal();
-                          }}
-                        >
-                          Approve
-                        </button>
-                      ) : (
-                        <div className="tooltip" data-tip="Already approved">
-                          <button className="btn btn-xs" disabled>
-                            Approved
+                      <td>
+                        {applications.status === "pending" ? (
+                          <button
+                            className="btn btn-xs btn-success"
+                            onClick={() => {
+                              setSelectedMember({
+                                email: applications.email,
+                                name: applications.name,
+                              });
+                              document
+                                .getElementById("approve_modal")
+                                .showModal();
+                            }}
+                          >
+                            Approve
                           </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                        ) : (
+                          <div className="tooltip" data-tip="Already approved">
+                            <button className="btn btn-xs" disabled>
+                              Approved
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

@@ -9,6 +9,7 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance.jsx";
+import LoadingDashboard from "../../utilities/LoadingDashboard.jsx";
 
 const Admin = () => {
   const axiosSecure = useAxiosSecureInstance();
@@ -31,11 +32,7 @@ const Admin = () => {
   }, [axiosSecure]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
-    );
+    return <LoadingDashboard />;
   }
 
   return (
@@ -190,7 +187,7 @@ const Admin = () => {
                 </span>
               </div>
               <div className="divider my-2"></div>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-base-content/70">
                 <p>
                   Avg Revenue per Event: $
                   {(

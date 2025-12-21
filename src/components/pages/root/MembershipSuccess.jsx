@@ -100,7 +100,7 @@ export default function MembershipSuccess() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
+      <div className="rounded-lg shadow-lg p-8 max-w-md w-full text-center">
         {success ? (
           <>
             <div className="flex items-center justify-center text-6xl mb-4 text-success">
@@ -109,7 +109,7 @@ export default function MembershipSuccess() {
             <h1 className="text-3xl font-bold text-green-600 mb-4">
               {processed ? "Already Processed" : "Payment Successful!"}
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="text-base-content/60 mb-6">
               Your membership has been activated. Redirecting you back...
             </p>
           </>
@@ -118,10 +118,10 @@ export default function MembershipSuccess() {
             <div className="flex items-center justify-center text-6xl mb-4 text-error">
               <MdCancel />
             </div>
-            <h1 className="text-3xl font-bold text-red-600 mb-4">
+            <h1 className="text-3xl font-bold text-error mb-4">
               Payment Failed
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="text-base-content/60 mb-6">
               Something went wrong. Redirecting you back...
             </p>
           </>

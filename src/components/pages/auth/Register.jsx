@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Error from "../../../components/utilities/Error";
 import { FcGoogle } from "react-icons/fc";
-import { UserRoundPlus, LogIn } from "lucide-react";
+import { FaUserPlus } from "react-icons/fa6";
+import { FaSignInAlt } from "react-icons/fa";
 
 const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY;
 
@@ -245,11 +246,11 @@ const Register = () => {
                   type="submit"
                   disabled={uploading}
                 >
-                  <UserRoundPlus size={16} />
+                  <FaUserPlus size={18} />
                   {uploading ? "Processing..." : "Register"}
                 </button>
-
-                <div className="flex flex-col md:flex-row items-center justify-between gap-2 lg:mt-2">
+                <div className="divider">OR</div>
+                <div className="flex flex-col md:flex-row items-center justify-between gap-2">
                   <button
                     className="btn btn-block btn-outline lg:flex-1"
                     type="button"
@@ -260,9 +261,9 @@ const Register = () => {
                   </button>
                   <NavLink
                     to="/login"
-                    className="btn btn-success text-white flex btn-block lg:flex-1 items-center gap-2"
+                    className="btn btn-outline flex btn-block lg:flex-1 items-center gap-2"
                   >
-                    <LogIn size={16} />
+                    <FaSignInAlt size={18} />
                     Login
                   </NavLink>
                 </div>

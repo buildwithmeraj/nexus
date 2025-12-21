@@ -4,6 +4,7 @@ import Loading from "../../utilities/Loading";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { FaSearch } from "react-icons/fa";
 
 const AdminClubsList = () => {
   const axiosSecure = useAxiosSecureInstance();
@@ -11,6 +12,7 @@ const AdminClubsList = () => {
   const { role } = useAuth();
   const [selectedClub, setSelectedClub] = useState(null);
   const [modalType, setModalType] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // FETCH ALL CLUBS
   const {
@@ -85,9 +87,45 @@ const AdminClubsList = () => {
     closeModal();
   };
 
+  const matchesSearch = (club) => {
+    if (!searchTerm) return true;
+
+    const term = searchTerm.toLowerCase();
+    return (
+      club.clubName?.toLowerCase().includes(term) ||
+      club.category?.toLowerCase().includes(term) ||
+      club.location?.toLowerCase().includes(term) ||
+      club.status?.toLowerCase().includes(term) ||
+      club.managerEmail?.toLowerCase().includes(term)
+    );
+  };
+
   return (
     <div>
-      <h2 className="mb-4 text-xl font-bold">All Clubs ({clubs.length})</h2>
+      <div className="flex items-center justify-between mb-4 gap-2 flex-col lg:flex-row">
+        <h2 className="text-xl font-bold">All Clubs ({clubs.length})</h2>
+
+        <div className="flex items-center gap-2 lg:pr-[7%]">
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40 z-10" />
+            <input
+              type="text"
+              placeholder="Search clubs..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input input-bordered input-sm pl-10 w-64"
+            />
+          </div>
+
+          <button
+            className="btn btn-soft btn-sm"
+            onClick={() => setSearchTerm("")}
+            disabled={!searchTerm}
+          >
+            Clear
+          </button>
+        </div>
+      </div>
 
       <div className="overflow-x-auto">
         <table className="table">
@@ -103,7 +141,7 @@ const AdminClubsList = () => {
           </thead>
 
           <tbody>
-            {clubs.map((club) => {
+            {clubs.filter(matchesSearch).map((club) => {
               const isPending = club.status === "pending";
 
               return (
@@ -167,7 +205,6 @@ const AdminClubsList = () => {
         </table>
       </div>
 
-      {/* MODAL */}
       {modalType && selectedClub && (
         <div className="modal modal-open">
           <div className="modal-box">

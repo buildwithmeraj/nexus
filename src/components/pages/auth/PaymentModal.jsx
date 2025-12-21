@@ -84,7 +84,7 @@ export default function PaymentModal({
         {loading && (
           <div className="text-center space-y-4">
             <span className="loading loading-spinner loading-lg text-primary" />
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-base-content/60">
               Redirecting to payment page...
             </p>
           </div>
@@ -92,10 +92,8 @@ export default function PaymentModal({
 
         {!loading && error && (
           <>
-            <h3 className="text-lg font-bold text-red-600 mb-4">
-              Payment Error
-            </h3>
-            <p className="text-gray-700 mb-6">{error}</p>
+            <h3 className="text-lg font-bold text-error mb-4">Payment Error</h3>
+            <p className="text-base-content/60 mb-6">{error}</p>
             <div className="modal-action">
               <button onClick={onClose} className="btn btn-primary w-full">
                 Close

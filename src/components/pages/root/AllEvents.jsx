@@ -10,10 +10,8 @@ import {
   FaUsers,
   FaExclamationTriangle,
   FaSearch,
-  FaFilter,
+  FaCalendarAlt,
 } from "react-icons/fa";
-import { RiUserCommunityFill } from "react-icons/ri";
-import { FaHandsHoldingCircle } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 
 const AllEvents = ({ limit = 0 }) => {
@@ -35,7 +33,6 @@ const AllEvents = ({ limit = 0 }) => {
       const res = await axiosSecure.get("/clubs");
       return res.data;
     },
-    enabled: !limit,
   });
 
   const clubs = clubsList.data || [];
@@ -62,6 +59,7 @@ const AllEvents = ({ limit = 0 }) => {
       const params = new URLSearchParams();
 
       if (limit > 0) params.append("limit", limit);
+      if (limit > 0) params.append("sort", "upcoming");
       if (searchQuery) params.append("search", searchQuery);
       if (selectedClub) params.append("clubId", selectedClub);
       if (selectedLocation) params.append("location", selectedLocation);
@@ -118,7 +116,7 @@ const AllEvents = ({ limit = 0 }) => {
   if (isError) {
     return (
       <div className="text-center py-20">
-        <h2 className="text-red-500 font-semibold">Failed to load events</h2>
+        <h2 className="text-error font-semibold">Failed to load events</h2>
         <p>{error?.message}</p>
       </div>
     );
@@ -128,8 +126,8 @@ const AllEvents = ({ limit = 0 }) => {
     <div className="space-y-6">
       {!limit && (
         <div>
-          <h2 className="text-3xl font-bold mb-2">Upcoming Events</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-3xl font-bold mb-2">All Events</h2>
+          <p className="text-sm text-base-content/70">
             Browse events across all clubs and find something you love!
           </p>
         </div>
@@ -137,7 +135,6 @@ const AllEvents = ({ limit = 0 }) => {
 
       {!limit && (
         <>
-          {/* Search Bar */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             <div className="flex-1 relative">
               <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-base-content/40 z-10" />
@@ -149,7 +146,6 @@ const AllEvents = ({ limit = 0 }) => {
                 className="input input-bordered w-full pl-12"
               />
             </div>
-            {/* Club Filter */}
             <div className="flex items-center">
               <select
                 value={selectedClub}
@@ -165,7 +161,6 @@ const AllEvents = ({ limit = 0 }) => {
               </select>
             </div>
 
-            {/* Location Filter */}
             <div className="flex items-center">
               <select
                 value={selectedLocation}
@@ -181,7 +176,6 @@ const AllEvents = ({ limit = 0 }) => {
               </select>
             </div>
 
-            {/* Type Filter (Paid/Free) */}
             <div className="flex items-center">
               <select
                 value={isPaid}
@@ -194,7 +188,6 @@ const AllEvents = ({ limit = 0 }) => {
               </select>
             </div>
 
-            {/* Sort Filter */}
             <div className="flex items-center">
               <select
                 value={sort}
@@ -221,10 +214,10 @@ const AllEvents = ({ limit = 0 }) => {
       )}
 
       {events.length === 0 ? (
-        <div className="bg-base-100 rounded-lg p-12 text-center border-2 border-dashed border-base-300">
+        <div className="bg-base-100 rounded-lg text-center border-2 border-dashed border-base-300 flex items-center justify-center flex-col py-30 text-base-content/50">
           <FaExclamationTriangle className="text-4xl text-warning mx-auto mb-4" />
           <p className="font-semibold mb-2">No Events Found</p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-base-content/70">
             {hasActiveFilters
               ? "Try adjusting your filters"
               : "Check back later for events."}
@@ -234,6 +227,7 @@ const AllEvents = ({ limit = 0 }) => {
               onClick={resetFilters}
               className="btn btn-outline btn-sm mt-4"
             >
+              <IoMdClose size={16} />
               Clear Filters
             </button>
           )}
@@ -268,11 +262,11 @@ const AllEvents = ({ limit = 0 }) => {
                   className="mb-3 link-primary flex items-center gap-1.5 font-medium"
                   title={`View ${clubName} club`}
                 >
-                  <FaHandsHoldingCircle size={20} />
+                  <FaUsers size={20} />
                   {clubName}
                 </Link>
 
-                <div className="space-y-1 text-sm text-gray-600 mb-4">
+                <div className="space-y-1 text-sm text-base-content/70 mb-4">
                   <div className="flex items-center gap-2">
                     <FaCalendar className="text-primary" />
                     {formatDate(event.eventDate)}
@@ -295,7 +289,7 @@ const AllEvents = ({ limit = 0 }) => {
                   </div>
                 </div>
 
-                <p className="text-gray-700 text-sm mb-4 line-clamp-3">
+                <p className="text-base-content/70 text-sm mb-4 line-clamp-3">
                   {event.description}
                 </p>
 
@@ -312,8 +306,9 @@ const AllEvents = ({ limit = 0 }) => {
       )}
 
       {limit > 0 && events.length > 0 && (
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center items-center mt-6">
           <Link to="/events" className="btn btn-primary">
+            <FaCalendarAlt size={14} />
             View All Events
           </Link>
         </div>

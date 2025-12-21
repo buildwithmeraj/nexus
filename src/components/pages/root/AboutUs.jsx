@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FaHeart, FaLightbulb, FaUsers } from "react-icons/fa";
+import { FaCalendarAlt, FaHeart, FaLightbulb, FaUsers } from "react-icons/fa";
 import { Link } from "react-router";
 import { TbTargetArrow } from "react-icons/tb";
 
@@ -88,17 +88,16 @@ const AboutUs = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-base-50 via-base-100 to-base-50">
-      {/* Hero Section */}
-      <section className="py-20 px-4">
+      <section className="py-10 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-5xl lg:text-6xl font-bold mb-6">
+            <h2 className="text-5xl lg:text-6xl font-bold mb-6">
               About <span className="text-primary">Nexus</span>
-            </h1>
+            </h2>
             <p className="text-xl text-base-content/60 leading-relaxed">
               Nexus is a modern platform designed to connect people with clubs
               and events they're passionate about. We believe that communities
@@ -109,8 +108,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Our Mission & Vision */}
-      <section className="py-20 px-4 bg-base-100">
+      <section className="py-10 px-4 bg-base-100">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0 }}
@@ -140,15 +138,14 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Core Values */}
-      <section className="py-20 px-4">
+      <section className="py-10 px-4">
         <div className="max-w-5xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-4xl font-bold text-center mb-16"
+            className="text-4xl font-bold text-center pb-6"
           >
             Our Core Values
           </motion.h2>
@@ -181,15 +178,14 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="py-20 px-4 bg-base-100">
+      <section className="py-10 px-4 bg-base-100">
         <div className="max-w-5xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-4xl font-bold text-center mb-16"
+            className="text-4xl font-bold text-center pb-6"
           >
             Our Team
           </motion.h2>
@@ -223,8 +219,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 px-4">
+      <section className="py-10 px-4">
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0 }}
@@ -234,23 +229,22 @@ const AboutUs = () => {
             className="grid grid-cols-3 gap-6 bg-gradient-to-r from-primary/10 via-base-100 to-secondary/10 rounded-xl p-8 border border-primary/20"
           >
             <div className="text-center">
-              <p className="text-4xl font-bold text-primary mb-2">100+</p>
+              <p className="text-4xl font-bold text-primary mb-2">10+</p>
               <p className="text-base-content/60 text-sm">Active Clubs</p>
             </div>
             <div className="text-center border-l border-r border-base-300">
-              <p className="text-4xl font-bold text-success mb-2">500+</p>
+              <p className="text-4xl font-bold text-success mb-2">40+</p>
               <p className="text-base-content/60 text-sm">Community Members</p>
             </div>
             <div className="text-center">
-              <p className="text-4xl font-bold text-info mb-2">1000+</p>
+              <p className="text-4xl font-bold text-info mb-2">30+</p>
               <p className="text-base-content/60 text-sm">Events Hosted</p>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-base-100">
+      <section className="py-10 px-4 bg-base-100">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -258,16 +252,18 @@ const AboutUs = () => {
           viewport={{ once: true }}
           className="max-w-3xl mx-auto text-center"
         >
-          <h2 className="text-4xl font-bold mb-6">Join Our Community</h2>
+          <h2 className="text-4xl font-bold pb-6">Join Our Community</h2>
           <p className="text-lg text-base-content/60 mb-8">
             Be part of something bigger. Discover clubs, make new friends, and
             grow with a community that shares your passions.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/signup" className="btn btn-primary btn-lg">
-              Get Started
+            <Link to="/events" className="btn btn-primary btn-lg">
+              <FaCalendarAlt size={16} />
+              Events
             </Link>
             <Link to="/clubs" className="btn btn-outline btn-lg">
+              <FaUsers />
               Explore Clubs
             </Link>
           </div>

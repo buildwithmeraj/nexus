@@ -219,7 +219,7 @@ const UpdateEventModal = ({ event, isOpen, onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="btn btn-neutral flex-1"
+                className="btn flex-1"
                 disabled={isLoading}
               >
                 Cancel

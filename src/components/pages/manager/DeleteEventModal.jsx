@@ -50,7 +50,7 @@ const DeleteEventModal = ({ event, isOpen, onClose, onConfirm }) => {
           >
             Delete Event
           </button>
-          <button onClick={onClose} className="btn btn-neutral">
+          <button onClick={onClose} className="btn">
             Cancel
           </button>
         </div>

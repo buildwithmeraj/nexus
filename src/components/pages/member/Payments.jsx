@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Loading from "../../utilities/Loading";
 import {
   FaDownload,
   FaWallet,
@@ -9,6 +8,7 @@ import {
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
+import LoadingDashboard from "../../utilities/LoadingDashboard";
 
 const Payments = () => {
   const axiosSecure = useAxiosSecureInstance();
@@ -80,7 +80,7 @@ const Payments = () => {
     toast.success("Downloaded successfully");
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingDashboard />;
 
   if (error) {
     return (
@@ -96,7 +96,6 @@ const Payments = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div>
         <h2 className="text-3xl font-bold">Payment History</h2>
         <p className="text-base-content/60 mt-1">
@@ -104,7 +103,6 @@ const Payments = () => {
         </p>
       </div>
 
-      {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20">
           <div className="flex items-center justify-between">
@@ -173,7 +171,6 @@ const Payments = () => {
         </div>
       </div>
 
-      {/* Filter Tabs */}
       <div className="flex gap-2 border-b border-base-200">
         <button
           onClick={() => setFilterType("all")}
@@ -207,7 +204,6 @@ const Payments = () => {
         </button>
       </div>
 
-      {/* Membership Payments Table */}
       {(filterType === "all" || filterType === "membership") && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -289,7 +285,6 @@ const Payments = () => {
         </div>
       )}
 
-      {/* Event Registration Payments Table */}
       {(filterType === "all" || filterType === "event") && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -371,7 +366,6 @@ const Payments = () => {
         </div>
       )}
 
-      {/* Summary Section */}
       {totalTransactions > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-base-200">
           <div className="bg-base-100 rounded-lg p-6 border border-base-200">
@@ -433,7 +427,6 @@ const Payments = () => {
         </div>
       )}
 
-      {/* Empty State */}
       {totalTransactions === 0 && (
         <div className="bg-gradient-to-br from-base-200 to-base-300 rounded-lg p-12 text-center">
           <FaWallet size={64} className="mx-auto text-base-content/20 mb-4" />

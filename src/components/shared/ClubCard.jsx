@@ -13,7 +13,7 @@ const ClubCard = ({ club }) => {
         <img
           src={club.bannerImage}
           alt={club.clubName}
-          className="h-40 w-full object-contain"
+          className="h-50 w-full object-cover"
         />
         {(club.status === "pending" || club.status === "rejected") && (
           <span
@@ -31,7 +31,7 @@ const ClubCard = ({ club }) => {
       </figure>
 
       <div className="card-body">
-        <h2 className="card-title">{club.clubName}</h2>
+        <h1 className="card-title">{club.clubName}</h1>
         <p className="text-sm text-base-content/80">{club.description}</p>
 
         <div className="mt-3 space-y-1 text-sm">

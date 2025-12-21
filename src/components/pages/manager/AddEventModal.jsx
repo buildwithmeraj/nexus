@@ -105,7 +105,6 @@ const AddEventModal = ({
             onChange={handleChange}
           />
 
-          {/* Club selector */}
           {clubId ? (
             <input
               type="text"
@@ -162,7 +161,7 @@ const AddEventModal = ({
           />
 
           <div className="modal-action">
-            <button type="button" className="btn btn-ghost" onClick={onClose}>
+            <button type="button" className="btn" onClick={onClose}>
               Cancel
             </button>
             <button

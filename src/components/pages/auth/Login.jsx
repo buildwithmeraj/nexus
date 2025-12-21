@@ -5,8 +5,10 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import ErrorMsg from "../../../components/utilities/Error";
 import Info from "../../../components/utilities/Info";
-import { Eye, EyeOff, UserRoundPlus, LogIn } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
+import { FaUserPlus } from "react-icons/fa6";
+import { FaSignInAlt } from "react-icons/fa";
 
 const Login = () => {
   const {
@@ -166,7 +168,7 @@ const Login = () => {
                     })}
                   />
                   <span
-                    className="absolute right-2 top-2 cursor-pointer text-2xl text-gray-600"
+                    className="absolute right-2 top-2 cursor-pointer text-2xl text-base-content/50"
                     onClick={() => setShowPass(!showPass)}
                   >
                     {showPass ? <Eye /> : <EyeOff />}
@@ -179,24 +181,25 @@ const Login = () => {
                 )}
 
                 <button className="btn btn-primary mt-4 w-full" type="submit">
-                  <LogIn size={16} />
+                  <FaSignInAlt size={18} className="mt-0.5" />
                   Login
                 </button>
-
-                <div className="flex flex-col md:flex-row items-center justify-between gap-2 lg:mt-2">
+                <div className="divider">OR</div>
+                <div className="flex flex-col md:flex-row items-center justify-between gap-2">
                   <button
                     className="btn btn-outline btn-block lg:flex-1"
                     type="button"
                     onClick={handleGoogleSignIn}
                   >
-                    <FcGoogle className="mt-0.5" />
+                    <FcGoogle className="mt-0.5" size={16} />
                     Google Login
                   </button>
+
                   <NavLink
                     to="/register"
-                    className="btn btn-success text-white flex btn-block lg:flex-1 items-center gap-2"
+                    className="btn btn-outline flex btn-block lg:flex-1 items-center gap-2"
                   >
-                    <UserRoundPlus size={16} />
+                    <FaUserPlus size={18} />
                     Register
                   </NavLink>
                 </div>

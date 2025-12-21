@@ -1,5 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router";
+import { FaCalendarAlt, FaUsers } from "react-icons/fa";
 
 const CTA = () => {
   return (
@@ -16,12 +18,14 @@ const CTA = () => {
         on Nexus.
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/register" className="btn btn-primary btn-lg">
-          Sign Up Now
-        </a>
-        <a href="/clubs" className="btn btn-outline btn-lg">
+        <Link to="/events" className="btn btn-primary btn-lg">
+          <FaCalendarAlt size={16} />
+          Events
+        </Link>
+        <Link to="/clubs" className="btn btn-outline btn-lg">
+          <FaUsers />
           Explore Clubs
-        </a>
+        </Link>
       </div>
     </motion.div>
   );

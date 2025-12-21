@@ -22,9 +22,8 @@ const EventCard = ({ event }) => {
   const isPast = new Date(event.eventDate) < new Date();
 
   return (
-    <AnimatedCard className="card bg-base-100 shadow-md hover:shadow-xl transition">
+    <AnimatedCard className="card bg-base-100 shadow-md hover:shadow-xl">
       <div className="card-body space-y-3">
-        {/* Header */}
         <div className="flex justify-between items-start gap-2">
           <h3 className="card-title text-lg">{event.title}</h3>
           <span
@@ -36,7 +35,6 @@ const EventCard = ({ event }) => {
           </span>
         </div>
 
-        {/* Meta */}
         <div className="space-y-2 text-sm text-base-content/70">
           <div className="flex items-center gap-2">
             <FaCalendar className="text-primary" />
@@ -64,12 +62,10 @@ const EventCard = ({ event }) => {
           )}
         </div>
 
-        {/* Description */}
         <p className="text-sm text-base-content/60 line-clamp-3">
           {event.description}
         </p>
 
-        {/* Action */}
         <div className="card-actions mt-4">
           <Link
             to={`/events/${event._id}`}

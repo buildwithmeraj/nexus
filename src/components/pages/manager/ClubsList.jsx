@@ -2,12 +2,12 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useAuth } from "../../../contexts/AuthContext";
-import Loading from "../../utilities/Loading";
 import { Link } from "react-router";
 import { FaHourglassHalf } from "react-icons/fa";
 import { FaGear } from "react-icons/fa6";
 import { MdCancel, MdDelete } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
+import LoadingDashboard from "../../utilities/LoadingDashboard";
 
 const ClubsList = () => {
   const queryClient = useQueryClient();
@@ -42,7 +42,7 @@ const ClubsList = () => {
     }
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingDashboard />;
 
   return (
     <div>
@@ -145,7 +145,7 @@ const ClubsList = () => {
               Confirm Delete
             </label>
 
-            <label htmlFor="delete_club_modal" className="btn btn-neutral">
+            <label htmlFor="delete_club_modal" className="btn btn">
               Cancel
             </label>
           </div>

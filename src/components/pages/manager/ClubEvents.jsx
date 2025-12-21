@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
-import Loading from "../../utilities/Loading";
 import {
   FaCalendar,
   FaMapMarkerAlt,
@@ -14,8 +13,9 @@ import {
 import toast from "react-hot-toast";
 import UpdateEventModal from "./UpdateEventModal";
 import DeleteEventModal from "./DeleteEventModal";
-import { useParams, Link } from "react-router";
+import { useParams } from "react-router";
 import AddEventModal from "./AddEventModal";
+import LoadingDashboard from "../../utilities/LoadingDashboard";
 
 const ClubEvents = () => {
   const { id: clubId } = useParams();
@@ -86,7 +86,7 @@ const ClubEvents = () => {
     });
   };
 
-  if (eventsLoading) return <Loading />;
+  if (eventsLoading) return <LoadingDashboard />;
 
   return (
     <div className="space-y-6 mt-6">
@@ -102,12 +102,12 @@ const ClubEvents = () => {
       </div>
 
       {eventsLoading ? (
-        <Loading />
+        <LoadingDashboard />
       ) : events.length === 0 ? (
         <div className="bg-base-100 rounded-lg p-12 text-center border-2 border-dashed border-base-300">
-          <FaCalendar className="text-4xl text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500 font-semibold">No Events Found</p>
-          <p className="text-gray-400 text-sm mb-4">
+          <FaCalendar className="text-4xl text-base-content/40 mx-auto mb-4" />
+          <p className="text-base-content/50 font-semibold">No Events Found</p>
+          <p className="text-base-content/40 text-sm mb-4">
             Create your first event for this club
           </p>
           <button

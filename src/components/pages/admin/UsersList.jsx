@@ -4,11 +4,13 @@ import Loading from "../../utilities/Loading";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ClubManagerApplications from "./ClubManagerApplications";
+import { FaSearch } from "react-icons/fa";
 
 const UsersList = () => {
   const queryClient = useQueryClient();
   const [selectedUser, setSelectedUser] = useState(null);
   const axiosSecure = useAxiosSecureInstance();
+  const [searchTerm, setSearchTerm] = useState("");
   const {
     data: usersList = [],
     isLoading,
@@ -49,6 +51,17 @@ const UsersList = () => {
       queryClient.invalidateQueries(["club-manager-applications"]);
     }
   };
+  const matchesSearch = (user) => {
+    if (!searchTerm) return true;
+
+    const term = searchTerm.toLowerCase();
+    return (
+      user.name?.toLowerCase().includes(term) ||
+      user.email?.toLowerCase().includes(term) ||
+      user.role?.toLowerCase().includes(term)
+    );
+  };
+
   if (isLoading) return <Loading />;
 
   // Role color classes
@@ -145,7 +158,29 @@ const UsersList = () => {
 
   return (
     <div>
-      <h2>User List ({usersList.length - 1})</h2>
+      <div className="flex items-center justify-between gap-2 flex-col lg:flex-row">
+        <h2>User List ({usersList.length - 1})</h2>
+        <div className="flex items-center gap-2 justify-between lg:pr-[9%]">
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40 z-10" />
+            <input
+              type="text"
+              placeholder="Search users..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input input-bordered input-sm max-w-6xl pl-10"
+            />
+          </div>
+
+          <button
+            className="btn btn-soft btn-sm"
+            onClick={() => setSearchTerm("")}
+            disabled={!searchTerm}
+          >
+            Clear
+          </button>
+        </div>
+      </div>
 
       <div className="overflow-x-auto">
         <table className="table">
@@ -162,6 +197,7 @@ const UsersList = () => {
           <tbody>
             {usersList
               .filter((u) => u.email !== adminEmail)
+              .filter(matchesSearch)
               .map((user) => (
                 <tr key={user._id} className="hover:bg-base-300">
                   <td>

@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../../contexts/AuthContext";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useQuery } from "@tanstack/react-query";
-import Loading from "../../utilities/Loading";
+import LoadingDashboard from "../../utilities/LoadingDashboard";
 
 const ApplyForClubManager = ({ onAccept }) => {
   const axiosSecure = useAxiosSecureInstance();
@@ -18,7 +18,7 @@ const ApplyForClubManager = ({ onAccept }) => {
   } = useQuery({
     queryKey: ["club-manager-application"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/users/apply-club-manager/status");
+      const res = await axiosSecure.get("/member/apply-club-manager/status");
       return res.data;
     },
   });
@@ -31,7 +31,7 @@ const ApplyForClubManager = ({ onAccept }) => {
     );
   }
 
-  if (isPending) return <Loading />;
+  if (isPending) return <LoadingDashboard />;
 
   if (error) {
     toast.error(error.message || "Failed to load application status");
@@ -61,7 +61,7 @@ const ApplyForClubManager = ({ onAccept }) => {
     }
 
     try {
-      await axiosSecure.post("/users/apply-club-manager");
+      await axiosSecure.post("/member/apply-club-manager");
       await refetch();
       toast.success("Application submitted successfully!");
       onAccept?.();
