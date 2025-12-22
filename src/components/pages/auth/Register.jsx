@@ -37,14 +37,12 @@ const Register = () => {
     mode: "onSubmit",
   });
 
-  /* Redirect if logged in */
   useEffect(() => {
     if (user?.email) {
       navigate("/dashboard", { replace: true });
     }
   }, [user, navigate]);
 
-  /* Photo preview */
   const photoFile = watch("photoFile")?.[0];
   const [photoPreview, setPhotoPreview] = useState(null);
 
@@ -141,7 +139,6 @@ const Register = () => {
 
               {errors.root && <Error message={errors.root.message} />}
 
-              {/* Email */}
               <label className="label">Email</label>
               <input
                 className="input w-full"
@@ -155,7 +152,6 @@ const Register = () => {
               />
               {errors.email && <Error message={errors.email.message} />}
 
-              {/* Name */}
               <label className="label">Name</label>
               <input
                 className="input w-full"
@@ -169,7 +165,6 @@ const Register = () => {
               />
               {errors.name && <Error message={errors.name.message} />}
 
-              {/* Photo */}
               <label className="label">Profile Photo</label>
               <input
                 type="file"
@@ -186,7 +181,6 @@ const Register = () => {
                 />
               )}
 
-              {/* Password */}
               <label className="label">Password</label>
               <input
                 type="password"
