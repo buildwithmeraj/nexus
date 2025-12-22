@@ -139,18 +139,18 @@ const ManageClub = () => {
       </div>
 
       {!editMode && (
-        <div className="card lg:card-side bg-base-100 shadow-md p-1">
+        <div className="card lg:card-side bg-base-100 shadow-md">
           <figure className="lg:w-1/2">
             <img
               src={club.bannerImage}
               alt="Club Banner"
-              className="h-70 w-full object-contain"
+              className="h-85 w-full object-cover"
             />
           </figure>
 
           <div className="card-body space-y-4">
             <div>
-              <h2 className="card-title text-2xl">{club.clubName}</h2>
+              <h2 className="card-title">{club.clubName}</h2>
               <p className="text-sm">{club.description}</p>
             </div>
 

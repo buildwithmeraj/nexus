@@ -127,83 +127,92 @@ const AdminClubsList = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Club</th>
-              <th>Category</th>
-              <th>Location</th>
-              <th>Status</th>
-              <th>Manager</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {clubs.filter(matchesSearch).map((club) => {
-              const isPending = club.status === "pending";
-
-              return (
-                <tr key={club._id} className="hover:bg-base-300">
-                  <td className={`font-bold ${statusColors[club.status]}`}>
-                    {club.clubName}
-                  </td>
-                  <td>{club.category}</td>
-                  <td>{club.location}</td>
-                  <td className={`font-semibold ${statusColors[club.status]}`}>
-                    {club.status.charAt(0).toUpperCase() + club.status.slice(1)}
-                  </td>
-                  <td>{club.managerEmail}</td>
-                  <td className="flex gap-2 items-center">
-                    <button
-                      className={`btn btn-xs btn-success ${
-                        !isPending ? "btn-disabled" : ""
-                      }`}
-                      onClick={() =>
-                        isPending &&
-                        openModal(
-                          { id: club._id, name: club.clubName },
-                          "approve"
-                        )
-                      }
-                    >
-                      Approve
-                    </button>
-
-                    <button
-                      className={`btn btn-xs btn-warning ${
-                        !isPending ? "btn-disabled" : ""
-                      }`}
-                      onClick={() =>
-                        isPending &&
-                        openModal(
-                          { id: club._id, name: club.clubName },
-                          "reject"
-                        )
-                      }
-                    >
-                      Reject
-                    </button>
-
-                    <button
-                      className="btn btn-xs btn-error"
-                      onClick={() =>
-                        openModal(
-                          { id: club._id, name: club.clubName },
-                          "delete"
-                        )
-                      }
-                    >
-                      Delete
-                    </button>
-                  </td>
+      {clubs.length < 2 ? (
+        <InfoMSg message="No Clubs found" />
+      ) : (
+        <>
+          <div className="overflow-x-auto backdrop-blur-xl">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Club</th>
+                  <th>Category</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                  <th>Manager</th>
+                  <th>Action</th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+
+              <tbody>
+                {clubs.filter(matchesSearch).map((club) => {
+                  const isPending = club.status === "pending";
+
+                  return (
+                    <tr key={club._id} className="hover:bg-base-300">
+                      <td className={`font-bold ${statusColors[club.status]}`}>
+                        {club.clubName}
+                      </td>
+                      <td>{club.category}</td>
+                      <td>{club.location}</td>
+                      <td
+                        className={`font-semibold ${statusColors[club.status]}`}
+                      >
+                        {club.status.charAt(0).toUpperCase() +
+                          club.status.slice(1)}
+                      </td>
+                      <td>{club.managerEmail}</td>
+                      <td className="flex gap-2 items-center">
+                        <button
+                          className={`btn btn-xs btn-success ${
+                            !isPending ? "btn-disabled" : ""
+                          }`}
+                          onClick={() =>
+                            isPending &&
+                            openModal(
+                              { id: club._id, name: club.clubName },
+                              "approve"
+                            )
+                          }
+                        >
+                          Approve
+                        </button>
+
+                        <button
+                          className={`btn btn-xs btn-warning ${
+                            !isPending ? "btn-disabled" : ""
+                          }`}
+                          onClick={() =>
+                            isPending &&
+                            openModal(
+                              { id: club._id, name: club.clubName },
+                              "reject"
+                            )
+                          }
+                        >
+                          Reject
+                        </button>
+
+                        <button
+                          className="btn btn-xs btn-error"
+                          onClick={() =>
+                            openModal(
+                              { id: club._id, name: club.clubName },
+                              "delete"
+                            )
+                          }
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
 
       {modalType && selectedClub && (
         <div className="modal modal-open">

@@ -60,7 +60,7 @@ const ClubsList = () => {
       {clubList.length < 1 ? (
         "No Clubs Found"
       ) : (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto backdrop-blur-md">
           <table className="table">
             <thead>
               <tr>

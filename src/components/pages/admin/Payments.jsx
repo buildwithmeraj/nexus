@@ -110,7 +110,6 @@ const Payments = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div>
         <h2 className="text-3xl font-bold">Payment Management</h2>
         <p className="text-base-content/60 mt-1">
@@ -118,9 +117,8 @@ const Payments = () => {
         </p>
       </div>
 
-      {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20">
+        <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">
@@ -134,7 +132,7 @@ const Payments = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20">
+        <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">
@@ -148,7 +146,7 @@ const Payments = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20">
+        <div className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">
@@ -162,7 +160,7 @@ const Payments = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20">
+        <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">
@@ -175,7 +173,6 @@ const Payments = () => {
         </div>
       </div>
 
-      {/* Filter Tabs */}
       <div className="flex gap-2 border-b border-base-200">
         <button
           onClick={() => setFilterType("all")}
@@ -209,10 +206,8 @@ const Payments = () => {
         </button>
       </div>
 
-      {/* Membership Payments Table */}
       {(filterType === "all" || filterType === "membership") && (
         <div className="space-y-4">
-          {/* Membership Search */}
           <div className="flex items-center justify-between gap-2">
             <h3 className="text-xl font-bold">Club Membership Payments</h3>
             <div className="flex gap-2">
@@ -299,10 +294,8 @@ const Payments = () => {
         </div>
       )}
 
-      {/* Event Registration Payments Table */}
       {(filterType === "all" || filterType === "event") && (
         <div className="space-y-4">
-          {/* Event Search */}
           <div className="flex items-center justify-between gap-2">
             <h3 className="text-xl font-bold">Event Registration Payments</h3>
             <div className="flex gap-2">

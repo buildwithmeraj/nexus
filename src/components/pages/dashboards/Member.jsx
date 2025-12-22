@@ -128,7 +128,7 @@ const Member = () => {
 
       <motion.div>
         <div className="flex items-center justify-center">
-          <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-base-300 rounded-2xl shadow-md p-8 max-w-xl w-full">
+          <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-base-300 rounded-2xl shadow-md p-8 max-w-xl w-full backdrop-blur-md">
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <motion.div
                 whileHover={{ scale: 1.1 }}
@@ -206,7 +206,7 @@ const Member = () => {
         <motion.div
           variants={cardVariants}
           whileHover="whileHover"
-          className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20"
+          className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20 backdrop-blur-md"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -229,7 +229,7 @@ const Member = () => {
         <motion.div
           variants={cardVariants}
           whileHover="whileHover"
-          className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20"
+          className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20 backdrop-blur-md"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -252,7 +252,7 @@ const Member = () => {
         <motion.div
           variants={cardVariants}
           whileHover="whileHover"
-          className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20"
+          className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20 backdrop-blur-md"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -275,7 +275,7 @@ const Member = () => {
         <motion.div
           variants={cardVariants}
           whileHover="whileHover"
-          className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20"
+          className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20 backdrop-blur-md"
         >
           <div className="flex items-center justify-between">
             <div>

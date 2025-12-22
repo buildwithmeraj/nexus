@@ -6,12 +6,11 @@ import Footer from "../components/shared/Footer";
 import Navbar from "../components/shared/Navbar";
 import {
   FaUsers,
-  FaClipboardList,
   FaCalendar,
   FaSignOutAlt,
-  FaCog,
   FaChartBar,
   FaPlus,
+  FaUsersCog,
 } from "react-icons/fa";
 import { ImStatsDots } from "react-icons/im";
 import { MdDashboard, MdOutlinePayment } from "react-icons/md";
@@ -32,8 +31,8 @@ export default function Sidebar() {
     admin: [
       { label: "Dashboard", to: "/dashboard", icon: MdDashboard },
       { label: "Overview", to: "/dashboard/admin", icon: ImStatsDots },
-      { label: "Users", to: "/dashboard/admin/users", icon: FaUsers },
-      { label: "Clubs", to: "/dashboard/admin/clubs", icon: FaClipboardList },
+      { label: "Users", to: "/dashboard/admin/users", icon: FaUsersCog },
+      { label: "Clubs", to: "/dashboard/admin/clubs", icon: FaUsers },
       {
         label: "Events",
         to: "/dashboard/admin/events",
@@ -53,7 +52,7 @@ export default function Sidebar() {
       {
         label: "My Clubs",
         to: "/dashboard/club-manager/clubs",
-        icon: FaClipboardList,
+        icon: FaUsers,
       },
       {
         label: "Events",
@@ -76,7 +75,7 @@ export default function Sidebar() {
       {
         label: "My Clubs",
         to: "/dashboard/member/clubs",
-        icon: FaClipboardList,
+        icon: FaUsers,
       },
       {
         label: "My Events",

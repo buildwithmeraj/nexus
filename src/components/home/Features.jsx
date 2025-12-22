@@ -123,7 +123,7 @@ const FeaturesSection = () => {
                 key={index}
                 variants={cardVariants}
                 whileHover="whileHover"
-                className="bg-base-200/50 border border-base-300 rounded-xl p-8 cursor-pointer group"
+                className="bg-base-200/50 border border-base-300 rounded-xl p-8 cursor-pointer group backdrop-blur-xl"
               >
                 <div
                   className={`${feature.bgColor} ${feature.color} w-16 h-16 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}

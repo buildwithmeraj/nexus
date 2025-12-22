@@ -3,6 +3,7 @@ import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "../../utilities/Loading";
 import { FaSearch } from "react-icons/fa";
+import InfoMSg from "../../utilities/Info";
 
 const ClubManagerApplications = () => {
   const queryClient = useQueryClient();
@@ -87,10 +88,10 @@ const ClubManagerApplications = () => {
       </div>
 
       {clubManagerApplicationsList.length < 1 ? (
-        "No Applications found"
+        <InfoMSg message="No Applications found" />
       ) : (
         <>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto backdrop-blur-xl">
             <table className="table">
               <thead>
                 <tr>

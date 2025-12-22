@@ -8,6 +8,7 @@ import {
   FaYoutube,
   FaInstagram,
   FaTiktok,
+  FaFacebookF,
 } from "react-icons/fa";
 import { TbBrandYoutubeFilled } from "react-icons/tb";
 import { BsTwitterX } from "react-icons/bs";
@@ -16,7 +17,7 @@ import { MdDescription } from "react-icons/md";
 
 const Footer = () => {
   return (
-    <footer className="footer px-10 bg-base-200 text-base-content">
+    <footer className="footer px-[1%] md:px-[3%] bg-base-200 text-base-content">
       <div className="mx-auto py-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 lg:gap-10 lg:justify-items-center">
           <div className="space-y-2">
@@ -88,38 +89,42 @@ const Footer = () => {
           <div className="space-y-4 md:justify-self-end">
             <h3 className="text-lg font-semibold text-center">Follow Us</h3>
             <div className="flex items-center gap-4">
-              <a href="#" aria-label="Twitter" className="hover:text-primary">
+              <a
+                href="#"
+                aria-label="Twitter"
+                className="hover:text-primary bg-gray-800 p-2 rounded-full text-white"
+              >
                 <BsTwitterX size={26} />
               </a>
 
               <a
                 href="#"
                 aria-label="YouTube"
-                className="text-red-600 hover:text-primary"
+                className="text-red-600 hover:text-primary bg-white p-2 rounded-full"
               >
-                <TbBrandYoutubeFilled size={34} />
+                <TbBrandYoutubeFilled size={26} />
               </a>
 
               <a
                 href="#"
                 aria-label="Facebook"
-                className="text-blue-500 hover:text-primary"
+                className="text-white hover:text-primary bg-blue-600 p-2 rounded-full"
               >
-                <FaFacebook size={30} />
+                <FaFacebookF size={26} />
               </a>
               <a
                 href="#"
                 aria-label="Instagram"
-                className="text-red-500 hover:text-primary"
+                className="text-white hover:text-primary bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] p-2 rounded-full"
               >
-                <FaInstagram size={32} />
+                <FaInstagram size={26} />
               </a>
               <a
                 href="#"
                 aria-label="TikTok"
-                className="text-base-content hover:text-primary"
+                className="text-white hover:text-primary bg-[#010101] border-l-2 border-[#25F4EE] border-r-2 border-[#FE2C55] p-2 rounded-full"
               >
-                <FaTiktok size={28} />
+                <FaTiktok size={26} />
               </a>
             </div>
           </div>

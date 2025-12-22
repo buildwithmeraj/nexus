@@ -112,7 +112,7 @@ const JoinedClubs = () => {
           </div>
         ) : (
           <>
-            <div className="hidden lg:block overflow-x-auto">
+            <div className="hidden lg:block overflow-x-auto backdrop-blur-md">
               <table className="table w-full">
                 <thead>
                   <tr>

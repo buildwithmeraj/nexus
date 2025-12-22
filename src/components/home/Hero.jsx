@@ -54,7 +54,7 @@ const Hero = () => {
 
   return (
     <section className="py-10 flex items-center">
-      <div className="mx-auto px-4 w-full">
+      <div className="mx-auto px-4 w-full backdrop-blur-xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
             variants={containerVariants}

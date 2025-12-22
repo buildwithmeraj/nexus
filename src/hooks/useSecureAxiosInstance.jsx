@@ -12,13 +12,21 @@ const useAxiosSecureInstance = () => {
   const { user, logOut } = useAuth();
 
   useEffect(() => {
-    const requestInterceptor = instance.interceptors.request.use((config) => {
-      const token = user?.accessToken;
-      if (token) {
-        config.headers.authorization = `Bearer ${token}`;
+    const requestInterceptor = instance.interceptors.request.use(
+      async (config) => {
+        if (user) {
+          try {
+            const token = await user.getIdToken();
+            config.headers.authorization = `Bearer ${token}`;
+          } catch (error) {
+            console.error("Failed to get ID token:", error);
+            await logOut();
+            navigate("/login");
+          }
+        }
+        return config;
       }
-      return config;
-    });
+    );
 
     const responseInterceptor = instance.interceptors.response.use(
       (res) => {
@@ -28,9 +36,9 @@ const useAxiosSecureInstance = () => {
         const status = error.response?.status;
         if (status === 401 || status === 403) {
           console.log("Unauthorized - logging out user");
-          // logOut().then(() => {
-          //   navigate("/login");
-          // });
+          logOut().then(() => {
+            navigate("/login");
+          });
         }
         return Promise.reject(error);
       }

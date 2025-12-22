@@ -5,6 +5,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ClubManagerApplications from "./ClubManagerApplications";
 import { FaSearch } from "react-icons/fa";
+import InfoMSg from "../../utilities/Info";
 
 const UsersList = () => {
   const queryClient = useQueryClient();
@@ -182,42 +183,50 @@ const UsersList = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Joined</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {usersList
-              .filter((u) => u.email !== adminEmail)
-              .filter(matchesSearch)
-              .map((user) => (
-                <tr key={user._id} className="hover:bg-base-300">
-                  <td>
-                    <div className="font-bold">{user.name}</div>
-                  </td>
-
-                  <td>{user.email}</td>
-
-                  <td className={`font-semibold ${roleClassMap[user.role]}`}>
-                    {capitalizeWords(user.role)}
-                  </td>
-
-                  <td>{formatDate(user.createdAt)}</td>
-
-                  <td>{renderActionButtons(user)}</td>
+      {usersList.length < 2 ? (
+        <InfoMSg message="No Users found" />
+      ) : (
+        <>
+          <div className="overflow-x-auto  backdrop-blur-xl">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Joined</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+
+              <tbody>
+                {usersList
+                  .filter((u) => u.email !== adminEmail)
+                  .filter(matchesSearch)
+                  .map((user) => (
+                    <tr key={user._id} className="hover:bg-base-300">
+                      <td>
+                        <div className="font-bold">{user.name}</div>
+                      </td>
+
+                      <td>{user.email}</td>
+
+                      <td
+                        className={`font-semibold ${roleClassMap[user.role]}`}
+                      >
+                        {capitalizeWords(user.role)}
+                      </td>
+
+                      <td>{formatDate(user.createdAt)}</td>
+
+                      <td>{renderActionButtons(user)}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
 
       <ClubManagerApplications />
 

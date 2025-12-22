@@ -134,7 +134,7 @@ const JoinedEvents = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="hidden lg:block overflow-x-auto">
+            <div className="hidden lg:block overflow-x-auto backdrop-blur-md">
               <table className="table w-full">
                 <thead>
                   <tr>
@@ -297,7 +297,7 @@ const JoinedEvents = () => {
         <div className="space-y-4 mt-8">
           <h2 className="text-2xl font-bold">Past Events</h2>
 
-          <div className="hidden lg:block overflow-x-auto">
+          <div className="hidden lg:block overflow-x-auto backdrop-blur-md">
             <table className="table w-full">
               <thead>
                 <tr>

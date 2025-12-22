@@ -154,7 +154,7 @@ const EventsList = () => {
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="hidden lg:block overflow-x-auto">
+          <div className="hidden lg:block overflow-x-auto backdrop-blur-md">
             <table className="table w-full">
               <thead>
                 <tr>

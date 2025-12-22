@@ -43,7 +43,7 @@ const ClubManager = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20">
+        <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">
@@ -67,7 +67,7 @@ const ClubManager = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20">
+        <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">
@@ -91,7 +91,7 @@ const ClubManager = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20">
+        <div className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">
@@ -115,7 +115,7 @@ const ClubManager = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20">
+        <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">

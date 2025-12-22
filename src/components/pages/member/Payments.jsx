@@ -9,6 +9,7 @@ import {
 import toast from "react-hot-toast";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import LoadingDashboard from "../../utilities/LoadingDashboard";
+import ErrorMsg from "../../utilities/Error";
 
 const Payments = () => {
   const axiosSecure = useAxiosSecureInstance();
@@ -83,11 +84,7 @@ const Payments = () => {
   if (isLoading) return <LoadingDashboard />;
 
   if (error) {
-    return (
-      <div className="alert alert-error">
-        <span>Error loading payments: {error.message}</span>
-      </div>
-    );
+    return <ErrorMsg message={`Error loading payments: {error.message}`} />;
   }
 
   const totalMemberships = membershipPayments.length;
@@ -104,7 +101,7 @@ const Payments = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20">
+        <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">
@@ -121,7 +118,7 @@ const Payments = () => {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20">
+        <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">
@@ -139,7 +136,7 @@ const Payments = () => {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20">
+        <div className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">
@@ -157,7 +154,7 @@ const Payments = () => {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20">
+        <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-base-content/60 text-sm font-medium">

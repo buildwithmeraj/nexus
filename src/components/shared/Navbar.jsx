@@ -42,7 +42,7 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="navbar bg-base-100 shadow-sm px-4 fixed top-0 left-0 right-0 z-50">
+    <div className="navbar bg-base-100/60 backdrop-blur-lg  shadow-sm px-[1%] md:px-[3%] fixed top-0 left-0 right-0 z-50">
       <div className="flex-none lg:hidden">
         <label
           htmlFor={isDashboard ? "dashboard-drawer" : "navbar-drawer"}
