@@ -16,11 +16,11 @@ const Home = () => {
         <FeaturesSection />
         <HowItWorks />
 
-        <section className="py-10 bg-base-50">
+        <section className="py-10">
           <h2 className="pb-6 text-center">Featured Clubs</h2>
           <AllClubs limit={4} />
         </section>
-        <section className="py-10 bg-base-100">
+        <section className="py-10">
           <h2 className="pb-6 text-center">Upcoming Events</h2>
           <AllEvents limit={4} />
         </section>

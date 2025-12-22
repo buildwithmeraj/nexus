@@ -22,7 +22,7 @@ const EventCard = ({ event }) => {
   const isPast = new Date(event.eventDate) < new Date();
 
   return (
-    <AnimatedCard className="card bg-base-100 shadow-md hover:shadow-xl">
+    <AnimatedCard className="card bg-base-200 shadow-xl rounded-xl">
       <div className="card-body space-y-3">
         <div className="flex justify-between items-start gap-2">
           <h3 className="card-title text-lg">{event.title}</h3>

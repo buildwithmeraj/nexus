@@ -7,7 +7,7 @@ const ClubCard = ({ club }) => {
   return (
     <AnimatedCard
       key={club._id}
-      className="card bg-base-100 shadow-xl rounded-xl"
+      className="card bg-base-200 shadow-xl rounded-xl"
     >
       <figure className="relative">
         <img

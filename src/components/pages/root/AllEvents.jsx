@@ -2,16 +2,9 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import Loading from "../../utilities/Loading";
+import EventCard from "../../shared/EventCard";
 import { Link } from "react-router";
-import {
-  FaCalendar,
-  FaMapMarkerAlt,
-  FaDollarSign,
-  FaUsers,
-  FaExclamationTriangle,
-  FaSearch,
-  FaCalendarAlt,
-} from "react-icons/fa";
+import { FaCalendarAlt, FaExclamationTriangle, FaSearch } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
 const AllEvents = ({ limit = 0 }) => {
@@ -83,15 +76,6 @@ const AllEvents = ({ limit = 0 }) => {
     return Array.from(locations).sort();
   }, [events]);
 
-  const formatDate = (dateString) =>
-    new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
   const hasActiveFilters =
     searchQuery ||
     selectedClub ||
@@ -140,7 +124,7 @@ const AllEvents = ({ limit = 0 }) => {
               <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-base-content/40 z-10" />
               <input
                 type="text"
-                placeholder="Search events by title or description..."
+                placeholder="Search events..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="input input-bordered w-full pl-12"
@@ -234,74 +218,9 @@ const AllEvents = ({ limit = 0 }) => {
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {events.map((event) => {
-            const clubName =
-              clubs.find((c) => c._id === event.clubId)?.clubName ||
-              event.clubName ||
-              "Unknown Club";
-            return (
-              <div
-                key={event._id}
-                className="bg-base-100 rounded-xl shadow-lg p-5 flex flex-col justify-between hover:shadow-xl transition"
-              >
-                <div className="flex justify-between items-start mb-3">
-                  <h3 className="font-bold text-lg line-clamp-2">
-                    {event.title}
-                  </h3>
-                  <span
-                    className={`badge badge-sm ${
-                      event.isPaid ? "badge-warning" : "badge-success"
-                    }`}
-                  >
-                    {event.isPaid ? "Paid" : "Free"}
-                  </span>
-                </div>
-
-                <Link
-                  to={`/clubs/${event.clubId}`}
-                  className="mb-3 link-primary flex items-center gap-1.5 font-medium"
-                  title={`View ${clubName} club`}
-                >
-                  <FaUsers size={20} />
-                  {clubName}
-                </Link>
-
-                <div className="space-y-1 text-sm text-base-content/70 mb-4">
-                  <div className="flex items-center gap-2">
-                    <FaCalendar className="text-primary" />
-                    {formatDate(event.eventDate)}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FaMapMarkerAlt className="text-error" /> {event.location}
-                  </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <FaUsers className="text-info" />
-                      {event.attendeeCount || 0}
-                      {event.maxAttendees && `/${event.maxAttendees}`} attendees
-                    </div>
-                    {event.isPaid && (
-                      <div className="flex items-center gap-1">
-                        <FaDollarSign className="text-success" />
-                        {event.eventFee?.toFixed(2)}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <p className="text-base-content/70 text-sm mb-4 line-clamp-3">
-                  {event.description}
-                </p>
-
-                <Link
-                  to={`/events/${event._id}`}
-                  className="btn btn-primary w-full mt-auto"
-                >
-                  View Event
-                </Link>
-              </div>
-            );
-          })}
+          {events.map((event) => (
+            <EventCard key={event._id} event={event} />
+          ))}
         </div>
       )}
 
