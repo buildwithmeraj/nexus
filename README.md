@@ -230,7 +230,7 @@ This project is licensed under the MIT License
 
 ## 👨‍💻 Author
 
-**Meraj**
+**Merajul Islam**
 
 - GitHub: [@buildwithmeraj](https://github.com/buildwithmeraj)
 - Email: buildwithmeraj@gmail.com
