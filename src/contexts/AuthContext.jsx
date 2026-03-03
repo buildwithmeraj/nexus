@@ -86,21 +86,23 @@ export const AuthProvider = ({ children }) => {
     await signOut(auth);
     setUser(null);
   };
-  const addUserToDB = (userData) => {
-    axiosInstance
-      .post("/users", userData)
-      .then((data) => {
-        console.log("User added to DB:", data);
-      })
-      .catch((err) => {
-        console.error("Error adding user to DB:", err);
-      });
+  const addUserToDB = async (userData) => {
+    try {
+      const response = await axiosInstance.post("/users", userData);
+      return response.data;
+    } catch (error) {
+      // Existing users are expected during sign-in, so don't fail auth flow.
+      if (error.response?.status === 409) {
+        return { message: "User already exists" };
+      }
+      throw error;
+    }
   };
 
   // Ensure persistence so auth survives full page redirects (Stripe)
   useEffect(() => {
     setPersistence(auth, browserLocalPersistence).catch((e) =>
-      console.error("Failed to set auth persistence:", e)
+      console.error("Failed to set auth persistence:", e),
     );
   }, []);
 
@@ -110,7 +112,7 @@ export const AuthProvider = ({ children }) => {
       if (currentUser?.email) {
         try {
           const response = await axiosInstance.get(
-            `users/role/${currentUser.email}`
+            `/users/role/${encodeURIComponent(currentUser.email)}`,
           );
           setRole(response.data.role); // store role in state
         } catch (error) {

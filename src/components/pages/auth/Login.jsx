@@ -9,6 +9,12 @@ import { Eye, EyeOff } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { FaUserPlus } from "react-icons/fa6";
 import { FaSignInAlt } from "react-icons/fa";
+import { MdAdminPanelSettings } from "react-icons/md";
+
+const ADMIN_CREDENTIALS = {
+  email: "demo@admin.com",
+  password: "@Dmin123",
+};
 
 const Login = () => {
   const {
@@ -111,6 +117,40 @@ const Login = () => {
     }
   };
 
+  // quick admin login
+  const handleAdminLogin = async () => {
+    try {
+      const userCredential = await signInUsingEmail(
+        ADMIN_CREDENTIALS.email,
+        ADMIN_CREDENTIALS.password,
+      );
+
+      const adminUser = {
+        name: userCredential.user.displayName,
+        email: userCredential.user.email,
+        photoURL: userCredential.user.photoURL,
+        role: "admin",
+        createdAt: new Date(),
+      };
+
+      setUser(userCredential.user);
+      await addUserToDB(adminUser);
+
+      toast.success("Admin login successful!");
+      navigate(state?.from || "/", { replace: true });
+    } catch (error) {
+      const match = firebaseErrors.find((err) => err.code === error.code);
+      const errorMessage = match
+        ? match.message
+        : "Admin login failed. Please try again.";
+
+      setFormError("root", {
+        type: "manual",
+        message: errorMessage,
+      });
+    }
+  };
+
   return (
     <div className="hero min-h-[78vh]">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -203,6 +243,16 @@ const Login = () => {
                     Register
                   </NavLink>
                 </div>
+                <div className="divider">Development</div>
+
+                <button
+                  className="btn btn-warning btn-soft btn-block lg:flex-1"
+                  type="button"
+                  onClick={handleAdminLogin}
+                >
+                  <MdAdminPanelSettings size={22} />
+                  Quick Admin Login
+                </button>
               </fieldset>
             </div>
           </div>
