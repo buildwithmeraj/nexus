@@ -42,7 +42,7 @@ export default function Root() {
       <div className="drawer-content flex flex-col min-h-screen">
         <Navbar />
 
-        <main className="flex-1 max-w-[1400px] mx-auto w-full px-[1%] md:px-[3%] py-6 mt-16">
+        <main className="flex-1 max-w-350 mx-auto w-full px-[1%] md:px-[3%] py-6 mt-16">
           <PageTransition>
             <Outlet />
           </PageTransition>
