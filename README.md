@@ -1,4 +1,4 @@
-# <img src="public/icon.png" alt="Nexus Icon" width="36" height="36" style="vertical-align: middle; padding-top: 6px;" /> Nexus
+# <img src="public/icon.png" alt="Nexus Icon" width="36" height="36" style="vertical-align: middle; margin-top: 6px;" /> Nexus
 
 Nexus is a club management platform for student communities. It helps manage clubs, members, events, and payments with role-based access.
 
