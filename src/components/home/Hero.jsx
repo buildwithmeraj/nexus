@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Link } from "react-router";
 import { FaArrowRight, FaSearch, FaUsers, FaCalendarAlt } from "react-icons/fa";
 
@@ -56,30 +56,28 @@ const Hero = () => {
     <section className="py-10 flex items-center">
       <div className="mx-auto px-4 w-full backdrop-blur-xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <motion.div
+          <Motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
             className="space-y-6"
           >
-            <motion.h2
+            <Motion.h2
               variants={itemVariants}
               className="text-4xl font-bold leading-tight"
             >
               Join Amazing <span className="text-primary">Clubs</span> & Events
-            </motion.h2>
-
-            <motion.p
+            </Motion.h2>
+            <Motion.p
               variants={itemVariants}
               className="text-lg text-base-content/70 leading-relaxed max-w-xl"
             >
               Discover communities that match your interests, attend exclusive
               events, and connect with like-minded people. Your next adventure
               starts here.
-            </motion.p>
-
-            <motion.div
+            </Motion.p>
+            <Motion.div
               variants={itemVariants}
               className="flex flex-col sm:flex-row gap-4"
             >
@@ -91,9 +89,8 @@ const Hero = () => {
                 Browse Events
                 <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
               </Link>
-            </motion.div>
-
-            <motion.div
+            </Motion.div>
+            <Motion.div
               variants={itemVariants}
               className="grid grid-cols-3 gap-4 pt-4 border-t border-base-300"
             >
@@ -109,17 +106,15 @@ const Hero = () => {
                 <p className="text-2xl font-bold text-info">30+</p>
                 <p className="text-sm text-base-content/60">Events</p>
               </div>
-            </motion.div>
-          </motion.div>
-
-          <motion.div
+            </Motion.div>          </Motion.div>
+          <Motion.div
             variants={imageVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
             className="hidden lg:block"
           >
-            <motion.div
+            <Motion.div
               variants={floatingVariants}
               initial="initial"
               animate="animate"
@@ -128,39 +123,33 @@ const Hero = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-3xl blur-3xl"></div>
               <div className="relative bg-gradient-to-br from-primary/10 to-secondary/10 rounded-3xl p-8 border border-primary/20">
                 <div className="grid grid-cols-2 gap-4">
-                  <motion.div
+                  <Motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-primary/20 rounded-xl p-6 text-center"
                   >
                     <FaUsers className="text-4xl text-primary mx-auto mb-3" />
                     <p className="font-semibold">Community</p>
-                  </motion.div>
-                  <motion.div
+                  </Motion.div>                  <Motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-success/20 rounded-xl p-6 text-center"
                   >
                     <FaCalendarAlt className="text-4xl text-success mx-auto mb-3" />
                     <p className="font-semibold">Events</p>
-                  </motion.div>
-                  <motion.div
+                  </Motion.div>                  <Motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-info/20 rounded-xl p-6 text-center"
                   >
                     <FaSearch className="text-4xl text-info mx-auto mb-3" />
                     <p className="font-semibold">Discovery</p>
-                  </motion.div>
-                  <motion.div
+                  </Motion.div>                  <Motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-warning/20 rounded-xl p-6 text-center"
                   >
                     <span className="text-4xl mx-auto mb-3 block">🎯</span>
                     <p className="font-semibold">Goals</p>
-                  </motion.div>
-                </div>
+                  </Motion.div>                </div>
               </div>
-            </motion.div>
-          </motion.div>
-        </div>
+            </Motion.div>          </Motion.div>        </div>
       </div>
     </section>
   );

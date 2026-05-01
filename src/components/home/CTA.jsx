@@ -1,11 +1,11 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Link } from "react-router";
 import { FaCalendarAlt, FaUsers } from "react-icons/fa";
 
 const CTA = () => {
   return (
-    <motion.div
+    <Motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.4 }}
@@ -27,8 +27,7 @@ const CTA = () => {
           Explore Clubs
         </Link>
       </div>
-    </motion.div>
-  );
+    </Motion.div>  );
 };
 
 export default CTA;

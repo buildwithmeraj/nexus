@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import {
   FaUserPlus,
   FaSearch,
@@ -102,7 +102,7 @@ const HowItWorks = () => {
   return (
     <section className="py-10 bg-base-50">
       <div className="mx-auto">
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -116,9 +116,8 @@ const HowItWorks = () => {
             Get started in 4 simple steps and join a thriving community of
             passionate individuals.
           </p>
-        </motion.div>
-
-        <motion.div
+        </Motion.div>
+        <Motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -128,32 +127,26 @@ const HowItWorks = () => {
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
-              <motion.div
+              <Motion.div
                 key={index}
                 variants={stepVariants}
                 whileHover="whileHover"
                 className="relative group"
               >
-                <motion.div
+                <Motion.div
                   variants={numberVariants}
                   className="absolute -top-8 -right-4 text-9xl font-black text-base-content/40 pointer-events-none z-10"
                 >
                   {step.number}
-                </motion.div>
-
-                <div className="relative bg-base-100 border border-base-300 rounded-xl p-8 h-full hover:shadow-xl transition-shadow">
-                  {index < steps.length - 1 && (
-                    <div className="hidden lg:block absolute top-1/2 -right-6 w-12 h-0.5 bg-gradient-to-r from-primary to-transparent"></div>
-                  )}
-
-                  <motion.div
+                </Motion.div>
+                <div className="relative bg-base-100 border border-base-300 rounded-xl p-6 h-full hover:shadow-xl transition-shadow flex flex-col justify-between">
+                  <Motion.div
                     variants={iconVariants}
                     whileHover="whileHover"
                     className={`${step.bgColor} ${step.color} w-16 h-16 rounded-lg flex items-center justify-center mb-6`}
                   >
                     <Icon className="text-2xl" />
-                  </motion.div>
-
+                  </Motion.div>
                   <h3 className="text-xl font-bold mb-3">{step.title}</h3>
                   <p className="text-base-content/70 text-sm leading-relaxed">
                     {step.description}
@@ -165,10 +158,10 @@ const HowItWorks = () => {
                     </span>
                   </div>
                 </div>
-              </motion.div>
+              </Motion.div>
             );
           })}
-        </motion.div>
+        </Motion.div>{" "}
       </div>
     </section>
   );

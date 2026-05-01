@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../../hooks/axiosInstance";
-import { useAuth } from "../../../contexts/AuthContext";
+import useAuth from "../../../contexts/useAuth";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import EventRegistrationModal from "./EventRegistrationModal";
 import SuccessMsg from "../../utilities/Success";

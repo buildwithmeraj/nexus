@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { FaCalendarAlt, FaHeart, FaLightbulb, FaUsers } from "react-icons/fa";
 import { Link } from "react-router";
 import { TbTargetArrow } from "react-icons/tb";
@@ -90,7 +90,7 @@ const AboutUs = () => {
     <div className="min-h-screen bg-gradient-to-br from-base-50 via-base-100 to-base-50">
       <section className="py-10 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -104,13 +104,12 @@ const AboutUs = () => {
               thrive when people can easily discover, join, and participate in
               activities that matter to them.
             </p>
-          </motion.div>
-        </div>
+          </Motion.div>        </div>
       </section>
 
       <section className="py-10 px-4 bg-base-100">
         <div className="max-w-4xl mx-auto">
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
@@ -134,13 +133,12 @@ const AboutUs = () => {
                 alongside others who share their passions.
               </p>
             </div>
-          </motion.div>
-        </div>
+          </Motion.div>        </div>
       </section>
 
       <section className="py-10 px-4">
         <div className="max-w-5xl mx-auto">
-          <motion.h2
+          <Motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -148,9 +146,8 @@ const AboutUs = () => {
             className="text-4xl font-bold text-center pb-6"
           >
             Our Core Values
-          </motion.h2>
-
-          <motion.div
+          </Motion.h2>
+          <Motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -160,7 +157,7 @@ const AboutUs = () => {
             {values.map((value, index) => {
               const Icon = value.icon;
               return (
-                <motion.div
+                <Motion.div
                   key={index}
                   variants={itemVariants}
                   whileHover={{ y: -10 }}
@@ -171,16 +168,14 @@ const AboutUs = () => {
                   <p className="text-base-content/70 text-sm">
                     {value.description}
                   </p>
-                </motion.div>
-              );
+                </Motion.div>              );
             })}
-          </motion.div>
-        </div>
+          </Motion.div>        </div>
       </section>
 
       <section className="py-10 px-4 bg-base-100">
         <div className="max-w-5xl mx-auto">
-          <motion.h2
+          <Motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -188,9 +183,8 @@ const AboutUs = () => {
             className="text-4xl font-bold text-center pb-6"
           >
             Our Team
-          </motion.h2>
-
-          <motion.div
+          </Motion.h2>
+          <Motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -198,7 +192,7 @@ const AboutUs = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           >
             {team.map((member, index) => (
-              <motion.div
+              <Motion.div
                 key={index}
                 variants={itemVariants}
                 whileHover={{ scale: 1.05 }}
@@ -213,15 +207,13 @@ const AboutUs = () => {
                 <p className="text-base-content/70 text-sm">
                   {member.description}
                 </p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+              </Motion.div>            ))}
+          </Motion.div>        </div>
       </section>
 
       <section className="py-10 px-4">
         <div className="max-w-5xl mx-auto">
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
@@ -240,12 +232,11 @@ const AboutUs = () => {
               <p className="text-4xl font-bold text-info mb-2">30+</p>
               <p className="text-base-content/60 text-sm">Events Hosted</p>
             </div>
-          </motion.div>
-        </div>
+          </Motion.div>        </div>
       </section>
 
       <section className="py-10 px-4 bg-base-100">
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -267,8 +258,7 @@ const AboutUs = () => {
               Explore Clubs
             </Link>
           </div>
-        </motion.div>
-      </section>
+        </Motion.div>      </section>
     </div>
   );
 };

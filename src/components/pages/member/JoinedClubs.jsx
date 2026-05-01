@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
-import { useAuth } from "../../../contexts/AuthContext";
+import useAuth from "../../../contexts/useAuth";
 import Loading from "../../utilities/Loading";
 import { Link } from "react-router";
 import {

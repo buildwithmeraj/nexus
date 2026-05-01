@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
@@ -10,10 +10,8 @@ import {
   browserLocalPersistence,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
-import { useContext } from "react";
 import axiosInstance from "../hooks/axiosInstance";
-
-const AuthContext = createContext(null);
+import AuthContext from "./AuthContextObject";
 
 export const AuthProvider = ({ children }) => {
   const firebaseErrors = [
@@ -114,7 +112,7 @@ export const AuthProvider = ({ children }) => {
           const response = await axiosInstance.get(
             `/users/role/${encodeURIComponent(currentUser.email)}`,
           );
-          setRole(response.data.role); // store role in state
+          setRole(response.data.role);
         } catch (error) {
           console.error("Failed to fetch role:", error);
           setRole("");
@@ -139,13 +137,9 @@ export const AuthProvider = ({ children }) => {
     addUserToDB,
     firebaseErrors,
     loading: authLoading,
-    authLoading, // add this so guards (PrivateRoute/AdminRoute/ClubManagerRoute) read the correct flag
+    authLoading,
   };
   return (
     <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  return useContext(AuthContext);
 };

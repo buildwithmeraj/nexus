@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 import Logo from "../utilities/Logo";
 import ThemeSwitcher from "../utilities/ThemeSwitcher";
-import { useAuth } from "../../contexts/AuthContext";
+import useAuth from "../../contexts/useAuth";
 import toast from "react-hot-toast";
 import { MdDashboard } from "react-icons/md";
 import { LogIn, UserPlus } from "lucide-react";

@@ -17,8 +17,9 @@ export default function PaymentModal({
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    dialogRef.current?.showModal();
-    return () => dialogRef.current?.close();
+    const dialogEl = dialogRef.current;
+    dialogEl?.showModal();
+    return () => dialogEl?.close();
   }, []);
 
   useEffect(() => {
@@ -37,8 +38,7 @@ export default function PaymentModal({
               ? `/clubs/${clubId}/join`
               : `/clubs/${clubId}/renew-membership`;
 
-          const res = await axiosSecure.post(endpoint);
-          console.log("Free membership response:", res.data);
+          await axiosSecure.post(endpoint);
           toast.success("Membership successful");
           onSuccess();
           onClose();
@@ -51,13 +51,9 @@ export default function PaymentModal({
             ? `/clubs/${clubId}/create-checkout-session`
             : `/clubs/${clubId}/create-renewal-session`;
 
-        console.log("Calling endpoint:", endpoint);
         const res = await axiosSecure.post(endpoint);
 
-        console.log("Checkout session response:", res.data);
-
         if (res.data?.url) {
-          console.log("Redirecting to Stripe:", res.data.url);
           window.location.assign(res.data.url);
         } else {
           throw new Error("No checkout URL returned");

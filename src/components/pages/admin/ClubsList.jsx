@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import Loading from "../../utilities/Loading";
-import { useAuth } from "../../../contexts/AuthContext";
+import useAuth from "../../../contexts/useAuth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { FaSearch } from "react-icons/fa";

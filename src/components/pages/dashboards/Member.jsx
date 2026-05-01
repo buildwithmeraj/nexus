@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Link } from "react-router";
-import { useAuth } from "../../../contexts/AuthContext";
+import useAuth from "../../../contexts/useAuth";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance.jsx";
 import { HiUserCircle } from "react-icons/hi";
 import {
@@ -118,19 +118,19 @@ const Member = () => {
     clubs?.filter((c) => c.membershipStatus === "active")?.length || 0;
 
   return (
-    <motion.div initial="hidden" animate="visible" className="space-y-6">
-      <motion.div>
+    <Motion.div initial="hidden" animate="visible" className="space-y-6">
+      <Motion.div>
         <h1 className="text-3xl font-bold">Member Dashboard</h1>
         <p className="text-base-content/60 mt-1">
           Overview of your clubs and event registrations
         </p>
-      </motion.div>
+      </Motion.div>
 
-      <motion.div>
+      <Motion.div>
         <div className="flex items-center justify-center">
           <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-base-300 rounded-2xl shadow-md p-8 max-w-xl w-full backdrop-blur-md">
             <div className="flex flex-col sm:flex-row items-center gap-6">
-              <motion.div
+              <Motion.div
                 whileHover={{ scale: 1.1 }}
                 transition={{ duration: 0.3 }}
                 className="flex-shrink-0"
@@ -145,26 +145,26 @@ const Member = () => {
                 ) : (
                   <HiUserCircle className="text-8xl text-primary/70" />
                 )}
-              </motion.div>
+              </Motion.div>
 
               <div className="flex-1 text-center sm:text-left">
-                <motion.h2
+                <Motion.h2
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2 }}
                   className="text-3xl font-bold"
                 >
                   {user?.displayName || "User"}
-                </motion.h2>
-                <motion.p
+                </Motion.h2>
+                <Motion.p
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.25 }}
                   className="mt-1 text-base-content/60"
                 >
                   {user?.email || "N/A"}
-                </motion.p>
-                <motion.div
+                </Motion.p>
+                <Motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
@@ -173,10 +173,10 @@ const Member = () => {
                   <span className="badge badge-primary badge-lg capitalize">
                     {role || "member"}
                   </span>
-                </motion.div>
+                </Motion.div>
 
                 {role === "member" && (
-                  <motion.div
+                  <Motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.35 }}
@@ -189,21 +189,21 @@ const Member = () => {
                       <FaGraduationCap size={16} />
                       Apply for Club Manager
                     </Link>
-                  </motion.div>
+                  </Motion.div>
                 )}
               </div>
             </div>
           </div>
         </div>
-      </motion.div>
+      </Motion.div>
 
-      <motion.div
+      <Motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
       >
-        <motion.div
+        <Motion.div
           variants={cardVariants}
           whileHover="whileHover"
           className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20 backdrop-blur-md"
@@ -213,20 +213,20 @@ const Member = () => {
               <p className="text-base-content/60 text-sm font-medium">
                 My Clubs
               </p>
-              <motion.p
+              <Motion.p
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="text-3xl font-bold mt-2"
               >
                 {stats?.totalClubs || 0}
-              </motion.p>
+              </Motion.p>
             </div>
             <FaUsers size={32} className="text-primary opacity-30" />
           </div>
-        </motion.div>
+        </Motion.div>
 
-        <motion.div
+        <Motion.div
           variants={cardVariants}
           whileHover="whileHover"
           className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-6 border border-success/20 backdrop-blur-md"
@@ -236,20 +236,20 @@ const Member = () => {
               <p className="text-base-content/60 text-sm font-medium">
                 Active Memberships
               </p>
-              <motion.p
+              <Motion.p
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.25, duration: 0.5 }}
                 className="text-3xl font-bold mt-2"
               >
                 {activeMemberships}
-              </motion.p>
+              </Motion.p>
             </div>
             <FaFire size={32} className="text-success opacity-30" />
           </div>
-        </motion.div>
+        </Motion.div>
 
-        <motion.div
+        <Motion.div
           variants={cardVariants}
           whileHover="whileHover"
           className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-6 border border-info/20 backdrop-blur-md"
@@ -259,20 +259,20 @@ const Member = () => {
               <p className="text-base-content/60 text-sm font-medium">
                 Events Registered
               </p>
-              <motion.p
+              <Motion.p
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
                 className="text-3xl font-bold mt-2"
               >
                 {stats?.eventsRegistered || 0}
-              </motion.p>
+              </Motion.p>
             </div>
             <FaCalendarAlt size={32} className="text-info opacity-30" />
           </div>
-        </motion.div>
+        </Motion.div>
 
-        <motion.div
+        <Motion.div
           variants={cardVariants}
           whileHover="whileHover"
           className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-6 border border-warning/20 backdrop-blur-md"
@@ -282,21 +282,21 @@ const Member = () => {
               <p className="text-base-content/60 text-sm font-medium">
                 Total Spent
               </p>
-              <motion.p
+              <Motion.p
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.35, duration: 0.5 }}
                 className="text-3xl font-bold mt-2"
               >
                 ${(activitySummary?.thisMonthSpent || 0).toFixed(2)}
-              </motion.p>
+              </Motion.p>
             </div>
             <FaDollarSign size={32} className="text-warning opacity-30" />
           </div>
-        </motion.div>
-      </motion.div>
+        </Motion.div>
+      </Motion.div>
 
-      <motion.div
+      <Motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -304,77 +304,77 @@ const Member = () => {
       >
         {stats?.eventAttendanceHistory &&
           stats?.eventAttendanceHistory.length > 0 && (
-            <motion.div variants={cardVariants} whileHover="whileHover">
+            <Motion.div variants={cardVariants} whileHover="whileHover">
               <LineChartComponent
                 data={stats.eventAttendanceHistory}
                 title="Event Registration (Last 6 Months)"
                 dataKey="attendance"
               />
-            </motion.div>
+            </Motion.div>
           )}
 
         {spendingByType && spendingByType.length > 0 && (
-          <motion.div variants={cardVariants} whileHover="whileHover">
+          <Motion.div variants={cardVariants} whileHover="whileHover">
             <PieChartComponent
               data={spendingByType}
               title="Spending Breakdown"
             />
-          </motion.div>
+          </Motion.div>
         )}
-      </motion.div>
+      </Motion.div>
 
-      <motion.div
+      <Motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="grid grid-cols-1 lg:grid-cols-2 gap-6"
       >
         {paymentTimeline && paymentTimeline.length > 0 && (
-          <motion.div variants={cardVariants} whileHover="whileHover">
+          <Motion.div variants={cardVariants} whileHover="whileHover">
             <BarChartComponent
               data={paymentTimeline}
               title="Payment Timeline (Last 12 Months)"
               dataKey="amount"
             />
-          </motion.div>
+          </Motion.div>
         )}
 
         {clubSpending && clubSpending.length > 0 && (
-          <motion.div variants={cardVariants} whileHover="whileHover">
+          <Motion.div variants={cardVariants} whileHover="whileHover">
             <PieChartComponent data={clubSpending} title="Spending by Club" />
-          </motion.div>
+          </Motion.div>
         )}
-      </motion.div>
+      </Motion.div>
 
-      <motion.div
+      <Motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="grid grid-cols-1 lg:grid-cols-2 gap-6"
       >
         {stats?.clubsBreakdown && stats?.clubsBreakdown.length > 0 && (
-          <motion.div variants={cardVariants} whileHover="whileHover">
+          <Motion.div variants={cardVariants} whileHover="whileHover">
             <PieChartComponent
               data={stats.clubsBreakdown}
               title="Membership Distribution"
             />
-          </motion.div>
+          </Motion.div>
         )}
 
         {eventCategories && eventCategories.length > 0 && (
-          <motion.div variants={cardVariants} whileHover="whileHover">
+          <Motion.div variants={cardVariants} whileHover="whileHover">
             <BarChartComponent
               data={eventCategories}
               title="Events by Category"
               dataKey="value"
             />
-          </motion.div>
+          </Motion.div>
         )}
-      </motion.div>
+      </Motion.div>
 
       {activitySummary && (
-        <motion.div className="bg-base-100 border border-base-300 rounded-lg p-8">
-          <motion.h2
+        <Motion.div className="bg-base-100 border border-base-300 rounded-lg p-8">
+          <Motion.h2
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
@@ -382,31 +382,31 @@ const Member = () => {
           >
             <FaChartLine className="text-primary" />
             Activity Summary
-          </motion.h2>
+          </Motion.h2>
 
-          <motion.div
+          <Motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
             {activitySummary.mostVisitedClub && (
-              <motion.div
+              <Motion.div
                 variants={itemVariants}
                 className="bg-gradient-to-br from-primary/10 to-primary/5 p-6 rounded-lg border border-primary/20"
               >
                 <p className="text-sm font-semibold text-base-content/60 mb-2">
                   Most Active Club
                 </p>
-                <motion.h3
+                <Motion.h3
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
                   className="text-xl font-bold"
                 >
                   {activitySummary.mostVisitedClub.clubName}
-                </motion.h3>
-                <motion.p
+                </Motion.h3>
+                <Motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.35 }}
@@ -416,44 +416,44 @@ const Member = () => {
                   {new Date(
                     activitySummary.mostVisitedClub.joinedAt
                   ).toLocaleDateString()}
-                </motion.p>
-              </motion.div>
+                </Motion.p>
+              </Motion.div>
             )}
 
-            <motion.div
+            <Motion.div
               variants={itemVariants}
               className="bg-gradient-to-br from-success/10 to-success/5 p-6 rounded-lg border border-success/20"
             >
               <p className="text-sm font-semibold text-base-content/60 mb-2">
                 Upcoming Events
               </p>
-              <motion.h3
+              <Motion.h3
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
                 className="text-3xl font-bold text-success"
               >
                 {activitySummary.upcomingEvents?.length || 0}
-              </motion.h3>
-              <motion.p
+              </Motion.h3>
+              <Motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.35 }}
                 className="text-xs text-base-content/60 mt-2"
               >
                 Events to attend
-              </motion.p>
-            </motion.div>
-          </motion.div>
+              </Motion.p>
+            </Motion.div>
+          </Motion.div>
 
           {activitySummary.upcomingEvents &&
             activitySummary.upcomingEvents.length > 0 && (
-              <motion.div
+              <Motion.div
                 variants={itemVariants}
                 className="mt-6 pt-6 border-t border-base-300"
               >
                 <h4 className="font-semibold mb-4">Next Events</h4>
-                <motion.div
+                <Motion.div
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
@@ -462,7 +462,7 @@ const Member = () => {
                   {activitySummary.upcomingEvents
                     .slice(0, 3)
                     .map((event, idx) => (
-                      <motion.div
+                      <Motion.div
                         key={idx}
                         variants={itemVariants}
                         className="flex items-center justify-between p-3 bg-base-50 rounded-lg"
@@ -475,14 +475,14 @@ const Member = () => {
                           </p>
                         </div>
                         <FaCalendarAlt className="text-primary opacity-60" />
-                      </motion.div>
+                      </Motion.div>
                     ))}
-                </motion.div>
-              </motion.div>
+                </Motion.div>
+              </Motion.div>
             )}
-        </motion.div>
+        </Motion.div>
       )}
-    </motion.div>
+    </Motion.div>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
-import { useAuth } from "../../../contexts/AuthContext";
+import useAuth from "../../../contexts/useAuth";
 import { Link } from "react-router";
 import {
   FaCalendar,

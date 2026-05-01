@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import {
   FaSearch,
   FaUsers,
@@ -93,7 +93,7 @@ const FeaturesSection = () => {
   return (
     <section className="py-10">
       <div className="mx-auto">
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -107,9 +107,8 @@ const FeaturesSection = () => {
             Everything you need to discover, join, and manage clubs and events
             in one platform.
           </p>
-        </motion.div>
-
-        <motion.div
+        </Motion.div>
+        <Motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -119,7 +118,7 @@ const FeaturesSection = () => {
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <motion.div
+              <Motion.div
                 key={index}
                 variants={cardVariants}
                 whileHover="whileHover"
@@ -133,11 +132,9 @@ const FeaturesSection = () => {
 
                 <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
                 <p className="text-base-content/70">{feature.description}</p>
-              </motion.div>
-            );
+              </Motion.div>            );
           })}
-        </motion.div>
-      </div>
+        </Motion.div>      </div>
     </section>
   );
 };

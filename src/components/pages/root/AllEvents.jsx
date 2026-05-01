@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import Loading from "../../utilities/Loading";
@@ -66,12 +66,16 @@ const AllEvents = ({ limit = 0 }) => {
     },
   });
 
-  const events = Array.isArray(eventsResponse)
-    ? eventsResponse
-    : eventsResponse.data || [];
+  const events = useMemo(
+    () =>
+      Array.isArray(eventsResponse)
+        ? eventsResponse
+        : eventsResponse.data || [],
+    [eventsResponse],
+  );
 
   // Get unique locations from events
-  const uniqueLocations = React.useMemo(() => {
+  const uniqueLocations = useMemo(() => {
     const locations = new Set(events.map((e) => e.location).filter(Boolean));
     return Array.from(locations).sort();
   }, [events]);

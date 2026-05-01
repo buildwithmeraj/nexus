@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 
 const TermsOfService = () => {
@@ -97,7 +97,7 @@ const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-base-50 via-base-100 to-base-50 py-20">
       <div className="max-w-4xl mx-auto px-4">
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -110,9 +110,8 @@ const TermsOfService = () => {
           <p className="text-sm text-base-content/40 mt-4">
             Last Updated: December 18, 2025
           </p>
-        </motion.div>
-
-        <motion.div
+        </Motion.div>
+        <Motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -121,7 +120,7 @@ const TermsOfService = () => {
           {sections.map((section, index) => {
             const Icon = section.icon;
             return (
-              <motion.div
+              <Motion.div
                 key={index}
                 variants={sectionVariants}
                 className="bg-base-100 border border-base-300 rounded-xl p-8 hover:shadow-lg transition-shadow"
@@ -142,12 +141,10 @@ const TermsOfService = () => {
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            );
+              </Motion.div>            );
           })}
-        </motion.div>
-
-        <motion.div
+        </Motion.div>
+        <Motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
@@ -160,8 +157,7 @@ const TermsOfService = () => {
             </a>
             .
           </p>
-        </motion.div>
-      </div>
+        </Motion.div>      </div>
     </div>
   );
 };

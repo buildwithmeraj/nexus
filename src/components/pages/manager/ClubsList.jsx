@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
-import { useAuth } from "../../../contexts/AuthContext";
+import useAuth from "../../../contexts/useAuth";
 import { Link } from "react-router";
 import { FaHourglassHalf } from "react-icons/fa";
 import { FaGear } from "react-icons/fa6";

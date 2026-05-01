@@ -4,7 +4,7 @@ import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
 import toast, { Toaster } from "react-hot-toast";
 import Icon from "../components/utilities/Icon";
-import { useAuth } from "../contexts/AuthContext";
+import useAuth from "../contexts/useAuth";
 import {
   FaHome,
   FaSignInAlt,

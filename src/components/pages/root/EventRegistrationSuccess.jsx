@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
-import { useAuth } from "../../../contexts/AuthContext";
+import useAuth from "../../../contexts/useAuth";
 import toast from "react-hot-toast";
 import { FaCheckCircle } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";

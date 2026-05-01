@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
-import { useAuth } from "../../../contexts/AuthContext";
+import useAuth from "../../../contexts/useAuth";
 import PaymentModal from "./PaymentModal";
 import InfoMsg from "../../utilities/Info";
 import ErrorMsg from "../../utilities/Error";

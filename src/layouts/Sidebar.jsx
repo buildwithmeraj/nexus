@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Outlet, useLocation, useNavigate, Link } from "react-router";
-import { useAuth } from "../contexts/AuthContext";
+import useAuth from "../contexts/useAuth";
 import toast, { Toaster } from "react-hot-toast";
 import Footer from "../components/shared/Footer";
 import Navbar from "../components/shared/Navbar";
@@ -155,24 +155,27 @@ export default function Sidebar() {
               </div>
 
               <ul className="menu w-full space-y-1 flex-1">
-                {currentMenus.map(({ label, to, icon: Icon }) => (
-                  <li key={to}>
+                {currentMenus.map((menuItem) => {
+                  const MenuIcon = menuItem.icon;
+                  return (
+                  <li key={menuItem.to}>
                     <Link
-                      to={to}
+                      to={menuItem.to}
                       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition 
                         ${
-                          isActive(to)
+                          isActive(menuItem.to)
                             ? "bg-primary text-primary-content font-semibold"
                             : "hover:bg-base-300"
                         }`}
                     >
-                      <Icon size={18} />
-                      <span className="text-sm">{label}</span>
+                      <MenuIcon size={18} />
+                      <span className="text-sm">{menuItem.label}</span>
 
-                      {isActive(to) && <span className="" />}
+                      {isActive(menuItem.to) && <span className="" />}
                     </Link>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
 
               <div className="mt-6 pt-4 border-t border-base-300 space-y-1">

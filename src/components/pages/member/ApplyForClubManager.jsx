@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { useAuth } from "../../../contexts/AuthContext";
+import useAuth from "../../../contexts/useAuth";
 import useAxiosSecureInstance from "../../../hooks/useSecureAxiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import LoadingDashboard from "../../utilities/LoadingDashboard";
